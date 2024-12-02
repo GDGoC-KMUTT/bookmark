@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gen-api": "cd ../backend && swag init && cd ../frontend && swagger-typescript-api --silent --responses --unwrap-response-data --extract-request-params --extract-request-body --extract-response-body --extract-response-error --patch --clean-output --api-class-name Server --module-name-first-tag --debug --extract-enums --sort-routes --sort-types --axios --route-types  -p ../backend/docs/swagger.json -o ./src/configs -n api.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "jotai": "^2.10.3",
     "lucide-react": "^0.462.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
