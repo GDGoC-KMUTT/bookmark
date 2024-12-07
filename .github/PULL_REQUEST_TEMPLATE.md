@@ -33,6 +33,6 @@ If this PR addresses an issue, link it here.
 - [PR #<number>](link-to-PR)
 
 ## Request Review
-If you would like to review the code, please contact the following team members:
+If you are ready for the code to be reviewed, please add the label **"ready to review"** and contact the following team members:
 - @nichakontae
 
