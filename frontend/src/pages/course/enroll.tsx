@@ -1,7 +1,6 @@
-
-
 const enroll = () => {
-  return <div>enroll</div>;
-};
+    return <div>I want to ลาออก</div>
+}
 
-export default enroll;
+export default enroll
+
