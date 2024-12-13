@@ -25,12 +25,10 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install Dependencies
-        run: cd ./frontend && npm i
-
       - name: Compile React.js production build
         run: |
           cd ./frontend
+          npm i
           touch .env
           echo '${{secrets.FRONTEND_STAGING_ENV}}' > .env
           npm run build
