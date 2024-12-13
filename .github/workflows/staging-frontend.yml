@@ -26,7 +26,10 @@ jobs:
           node-version: "22"
 
       - name: Install Dependencies
-        run: cd ./frontend && npm i
+        run: 
+          rm -rf ./frontend/node_modules
+          rm -f ./frontend/package-lock.json
+          cd ./frontend && npm i
 
       - name: Compile React.js production build
         run: |
