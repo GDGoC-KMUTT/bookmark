@@ -55,3 +55,6 @@ jobs:
           port: ${{secrets.SSH_PORT}}
           local_path: "./frontend-build-artifact/*"
           remote_path: "/root/nginx/www/staging-bookmark/"
+          sftpArgs: '-o ConnectTimeout=5'
+      - name: restart nginx 
+        run: docker compose restart    
