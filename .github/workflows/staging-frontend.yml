@@ -10,7 +10,7 @@ on:
     branches:
       - staging
     paths:
-      - "frontend/**"    
+      - "frontend/**"
 
 jobs:
   frontend-build:
@@ -30,6 +30,7 @@ jobs:
 
       - name: Compile React.js production build
         run: |
+          cd ./frontend
           touch .env
           echo '${{secrets.FRONTEND_STAGING_ENV}}' > .env
           npm run build
