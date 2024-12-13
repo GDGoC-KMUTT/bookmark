@@ -18,18 +18,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "22"
-
-      - name: Install Dependencies
-        run: cd ./frontend && npm i
+          node-version: "22.11.0"
 
       - name: Compile React.js production build
         run: |
+          cd ./frontend
+          npm i
           touch .env
-          echo '${{secrets.FRONTEND_PROD_ENV}}' > .env
+          echo '${{secrets.FRONTEND_STAGING_ENV}}' > .env
           npm run build
-      - name: 🆙 Upload artifact
-        uses: actions/upload-artifact@v2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: frontend-build-artifact
           path: ./frontend/dist
@@ -39,7 +38,7 @@ jobs:
     needs: [frontend-build]
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           path: .
       - name: Deploy to server
@@ -51,3 +50,4 @@ jobs:
           port: ${{secrets.SSH_PORT}}
           local_path: "./frontend-build-artifact/*"
           remote_path: "/root/nginx/www/bookmark/"
+          sftpArgs: "-o ConnectTimeout=5"
