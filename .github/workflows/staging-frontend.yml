@@ -43,7 +43,7 @@ jobs:
     needs: [frontend-build]
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           path: .
       - name: Deploy to server
