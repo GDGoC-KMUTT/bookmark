@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-build-artifact
-          path: ./backend/build ./config.yml
+          path: ./backend/build/backend.exe ./backend/config.yml
 
   code_coverage:
     name: "Code coverage report"
