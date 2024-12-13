@@ -1,0 +1,53 @@
+name: Deployment Frontend Staging
+
+on:
+  push:
+    branches:
+      - staging
+    paths:
+      - "frontend/**"
+
+jobs:
+  frontend-build:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "22"
+
+      - name: Install Dependencies
+        run: cd ./frontend && npm i
+
+      - name: Compile React.js production build
+        run: |
+          touch .env
+          echo '${{secrets.FRONTEND_STAGING_ENV}}' > .env
+          npm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: frontend-build-artifact
+          path: ./frontend/dist
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs: [frontend-build]
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: .
+      - name: Deploy to server
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          username: ${{secrets.SSH_USERNAME}}
+          server: ${{secrets.SSH_HOST}}
+          ssh_private_key: ${{secrets.SSH_PRIVATE_KEY}}
+          port: ${{secrets.SSH_PORT}}
+          local_path: "./frontend-build-artifact/*"
+          remote_path: "/root/nginx/www/staging-bookmark/"
