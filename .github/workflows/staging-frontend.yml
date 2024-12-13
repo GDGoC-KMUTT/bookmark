@@ -6,6 +6,11 @@ on:
       - staging
     paths:
       - "frontend/**"
+  pull_request:
+    branches:
+      - staging
+    paths:
+      - "frontend/**"    
 
 jobs:
   frontend-build:
