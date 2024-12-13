@@ -10,7 +10,7 @@ on:
     branches:
       - staging
     paths:
-      - "backend/**"    
+      - "backend/**"
 
 jobs:
   backend-build-and-test:
@@ -42,7 +42,7 @@ jobs:
           echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
           env GOOS=linux GOARCH=amd64 go build -o build/backend
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: backend-build-artifact
           path: ./backend/build/* ./config.yml

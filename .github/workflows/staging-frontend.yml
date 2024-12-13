@@ -34,7 +34,7 @@ jobs:
           echo '${{secrets.FRONTEND_STAGING_ENV}}' > .env
           npm run build
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: frontend-build-artifact
           path: ./frontend/dist
