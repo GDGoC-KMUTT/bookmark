@@ -80,5 +80,7 @@ jobs:
           server: ${{secrets.SSH_HOST}}
           ssh_private_key: ${{secrets.SSH_PRIVATE_KEY}}
           port: ${{secrets.SSH_PORT}}
-          local_path: "./backend-build-artifact/*"
+          local_path: |
+            "./backend-build-artifact/build/*"
+            "./backend-build-artifact/config.yml"
           remote_path: "/root/backend/staging/"
