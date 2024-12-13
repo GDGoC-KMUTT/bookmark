@@ -28,7 +28,7 @@ jobs:
       - name: Compile React.js production build
         run: |
           cd ./frontend
-          npm i
+          npm i --legacy-peer-deps
           touch .env
           echo '${{secrets.FRONTEND_STAGING_ENV}}' > .env
           npm run build
