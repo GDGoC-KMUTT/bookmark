@@ -32,10 +32,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: code-coverage
-          path: coverage.txt # Make sure to use the same file name you chose for the "-coverprofile" in the "Test" step
+          path: ./backend/coverage.txt # Make sure to use the same file name you chose for the "-coverprofile" in the "Test" step
 
       - name: Go Production build
         run: |
+          cd ./backend
           touch config.yml
           echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
           env GOOS=linux GOARCH=amd64 go build -o build/backend
