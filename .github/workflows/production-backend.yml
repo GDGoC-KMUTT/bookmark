@@ -1,12 +1,12 @@
 name: Deployment Backend Production
 
 on:
-  workflow_dispatch: # Allows you to manually trigger the workflow
-#   push:
-#     branches:
-#       - main
-#     paths:
-#       - "backend/**"
+  workflow_dispatch: {} # Allows you to manually trigger the workflow
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"
 
 jobs:
   backend-build-and-test:
