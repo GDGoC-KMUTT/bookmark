@@ -7,10 +7,10 @@ const index = () => {
                 <h1 className="text-4xl font-semibold text-orange-600">Welcome to Bookmark</h1>
                 <div className="mt-6">
                     <button
-                        className="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600"
+                        className="bg-primary text-white rounded-md"
                         onClick={() => alert("Going to Bookmarks Page!")} // Placeholder functionality
                     >
-                        Get Started
+                        Get Start!
                     </button>
                 </div>
             </div>

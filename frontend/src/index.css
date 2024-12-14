@@ -94,56 +94,53 @@ button:focus-visible {
 @layer base {
     :root {
         --background: 0 0% 100%;
-        --foreground: 240 10% 3.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 240 10% 3.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 240 10% 3.9%;
-        --primary: 240 5.9% 10%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 240 4.8% 95.9%;
-        --secondary-foreground: 240 5.9% 10%;
-        --muted: 240 4.8% 95.9%;
-        --muted-foreground: 240 3.8% 46.1%;
-        --accent: 240 4.8% 95.9%;
-        --accent-foreground: 240 5.9% 10%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 240 5.9% 90%;
-        --input: 240 5.9% 90%;
-        --ring: 240 10% 3.9%;
-        --chart-1: 12 76% 61%;
-        --chart-2: 173 58% 39%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-        --radius: 0.5rem;
-    }
-    .dark {
-        --background: 240 10% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 240 10% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 240 10% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
-        --primary-foreground: 240 5.9% 10%;
-        --secondary: 240 3.7% 15.9%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 240 3.7% 15.9%;
-        --muted-foreground: 240 5% 64.9%;
-        --accent: 240 3.7% 15.9%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 240 3.7% 15.9%;
-        --input: 240 3.7% 15.9%;
-        --ring: 240 4.9% 83.9%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
+        --foreground: 18 0% 10%;
+
+        --primary: 18 100% 75%;
+        --secondary: 20 43% 56%;
+
+        --progress-bar: 137 63% 51%;
+        --continue-course: 228 28% 53%;
+
+        --field-type: 38 100% 85%;
+        --field-type-foreground: 18 51% 52%;
+
+        --footer: 0 0% 94%;
+        --code-tag: 0 41% 60%;
+
+        --outcome-badge: 148 34% 49%;
+        --check-badge: 18 66% 58%;
+        --error-badge: 0 96% 42%;
+        --comment-badge: 291 45% 56%;
+        --evaluate-badge: 199 81% 56%;
+
+        --check-passed: 130 100% 91%;
+        --check-passed-foreground: 135 100% 27%;
+
+        --check-failed: 15 100% 91%;
+        --check-failed-foreground: 0 17% 51%;
+
+        --form: 0 0% 94%;
+
+        --complete-step: 134 62% 46%;
+        --incomplete-step: 0 0 48%;
+
+        --explore: 38 100% 85%;
+        --explore-foreground: 18 48% 60%;
+
+        --border: 0 0% 75%;
+
+        --chart: 18, 100%, 75%;
+        --chart-border: 18 100% 75%;
+        --chart-point: 20 43% 56%;
+        --chart-point-border: 0 0% 100%;
+        --chart-point-hover: 0 0% 100%;
+        --chart-point-hover-border: 18 100% 75%;
+
+        --radius-large: 40px;
+        --radius-medium: 32px;
+        --radius: 24px;
+        --radius-small: 12px;
     }
 }
 
@@ -153,6 +150,54 @@ button:focus-visible {
     }
     body {
         @apply bg-background text-foreground;
+    }
+}
+
+@layer utilities {
+    .bg-fieldType {
+        background-color: hsl(var(--field-type));
+    }
+    .bg-chart {
+        background-color: hsl(var(--chart));
+    }
+    .bg-chart-pointBg {
+        background-color: hsl(var(--chart-point));
+    }
+    .bg-chart-pointHover {
+        background-color: hsl(var(--chart-point-hover));
+    }
+    .bg-badge-outcome {
+        background-color: hsl(var(--outcome-badge));
+    }
+    .bg-badge-check {
+        background-color: hsl(var(--check-badge));
+    }
+    .bg-badge-error {
+        background-color: hsl(var(--error-badge));
+    }
+    .bg-badge-comment {
+        background-color: hsl(var(--comment-badge));
+    }
+    .bg-badge-evaluate {
+        background-color: hsl(var(--evaluate-badge));
+    }
+    .bg-evalPassed {
+        background-color: hsl(var(--check-passed));
+    }
+    .bg-evalFailed {
+        background-color: hsl(var(--check-failed));
+    }
+    .bg-form {
+        background-color: hsl(var(--form));
+    }
+    .bg-completeStep {
+        background-color: hsl(var(--complete-step));
+    }
+    .bg-incompleteStep {
+        background-color: hsl(var(--incomplete-step));
+    }
+    .bg-explore {
+        background-color: hsl(var(--explore));
     }
 }
 
