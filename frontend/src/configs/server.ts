@@ -1,6 +1,6 @@
 import { Server } from "@/api/api"
 
-const SERVER_HOST = import.meta.env.VITE_SERVER_HOST
+export const SERVER_HOST = import.meta.env.VITE_SERVER_HOST
 const ENVIRONMENT = import.meta.env.VITE_ENVIRONMENT
 const SERVER_URL = `${SERVER_HOST}`
 

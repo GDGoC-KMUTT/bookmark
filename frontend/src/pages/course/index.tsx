@@ -1,28 +1,26 @@
 // import { course } from "@/types/course";
 
-import { server } from "@/configs/server"
+import { SERVER_HOST } from "@/configs/server"
 import { toast } from "sonner"
 
-const index = () => {
+const Course = () => {
     const handleRedirect = async () => {
-        try {
-            await toast.promise(server.login.loginRedirect(), {
-                loading: "Redirecting to login page...",
+        await toast.promise(
+            new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve("Redirecting now...")
+                    window.location.assign(`${SERVER_HOST}/login/redirect`)
+                }, 1000) // 3 seconds delay before redirect
+            }),
+            {
+                loading: "Preparing to redirect to the login page...",
                 success: () => {
-                    // Handle success message or action
-                    return "Successfully load login page"
+                    return "Successfully prepared for the login page redirect."
                 },
-                error: (err) => {
-                    // Handle error message or action
-                    console.error("Failed to load login page", err)
-                    return "Failed to load login page"
-                },
-            })
-        } catch (error) {
-            console.error("Failed to load login page:", error)
-            // Handle error message or action
-        }
+            }
+        )
     }
+
     return (
         <div className="flex justify-center items-center w-screen">
             <div className="text-center">
@@ -30,9 +28,9 @@ const index = () => {
                 <div className="mt-6">
                     <button
                         className="bg-primary text-white rounded-md"
-                        onClick={handleRedirect} // Placeholder functionality
+                        onClick={handleRedirect} // Trigger the redirect inside the handler
                     >
-                        Get Start!
+                        Get Started!
                     </button>
                 </div>
             </div>
@@ -40,5 +38,5 @@ const index = () => {
     )
 }
 
-export default index
+export default Course
 
