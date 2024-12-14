@@ -1,37 +1,40 @@
 package response
 
-type InfoResponse struct {
+import (
+	"github.com/gofiber/fiber/v2"
+)
+
+type InfoResponse[T any] struct {
 	Success bool   `json:"success"`
-	Code    string `json:"code,omitempty"`
+	Code    int    `json:"code,omitempty"`
 	Message string `json:"message,omitempty"`
-	Data    any    `json:"data,omitempty"`
+	Data    T      `json:"data,omitempty"`
 }
 
-func NewResponse(args1 any, args2 ...any) *InfoResponse {
-	if message, ok := args1.(string); ok {
-		if len(args2) == 0 {
-			return &InfoResponse{
-				Success: true,
-				Message: message,
-			}
-		}
+func Ok[T any](ctx *fiber.Ctx, data T, meta ...any) error {
+	if len(meta) > 0 {
+		return ctx.Status(200).JSON(InfoResponse[T]{
+			Code: fiber.StatusOK,
+			Data: data,
+		})
+	}
 
-		if message2, ok := args2[0].(string); ok {
-			return &InfoResponse{
-				Success: true,
-				Code:    message,
-				Message: message2,
-			}
-		} else {
-			return &InfoResponse{
-				Success: true,
-				Message: message,
-				Data:    args2[0],
-			}
-		}
+	return ctx.Status(200).JSON(InfoResponse[T]{
+		Code: fiber.StatusOK,
+		Data: data,
+	})
+}
+
+func Created[T any](ctx *fiber.Ctx, data T, meta ...any) error {
+	if len(meta) > 0 {
+		return ctx.Status(200).JSON(InfoResponse[T]{
+			Code: fiber.StatusCreated,
+			Data: data,
+		})
 	}
-	return &InfoResponse{
-		Success: true,
-		Data:    args1,
-	}
+
+	return ctx.Status(200).JSON(InfoResponse[T]{
+		Code: fiber.StatusCreated,
+		Data: data,
+	})
 }
