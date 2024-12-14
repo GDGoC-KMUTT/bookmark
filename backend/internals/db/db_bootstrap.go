@@ -71,6 +71,20 @@ func SetUpDatabase() {
 func Migrate() error {
 	if err := Gorm.AutoMigrate(
 		new(models.User),
+		new(models.Course),
+		new(models.Article),
+		new(models.CourseContent),
+		new(models.Enroll),
+		new(models.FieldType),
+		new(models.Module),
+		new(models.Step),
+		new(models.StepAuthor),
+		new(models.StepComment),
+		new(models.StepCommentUpvote),
+		new(models.StepEvaluate),
+		new(models.UserActivity),
+		new(models.UserEvaluate),
+		new(models.UserPass),
 	); err != nil {
 		return err
 	}
