@@ -2,11 +2,13 @@ package routes
 
 import (
 	"backend/internals/config"
+	"backend/internals/controllers"
+	"backend/internals/db"
 	"backend/internals/entities/response"
 	"backend/internals/routes/handler"
+	"backend/internals/routes/middleware"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
 	"github.com/sirupsen/logrus"
 	"path/filepath"
@@ -14,6 +16,8 @@ import (
 )
 
 func SetupRoutes() {
+	// * Controller
+	var loginController = controllers.NewLoginController(config.Env, db.Gorm)
 
 	serverAddr := fmt.Sprintf("%s:%d", config.Env.ServerHost, config.Env.ServerPort)
 
@@ -22,31 +26,34 @@ func SetupRoutes() {
 
 	// Register root endpoint
 	app.All("/", func(c *fiber.Ctx) error {
-		return c.JSON(response.InfoResponse{
+		return c.JSON(response.InfoResponse[string]{
 			Success: true,
 			Message: "BOOKMARK_API_ROOT",
 		})
 	})
 
-	allowOrigins := strings.Join(config.Env.ServerOrigins, ",")
-	app.Use(cors.New(cors.Config{
-		AllowOrigins:     allowOrigins,
-		AllowCredentials: true,
-	}))
+	app.Use(middleware.Cors)
 
-	v1 := app.Group("/api/v1")
-	v1.Static("/static", "./resources/static")
+	api := app.Group("/api")
+	api.Static("/static", "./resources/static")
+
+	login := api.Group("/login")
+	login.Get("/redirect", loginController.LoginRedirect)
+	login.Post("/callback", loginController.LoginCallBack)
+
+	profile := api.Group("/profile", middleware.Jwt())
+	profile.Get("/info")
 
 	// Custom handler to set Content-Type header based on file extension
-	v1.Use("/static", func(c *fiber.Ctx) error {
+	api.Use("/static", func(c *fiber.Ctx) error {
 		filePath := c.Path()
 		contentType := getContentType(filePath)
 		c.Set("Content-Type", contentType)
 		return c.Next()
 	})
 
-	v1.Get("/swagger/*", swagger.HandlerDefault)
-	v1.Use(Recover())
+	api.Get("/swagger/*", swagger.HandlerDefault)
+	api.Use(Recover())
 
 	ListenAndServe(app, serverAddr)
 }
@@ -79,5 +86,5 @@ func ListenAndServe(app *fiber.App, serverAddr string) {
 	if err != nil {
 		panic(fmt.Errorf("[Server] Unable to start server: %w", err))
 	}
-	logrus.Debug("[Server] Server started successfully")
+	logrus.Printf("[Server] Server started successfully")
 }
