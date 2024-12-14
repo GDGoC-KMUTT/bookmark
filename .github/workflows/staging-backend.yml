@@ -1,7 +1,6 @@
 name: Deployment Backend Staging
 
 on:
-  workflow_dispatch: {}
   pull_request:
     branches:
       - main
@@ -49,6 +48,7 @@ jobs:
           touch config.yml
           echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
           env GOOS=linux GOARCH=amd64 go build -o ./backend-file-build
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -67,6 +67,13 @@ jobs:
       actions: read # to download code coverage results from "test" job
       pull-requests: write # write permission needed to comment on PR
     steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+      # - name: test gh run list
+      #   run: gh run list --status=success --branch=main --workflow=staging-backend.yml --event=push --json=databaseId --limit=1
+
       - uses: fgrosse/go-coverage-report@v1.1.1 # Consider using a Git revision for maximum security
         with:
           coverage-artifact-name: "code-coverage" # can be omitted if you used this default value
