@@ -78,7 +78,7 @@ jobs:
       - name: Extract coverage percentage
         id: coverage
         run: |
-          coverage=$(go tool cover -func=coverage.txt | grep total | awk '{print $3}' | sed 's/%//')
+          coverage=$(go tool cover -func=./code-coverage/coverage.txt | grep total | awk '{print $3}' | sed 's/%//')
           echo "Coverage: $coverage%"
           if (( $(echo "$coverage < 80" | bc -l) )); then
             echo "Code coverage is below 80%. Failing the job."
