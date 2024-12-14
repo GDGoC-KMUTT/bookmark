@@ -12,7 +12,7 @@ import (
 var Gorm *gorm.DB
 
 func SetUpDatabase() {
-	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", config.Env.DBUsername, config.Env.DBPassword, config.Env.DBHost, config.Env.DBPort, config.Env.DBName)
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", *config.Env.DBUsername, *config.Env.DBPassword, *config.Env.DBHost, *config.Env.DBPort, *config.Env.DBName)
 
 	// open Postgres connection
 	connection := postgres.New(postgres.Config{
@@ -26,13 +26,13 @@ func SetUpDatabase() {
 	}
 
 	// Initialize model migrations
-	if config.Env.DBAutoMigrate {
+	if *config.Env.DBAutoMigrate {
 		if err := Migrate(); err != nil {
 			logrus.Fatal("[Database] Unable to migrate model")
 		}
 	}
 	AssignModel()
-	logrus.Debug("[Database] Initialized postgress connection")
+	logrus.Printf("[Database] Initialized postgress connection")
 }
 
 func Migrate() error {
