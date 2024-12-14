@@ -1,54 +1,59 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    darkMode: ["class"],
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
     theme: {
         extend: {
             borderRadius: {
-                lg: "var(--radius)",
-                md: "calc(var(--radius) - 2px)",
-                sm: "calc(var(--radius) - 4px)",
+                DEFAULT: "val(--radius)",
+                lg: "var(--radius-large)",
+                md: "var(--radius-medium)",
+                sm: "var(--radius-small)",
             },
             colors: {
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",
-                card: {
-                    DEFAULT: "hsl(var(--card))",
-                    foreground: "hsl(var(--card-foreground))",
-                },
-                popover: {
-                    DEFAULT: "hsl(var(--popover))",
-                    foreground: "hsl(var(--popover-foreground))",
-                },
-                primary: {
-                    DEFAULT: "hsl(var(--primary))",
-                    foreground: "hsl(var(--primary-foreground))",
-                },
-                secondary: {
-                    DEFAULT: "hsl(var(--secondary))",
-                    foreground: "hsl(var(--secondary-foreground))",
-                },
-                muted: {
-                    DEFAULT: "hsl(var(--muted))",
-                    foreground: "hsl(var(--muted-foreground))",
-                },
-                accent: {
-                    DEFAULT: "hsl(var(--accent))",
-                    foreground: "hsl(var(--accent-foreground))",
-                },
-                destructive: {
-                    DEFAULT: "hsl(var(--destructive))",
-                    foreground: "hsl(var(--destructive-foreground))",
-                },
+                primary: "hsl(var(--chart))",
+                secondary: "hsl(var(--secondary))",
+
                 border: "hsl(var(--border))",
-                input: "hsl(var(--input))",
-                ring: "hsl(var(--ring))",
+
                 chart: {
-                    1: "hsl(var(--chart-1))",
-                    2: "hsl(var(--chart-2))",
-                    3: "hsl(var(--chart-3))",
-                    4: "hsl(var(--chart-4))",
-                    5: "hsl(var(--chart-5))",
+                    bg: "hsl(var(--chart),0.5)",
+                    border: "hsl(var(--chart-border))",
+                    pointBg: "hsl(var(--chart-point))",
+                    pointBorder: "hsl(var(--chart-point-border))",
+                    pointHover: "hsl(var(--chart-point-hover))",
+                    pointHoverBorder: "hsl(var(--chart-point-hover-border))",
+                },
+                progressBar: "hsl(var(--progress-bar))",
+                continueCourse: "hsl(var(--continue-course))",
+                fieldType: {
+                    DEFAULT: "hsl(var(--field-type)",
+                    foreground: "hsl(var(--field-type-foreground))",
+                },
+                footer: "hsl(var(--footer)",
+                codeTag: "hsl(var(--code-tag)",
+                badge: {
+                    outcome: "hsl(var(--outcome-badge)",
+                    check: "hsl(var(--check-badge)",
+                    error: "hsl(var(--error-badge)",
+                    comment: "hsl(var(--comment-badge)",
+                    evaluate: "hsl(var(--evaluate-badge)",
+                },
+                evalPassed: {
+                    DEFAULT: "hsl(var--check-passed)",
+                    foreground: "hsl(var(--check-passed-foreground))",
+                },
+                evalFailed: {
+                    DEFAULT: "hsl(var(--check-failed)",
+                    foreground: "hsl(var(--check-failed-foreground))",
+                },
+                form: "hsl(var(--form)",
+                completeStep: "hsl(var(--complete-step)",
+                incompleteStep: "hsl(var(--incomplete-step)",
+                explore: {
+                    DEFAULT: "hsl(var(--explore)",
+                    foreground: "hsl(var(--explore-foreground))",
                 },
             },
         },
