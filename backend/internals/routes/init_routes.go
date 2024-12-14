@@ -5,8 +5,10 @@ import (
 	"backend/internals/controllers"
 	"backend/internals/db"
 	"backend/internals/entities/response"
+	"backend/internals/repositories"
 	"backend/internals/routes/handler"
 	"backend/internals/routes/middleware"
+	"backend/internals/services"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
@@ -16,10 +18,16 @@ import (
 )
 
 func SetupRoutes() {
-	// * Controller
-	var loginController = controllers.NewLoginController(config.Env, db.Gorm)
+	// * Repositories
+	var userRepo = repositories.NewUserRepository(db.UserModel)
 
-	serverAddr := fmt.Sprintf("%s:%d", config.Env.ServerHost, config.Env.ServerPort)
+	// * Services
+	var loginService = services.NewLoginService(userRepo)
+
+	// * Controller
+	var loginController = controllers.NewLoginController(config.Env, db.Gorm, loginService)
+
+	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
 	// Initialize fiber instance
 	app := NewFiberApp()
@@ -32,6 +40,7 @@ func SetupRoutes() {
 		})
 	})
 
+	// * cores
 	app.Use(middleware.Cors)
 
 	api := app.Group("/api")
@@ -41,8 +50,8 @@ func SetupRoutes() {
 	login.Get("/redirect", loginController.LoginRedirect)
 	login.Post("/callback", loginController.LoginCallBack)
 
-	profile := api.Group("/profile", middleware.Jwt())
-	profile.Get("/info")
+	//profile := api.Group("/profile", middleware.Jwt())
+	//profile.Get("/info")
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {
@@ -52,8 +61,14 @@ func SetupRoutes() {
 		return c.Next()
 	})
 
+	// * swagger
 	api.Get("/swagger/*", swagger.HandlerDefault)
+
+	// * Recover
 	api.Use(Recover())
+
+	// * Not found
+	api.Use(handler.NotFoundHandler)
 
 	ListenAndServe(app, serverAddr)
 }
