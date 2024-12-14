@@ -1,6 +1,7 @@
 name: Deployment Backend Production
 
 on:
+  workflow_dispatch: {} # Allows you to manually trigger the workflow
   push:
     branches:
       - main
