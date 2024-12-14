@@ -7,6 +7,9 @@ on:
     paths:
       - "backend/**"
 
+permissions:
+  pull-requests: write
+
 jobs:
   backend-build-and-test:
     runs-on: ubuntu-latest
