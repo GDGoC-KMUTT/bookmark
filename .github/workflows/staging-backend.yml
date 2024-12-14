@@ -6,10 +6,6 @@ on:
       - main
     paths:
       - "backend/**"
-  workflow_dispatch: # Allows you to manually trigger the workflow
-  push:
-    branches:
-      - main
 
 jobs:
   backend-build-and-test:
