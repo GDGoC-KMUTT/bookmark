@@ -78,41 +78,11 @@ jobs:
       - name: Extract coverage percentage
         id: coverage
         run: |
-          # Debug: Check content of coverage.txt
-          echo "Debug: Content of coverage.txt"
-          cat ./code-coverage/coverage.txt
-
-          # Debug: Check columns 2 and 3 for coverage and total lines
-          echo "Debug: Columns 2 and 3"
-          awk '{print $2, $3}' ./code-coverage/coverage.txt
-
-          # Extract the covered and total lines from coverage.txt
-          covered_lines=$(awk '{sum+=$2} END {print sum}' ./code-coverage/coverage.txt)
-          total_lines=$(awk '{sum+=$3} END {print sum}' ./code-coverage/coverage.txt)
-
-          # Debug: Print the values of covered_lines and total_lines
-          echo "Covered lines: $covered_lines"
-          echo "Total lines: $total_lines"
-
-          # Calculate the coverage percentage
-          if [ "$total_lines" -eq 0 ]; then
-            echo "Error: Total lines is 0. Cannot calculate coverage."
+          coverage=$(go tool cover -func=coverage.txt | grep total | awk '{print $3}' | sed 's/%//')
+          echo "Coverage: $coverage%"
+          if (( $(echo "$coverage < 80" | bc -l) )); then
+            echo "Code coverage is below 80%. Failing the job."
             exit 1
-          fi
-          coverage_percentage=$(echo "scale=2; $covered_lines / $total_lines * 100" | bc)
-
-          # Print the coverage percentage
-          echo "Coverage percentage: $coverage_percentage%"
-
-          # Set an acceptable threshold for coverage
-          acceptable_coverage=80  # Example threshold, modify as needed
-
-          # Compare with threshold
-          if (( $(echo "$coverage_percentage < $acceptable_coverage" | bc -l) )); then
-            echo "Coverage is below acceptable threshold ($acceptable_coverage%)."
-            exit 1  # This will fail the job and prevent merging
-          else
-            echo "Coverage is above acceptable threshold ($acceptable_coverage%)."
           fi
 
   deploy:
