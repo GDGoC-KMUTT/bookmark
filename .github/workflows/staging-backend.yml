@@ -72,6 +72,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: .
+      - name: Stop Current Application
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: pm2 stop 5
+
       - name: Deploy to server
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
@@ -81,3 +90,12 @@ jobs:
           port: ${{secrets.SSH_PORT}}
           local_path: "./backend-build-artifact/*"
           remote_path: "/root/backend/staging/"
+
+      - name: Start Application
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: pm2 start 5
