@@ -78,9 +78,21 @@ jobs:
       - name: Extract coverage percentage
         id: coverage
         run: |
+          # Debug: Check content of coverage.txt
+          echo "Debug: Content of coverage.txt"
+          cat ./code-coverage/coverage.txt
+
+          # Debug: Check columns 2 and 3 for coverage and total lines
+          echo "Debug: Columns 2 and 3"
+          awk '{print $2, $3}' ./code-coverage/coverage.txt
+
           # Extract the covered and total lines from coverage.txt
           covered_lines=$(awk '{sum+=$2} END {print sum}' ./code-coverage/coverage.txt)
           total_lines=$(awk '{sum+=$3} END {print sum}' ./code-coverage/coverage.txt)
+
+          # Debug: Print the values of covered_lines and total_lines
+          echo "Covered lines: $covered_lines"
+          echo "Total lines: $total_lines"
 
           # Calculate the coverage percentage
           if [ "$total_lines" -eq 0 ]; then
