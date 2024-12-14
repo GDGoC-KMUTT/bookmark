@@ -1,4 +1,4 @@
 .idea
 /docs
 *.yml
-/build/** 
+/build/**

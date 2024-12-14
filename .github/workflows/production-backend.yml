@@ -90,7 +90,7 @@ jobs:
           ssh_private_key: ${{secrets.SSH_PRIVATE_KEY}}
           port: ${{secrets.SSH_PORT}}
           local_path: "./backend-build-artifact/*"
-          remote_path: "/root/backend/staging/"
+          remote_path: "/root/backend/prod/"
 
       - name: Start Application
         uses: appleboy/ssh-action@v1.2.0
