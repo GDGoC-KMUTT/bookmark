@@ -62,7 +62,7 @@ jobs:
         with:
           coverage-artifact-name: "code-coverage" # can be omitted if you used this default value
           coverage-file-name: "coverage.txt" # can be omitted if you used this default value
-          skip-comment: true
+        continue-on-error: true
 
   deploy:
     runs-on: ubuntu-latest
