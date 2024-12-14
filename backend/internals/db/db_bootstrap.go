@@ -32,7 +32,7 @@ func SetUpDatabase() {
 		}
 	}
 	AssignModel()
-	logrus.Debug("[Database] Initialized postgress connection")
+	logrus.Printf("[Database] Initialized postgress connection")
 }
 
 func Migrate() error {
