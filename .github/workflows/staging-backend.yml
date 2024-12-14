@@ -79,7 +79,7 @@ jobs:
         id: coverage
         run: |
           # Extract the coverage percentage from the coverage.txt file
-          coverage_percentage=$(grep -oP 'mode: set\s*(\d+\.\d+)' coverage.txt | awk '{print $2}')
+          coverage_percentage=$(grep -oP 'mode: set\s*(\d+\.\d+)' ./code-coverage/coverage.txt | awk '{print $2}')
           echo "Coverage percentage: $coverage_percentage"
 
           # Set an acceptable threshold for coverage
