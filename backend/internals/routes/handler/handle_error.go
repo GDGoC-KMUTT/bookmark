@@ -28,7 +28,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 				Success: false,
 				Code:    e.Code,
 				Message: e.Message,
-				Error:   e.Err.Error(),
+				Error:   e.Error(),
 			})
 		}
 
@@ -36,6 +36,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 			Success: false,
 			Code:    e.Code,
 			Message: e.Message,
+			Error:   e.Error(),
 		})
 	}
 
