@@ -78,19 +78,31 @@ jobs:
       - name: Extract coverage percentage
         id: coverage
         run: |
-          # Extract the coverage percentage from the coverage.txt file
-          coverage_percentage=$(grep -oP 'mode: set\s*(\d+\.\d+)' ./code-coverage/coverage.txt | awk '{print $2}')
-          echo "Coverage percentage: $coverage_percentage"
+          # Extract the covered and total lines from coverage.txt
+          covered_lines=$(awk '{sum+=$2} END {print sum}' ./code-coverage/coverage.txt)
+          total_lines=$(awk '{sum+=$3} END {print sum}' ./code-coverage/coverage.txt)
+
+          # Calculate the coverage percentage
+          if [ "$total_lines" -eq 0 ]; then
+            echo "Error: Total lines is 0. Cannot calculate coverage."
+            exit 1
+          fi
+          coverage_percentage=$(echo "scale=2; $covered_lines / $total_lines * 100" | bc)
+
+          # Print the coverage percentage
+          echo "Coverage percentage: $coverage_percentage%"
 
           # Set an acceptable threshold for coverage
           acceptable_coverage=80  # Example threshold, modify as needed
 
+          # Compare with threshold
           if (( $(echo "$coverage_percentage < $acceptable_coverage" | bc -l) )); then
             echo "Coverage is below acceptable threshold ($acceptable_coverage%)."
-            exit 1
+            exit 1  # This will fail the job and prevent merging
           else
             echo "Coverage is above acceptable threshold ($acceptable_coverage%)."
           fi
+
   deploy:
     runs-on: ubuntu-latest
     needs: [backend-build-and-test]
