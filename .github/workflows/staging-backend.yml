@@ -7,9 +7,9 @@ on:
       - main
     paths:
       - "backend/**"
-   push:
+  push:
     branches:
-      - main   
+      - main
 
 permissions:
   contents: read
