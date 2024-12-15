@@ -26,6 +26,7 @@ jobs:
           npm i
           touch .env
           echo '${{secrets.FRONTEND_STAGING_ENV}}' > .env
+          yarn gen-api
           npm run build
       - name: Upload artifact
         uses: actions/upload-artifact@v4
