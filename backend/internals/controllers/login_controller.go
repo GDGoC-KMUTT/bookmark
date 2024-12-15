@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"backend/internals/config"
-	"backend/internals/entities/common"
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
 	"backend/internals/services"
@@ -13,7 +12,6 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 	"net/url"
@@ -101,16 +99,7 @@ func (r *LoginController) LoginCallBack(c *fiber.Ctx) error {
 			Message: "failed to setup OAuth",
 		}
 	}
-
-	// * parse user claims
-	oidcClaims := new(common.OIdClaims)
-	if err1 := userInfo.Claims(oidcClaims); err1 != nil {
-		return &response.GenericError{
-			Err:     err1,
-			Message: "failed to parse user claims",
-		}
-	}
-
+	
 	user, err2 := r.loginSvc.GetOrCreateUserFromClaims(userInfo)
 	if err2 != nil {
 		return &response.GenericError{
@@ -119,14 +108,7 @@ func (r *LoginController) LoginCallBack(c *fiber.Ctx) error {
 		}
 	}
 
-	// * generate jwt token
-	claims := jwt.MapClaims{
-		"userId": user.Id,
-	}
-
-	// Sign JWT token
-	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedJwtToken, err3 := jwtToken.SignedString([]byte(*r.config.SecretKey))
+	signedJwtToken, err3 := r.loginSvc.SignJwtToken(user, r.config.SecretKey)
 	if err3 != nil {
 		return &response.GenericError{
 			Err:     err3,
@@ -137,10 +119,10 @@ func (r *LoginController) LoginCallBack(c *fiber.Ctx) error {
 	// * set cookie
 	c.Cookie(&fiber.Cookie{
 		Name:  "login",
-		Value: signedJwtToken,
+		Value: *signedJwtToken,
 	})
 
 	return response.Ok(c, &payload.CallbackResponse{
-		Token: &signedJwtToken,
+		Token: signedJwtToken,
 	})
 }

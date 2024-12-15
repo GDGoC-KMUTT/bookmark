@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"github.com/coreos/go-oidc/v3/oidc"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/oauth2"
 	"gorm.io/gorm"
 	"time"
@@ -72,4 +73,21 @@ func (r *loginService) GetOrCreateUserFromClaims(userInfo *oidc.UserInfo) (*mode
 	}
 
 	return user, nil
+}
+
+func (r *loginService) SignJwtToken(user *models.User, secret *string) (*string, error) {
+	// * generate jwt token
+	claims := jwt.MapClaims{
+		"userId": user.Id,
+	}
+
+	// Sign JWT token
+	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedJwtToken, err3 := jwtToken.SignedString([]byte(*secret))
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &signedJwtToken, nil
+
 }

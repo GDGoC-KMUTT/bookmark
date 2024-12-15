@@ -10,4 +10,5 @@ import (
 type LoginService interface {
 	OAuthSetup(body *payload.OauthCallback, oauthConfig *oauth2.Config, oidcProvider *oidc.Provider) (*oidc.UserInfo, error)
 	GetOrCreateUserFromClaims(userInfo *oidc.UserInfo) (*models.User, error)
+	SignJwtToken(user *models.User, secret *string) (*string, error)
 }
