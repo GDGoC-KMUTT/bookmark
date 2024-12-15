@@ -1,8 +1,6 @@
 package config
 
 import (
-	"backend/internals/utils"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"path/filepath"
@@ -17,36 +15,36 @@ func init() {
 }
 
 func BootConfiguration() {
-	utils.BootTimeLocation()
+	// Attempt to determine the current working directory
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		logrus.Fatal("[CONFIG] Could not determine the caller's directory")
+	}
+
+	dir := filepath.Dir(filename)
+
+	// Add config paths for multiple locations
 	viper.SetConfigName("config")
 	viper.SetConfigType("yml")
 
-	// Attempt to read the configuration from the current directory
+	// for main.go and in CI/CD
 	viper.AddConfigPath(".")
+
+	// for unit test
+	viper.AddConfigPath(filepath.Join(dir, "..", ".."))
+
+	// Attempt to read the config file
 	if err := viper.ReadInConfig(); err != nil {
-		logrus.Printf("[CONFIG] config.yml not found in the current path, trying parent directory.")
-		// If reading from the current directory fails, try the parent directory
-		_, filename, _, ok := runtime.Caller(0)
-		if !ok {
-			logrus.Printf("[CONFIG] Could not get the directory of the current file")
-		}
-
-		dir := filepath.Dir(filename)
-		configDir := filepath.Join(dir, "..")
-		viper.AddConfigPath(configDir)
-
-		// Try reading the configuration from the parent directory
-		if err := viper.ReadInConfig(); err != nil {
-			logrus.Printf("[CONFIG] config.yml not found in the current path, trying parent directory.")
-		}
+		logrus.Fatalf("[CONFIG] Error reading config file: %v", err)
 	}
 
+	// Set environment variables and replace dots with underscores
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
+	// Unmarshal config into the global Env variable
 	if err := viper.Unmarshal(&Env); err != nil {
-		panic(fmt.Errorf("[CONFIG] fatal loading configuration: %w, maybe due to invalid configuration format", err))
+		logrus.Fatalf("[CONFIG] Error unmarshaling config: %v", err)
 	}
-
-	logrus.Printf("[CONFIG] Loaded Configuration.")
+	logrus.Infof("[CONFIG] Loaded configuration successfully.")
 }
