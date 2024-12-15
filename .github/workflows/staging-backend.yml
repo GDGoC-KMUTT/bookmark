@@ -37,7 +37,7 @@ jobs:
           echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
           go install github.com/vektra/mockery/v2@v2.50.0
           go mod tidy
-          mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories & mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices
+          mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories & mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices & mockery --all --with-expecter --dir=./internals/utils/services --output=./mocks/utils --outpkg=mockUtilServices
 
       - name: Test Services & Controllers
         run: |

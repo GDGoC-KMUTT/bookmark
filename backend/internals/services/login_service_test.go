@@ -6,7 +6,7 @@ import (
 	"backend/internals/services"
 	"backend/internals/utils"
 	mockRepositories "backend/mocks/repositories"
-	mockServices "backend/mocks/services"
+	mockUtilServices "backend/mocks/utils"
 	"fmt"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/golang-jwt/jwt/v5"
@@ -26,8 +26,8 @@ func (suite *LoginServiceTestSuite) TestOAuthSetupWhenSuccess() {
 	is := assert.New(suite.T())
 	// Arrange
 	mockUserRepo := new(mockRepositories.UserRepository)
-	mockOAuthService := new(mockServices.OAuthService)
-	mockJwtService := new(mockServices.Jwt)
+	mockOAuthService := new(mockUtilServices.OAuthService)
+	mockJwtService := new(mockUtilServices.Jwt)
 
 	mockBody := &payload.OauthCallback{
 		Code: utils.Ptr("code"),
@@ -63,8 +63,8 @@ func (suite *LoginServiceTestSuite) TestOAuthSetupWhenExchangeFailed() {
 	is := assert.New(suite.T())
 	// Arrange
 	mockUserRepo := new(mockRepositories.UserRepository)
-	mockOAuthService := new(mockServices.OAuthService)
-	mockJwtService := new(mockServices.Jwt)
+	mockOAuthService := new(mockUtilServices.OAuthService)
+	mockJwtService := new(mockUtilServices.Jwt)
 
 	mockBody := &payload.OauthCallback{
 		Code: utils.Ptr("code"),
@@ -86,8 +86,8 @@ func (suite *LoginServiceTestSuite) TestOAuthSetupWhenFailedToGetUserInfo() {
 	is := assert.New(suite.T())
 	// Arrange
 	mockUserRepo := new(mockRepositories.UserRepository)
-	mockOAuthService := new(mockServices.OAuthService)
-	mockJwtService := new(mockServices.Jwt)
+	mockOAuthService := new(mockUtilServices.OAuthService)
+	mockJwtService := new(mockUtilServices.Jwt)
 
 	mockBody := &payload.OauthCallback{
 		Code: utils.Ptr("code"),
@@ -117,8 +117,8 @@ func (suite *LoginServiceTestSuite) TestSignJwtTokenWhenSuccess() {
 	is := assert.New(suite.T())
 	// Arrange
 	mockUserRepo := new(mockRepositories.UserRepository)
-	mockOAuthService := new(mockServices.OAuthService)
-	mockJwtService := new(mockServices.Jwt)
+	mockOAuthService := new(mockUtilServices.OAuthService)
+	mockJwtService := new(mockUtilServices.Jwt)
 
 	mockUser := &models.User{
 		Id:        utils.Ptr[uint64](1),
@@ -147,8 +147,8 @@ func (suite *LoginServiceTestSuite) TestSignJwtTokenWhenSignStringError() {
 	is := assert.New(suite.T())
 	// Arrange
 	mockUserRepo := new(mockRepositories.UserRepository)
-	mockOAuthService := new(mockServices.OAuthService)
-	mockJwtService := new(mockServices.Jwt)
+	mockOAuthService := new(mockUtilServices.OAuthService)
+	mockJwtService := new(mockUtilServices.Jwt)
 
 	mockUser := &models.User{
 		Id:        utils.Ptr[uint64](1),
@@ -176,8 +176,8 @@ func (suite *LoginServiceTestSuite) TestGetOrCreateUserFromClaimWhenClaimNotSetE
 	is := assert.New(suite.T())
 	// Arrange
 	mockUserRepo := new(mockRepositories.UserRepository)
-	mockOAuthService := new(mockServices.OAuthService)
-	mockJwtService := new(mockServices.Jwt)
+	mockOAuthService := new(mockUtilServices.OAuthService)
+	mockJwtService := new(mockUtilServices.Jwt)
 
 	mockUserInfo := &oidc.UserInfo{
 		Email:         "test@gmail.com",
