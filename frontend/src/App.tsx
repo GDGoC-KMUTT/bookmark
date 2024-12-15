@@ -3,6 +3,7 @@ import { router } from "./configs/routes"
 import ToastProvider from "./configs/toast"
 import Navbar from "@/components/navbar"
 import Footer from "./components/footer"
+import AppLayout from "./components/layouts/app-layout"
 
 function App() {
     return (
@@ -10,7 +11,7 @@ function App() {
             <Navbar />
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<Navigate to="/course" />} />
+                    <Route path="/" element={<AppLayout />} />
                     {router.map((item) => (
                         <Route key={item.path} element={item.element} path={item.path} />
                     ))}
