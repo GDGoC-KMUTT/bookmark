@@ -19,11 +19,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "22.11.0"
-
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
       - name: Install swag
         run: |
-          sudo apt update
-          sudo apt install -y golang-go
           go install github.com/swaggo/swag/cmd/swag@latest
           echo "$HOME/go/bin" >> $GITHUB_PATH
 

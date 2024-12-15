@@ -9,7 +9,7 @@ on:
       - "backend/**"
 
 jobs:
-  backend-build-and-test:
+  backend-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -19,27 +19,9 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
-
-      # When you execute your unit tests, make sure to use the "-coverprofile" flag to write a
-      # coverage profile to a file. You will need the name of the file (e.g. "coverage.txt")
-      # in the next step as well as the next job.
-      - name: Test
-        run: |
-          cd ./backend
-          go mod tidy
-          go test -cover -coverprofile=coverage.txt ./...
-
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v4
-        with:
-          name: code-coverage
-          path: ./backend/coverage.txt # Make sure to use the same file name you chose for the "-coverprofile" in the "Test" step
-
       - name: Go Production build
         run: |
           cd ./backend
-          touch config.yml
-          echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
           env GOOS=linux GOARCH=amd64 go build -o ./backend-file-build
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -48,12 +30,50 @@ jobs:
           path: |
             ./backend/backend-file-build
             ./backend/config.yml
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+      - name: Generate mock interface
+        run: |
+          cd ./backend
+          touch config.yml
+          echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
+          go install github.com/vektra/mockery/v2@v2.50.0
+          go mod tidy
+          mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories 
+          mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices 
+          mockery --all --with-expecter --dir=./internals/utils/services --output=./mocks/utils --outpkg=mockUtilServices
 
+      - name: Test Services & Controllers
+        run: |
+          cd ./backend
+          go test -cover -coverprofile=coverage.txt ./internals/services/ ./internals/controllers/
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage
+          path: ./backend/coverage.txt # Make sure to use the same file name you chose for the "-coverprofile" in the "Test" step
+      - name: Check Code Coverage
+        run: |
+          cd ./backend
+          coverage=$(go tool cover -func=coverage.txt | grep total | awk '{print $3}' | sed 's/%//')
+          echo "Code Coverage: $coverage%"
+          if (( $(echo "$coverage < 80" | bc -l) )); then
+            echo "Code coverage is below 80%. Failing the job."
+            exit 1
+          fi
   code_coverage:
     name: "Code coverage report"
     if: github.event_name == 'pull_request' # Do not run when workflow is triggered by push to main branch
     runs-on: ubuntu-latest
-    needs: backend-build-and-test # Depends on the artifact uploaded by the "unit_tests" job
+    needs: [backend-test] # Depends on the artifact uploaded by the "unit_tests" job
     permissions:
       contents: read
       actions: read # to download code coverage results from "test" job
@@ -67,7 +87,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [backend-build-and-test]
+    needs: [backend-build]
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
