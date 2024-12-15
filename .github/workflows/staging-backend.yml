@@ -30,7 +30,7 @@ jobs:
       # When you execute your unit tests, make sure to use the "-coverprofile" flag to write a
       # coverage profile to a file. You will need the name of the file (e.g. "coverage.txt")
       # in the next step as well as the next job.
-      - name: Test
+      - name: Generate mock interface
         run: |
           cd ./backend
           touch config.yml
@@ -38,6 +38,10 @@ jobs:
           go install github.com/vektra/mockery/v2@v2.50.0
           go mod tidy
           mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories & mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices
+
+      - name: Test Services & Controllers
+        run: |
+          cd ./backend
           go test -cover -coverprofile=coverage.txt ./internals/services/ ./internals/controllers/
 
       - name: Archive code coverage results
@@ -49,8 +53,6 @@ jobs:
       - name: Go Production build
         run: |
           cd ./backend
-          touch config.yml
-          echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
           env GOOS=linux GOARCH=amd64 go build -o ./backend-file-build
 
       - name: Upload artifact
@@ -75,14 +77,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: .
-      # - name: test gh run list
-      #   run: gh run list --status=success --branch=main --workflow=staging-backend.yml --event=push --json=databaseId --limit=1
-
       - uses: fgrosse/go-coverage-report@v1.1.1 # Consider using a Git revision for maximum security
         with:
           coverage-artifact-name: "code-coverage" # can be omitted if you used this default value
           coverage-file-name: "coverage.txt" # can be omitted if you used this default value
         continue-on-error: true
+      - name: coverage
+        run: go tool cover -func=coverage.txt | grep total | awk '{print $3}'
 
   deploy:
     runs-on: ubuntu-latest
