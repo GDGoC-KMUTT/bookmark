@@ -3,3 +3,6 @@
 *.yml
 /build/**
 /mocks/**
+coverage.txt
+coverage.xml
+

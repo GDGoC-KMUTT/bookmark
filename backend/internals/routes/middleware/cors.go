@@ -1,4 +1,4 @@
-package middlewares
+package middleware
 
 import (
 	"backend/internals/config"

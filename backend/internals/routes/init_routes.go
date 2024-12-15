@@ -2,9 +2,14 @@ package routes
 
 import (
 	"backend/internals/config"
+	"backend/internals/controllers"
+	"backend/internals/db"
 	"backend/internals/entities/response"
+	"backend/internals/repositories"
 	"backend/internals/routes/handler"
-	"backend/internals/routes/middlewares"
+	"backend/internals/routes/middleware"
+	"backend/internals/services"
+	services2 "backend/internals/utils/services"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
@@ -14,6 +19,21 @@ import (
 )
 
 func SetupRoutes() {
+	// * Repositories
+	var userRepo = repositories.NewUserRepository(db.Gorm)
+
+	// * third party
+	var oauthService = services2.NewOAuthService(config.Env)
+	var jwtService = services2.NewJwtService()
+
+	// * Services
+	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
+	var profileService = services.NewProfileService(userRepo)
+
+	// * Controller
+	var loginController = controllers.NewLoginController(config.Env, loginService)
+	var profileController = controllers.NewProfileController(profileService)
+
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
 	// Initialize fiber instance
@@ -28,7 +48,7 @@ func SetupRoutes() {
 	})
 
 	// * cores
-	app.Use(middlewares.Cors)
+	app.Use(middleware.Cors)
 
 	// * Recover
 	app.Use(Recover())
@@ -36,12 +56,12 @@ func SetupRoutes() {
 	api := app.Group("/api")
 	api.Static("/static", "./resources/static")
 
-	//login := api.Group("/login")
-	//login.Get("/redirect", loginController.LoginRedirect)
-	//login.Post("/callback", loginController.LoginCallBack)
-	//
-	//profile := api.Group("/profile", middleware.Jwt())
-	//profile.Get("/info", profileController.ProfileUserInfo)
+	login := api.Group("/login")
+	login.Get("/redirect", loginController.LoginRedirect)
+	login.Post("/callback", loginController.LoginCallBack)
+
+	profile := api.Group("/profile", middleware.Jwt())
+	profile.Get("/info", profileController.ProfileUserInfo)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {
@@ -88,5 +108,5 @@ func ListenAndServe(app *fiber.App, serverAddr string) {
 	if err != nil {
 		panic(fmt.Errorf("[Server] Unable to start server: %w", err))
 	}
-	logrus.Debug("[Server] Server started successfully")
+	logrus.Printf("[Server] Server started successfully")
 }

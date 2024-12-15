@@ -6,3 +6,6 @@ swag:
 
 build:
 	env GOOS=linux GOARCH=amd64 go build -o build/backend
+
+mock:
+	mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories & mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices & mockery --all --with-expecter --dir=./internals/utils/services --output=./mocks/utils --outpkg=mockUtilServices

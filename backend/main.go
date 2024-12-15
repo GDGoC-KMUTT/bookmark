@@ -16,7 +16,7 @@ import (
 // @contact.email  support@swagger.io
 // @schemes http https
 // @license.name Apache 2.0
-// @BasePath /api/v1
+// @BasePath /api
 
 func main() {
 	rand.Seed(uint64(time.Now().UnixNano()))
