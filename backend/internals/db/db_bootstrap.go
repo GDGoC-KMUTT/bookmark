@@ -64,7 +64,6 @@ func SetUpDatabase() {
 			logrus.Fatal("[Database] Unable to migrate model")
 		}
 	}
-	AssignModel()
 	logrus.Printf("[Database] Initialized postgress connection")
 }
 

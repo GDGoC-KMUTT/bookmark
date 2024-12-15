@@ -19,7 +19,7 @@ import (
 
 func SetupRoutes() {
 	// * Repositories
-	var userRepo = repositories.NewUserRepository(db.UserModel)
+	var userRepo = repositories.NewUserRepository(db.Gorm)
 
 	// * Services
 	var loginService = services.NewLoginService(userRepo)

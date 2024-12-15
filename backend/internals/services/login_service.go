@@ -5,12 +5,13 @@ import (
 	"backend/internals/entities/common"
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
+	"backend/internals/utils"
 	"context"
 	"errors"
-	"fmt"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
 	"gorm.io/gorm"
+	"time"
 )
 
 type loginService struct {
@@ -47,17 +48,14 @@ func (r *loginService) GetOrCreateUserFromClaims(userInfo *oidc.UserInfo) (*mode
 	}
 
 	// * first user with oid
-	fmt.Println("OIDC ID:", *oidcClaims.Id)
-	user := new(models.User)
-	if err := r.userRepo.First(user, "oid = ?", *oidcClaims.Id); err != nil {
+	user, err := r.userRepo.FindFirstUserByOid(oidcClaims.Id)
+	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, err
 		}
 	}
-	fmt.Println("after first operation")
 	// * if user not exist, create new user
 	if user.Id == nil {
-		fmt.Println("id is null")
 		user = &models.User{
 			Id:        nil,
 			Oid:       oidcClaims.Id,
@@ -65,12 +63,10 @@ func (r *loginService) GetOrCreateUserFromClaims(userInfo *oidc.UserInfo) (*mode
 			Lastname:  oidcClaims.Lastname,
 			Email:     oidcClaims.Email,
 			PhotoUrl:  oidcClaims.Picture,
-			CreatedAt: nil,
-			UpdatedAt: nil,
+			CreatedAt: utils.Ptr(time.Now()),
+			UpdatedAt: utils.Ptr(time.Now()),
 		}
-		fmt.Println("creating user...")
-		if err := r.userRepo.Create(user); err != nil {
-			fmt.Println("failed to create user: ", err.Error())
+		if err := r.userRepo.CreateUser(user); err != nil {
 			return nil, err
 		}
 	}
