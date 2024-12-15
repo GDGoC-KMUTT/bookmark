@@ -44,7 +44,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 				return c.Status(fiber.StatusBadRequest).JSON(response.ErrorResponse{
 					Success: false,
 					Code:    "VALIDATION_FAILED",
-					Message: "Information validation failed",
+					Message: "Request body validation failed",
 					Error:   validationErrs.Error(),
 				})
 			}

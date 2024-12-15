@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	controllers2 "backend/internals/controllers"
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
 	"backend/internals/routes/handler"
@@ -23,7 +24,7 @@ type ProfileControllerTestSuit struct {
 	suite.Suite
 }
 
-func setupTestApp(mockProfileService *mockServices.ProfileService) *fiber.App {
+func setupTestProfileController(mockProfileService *mockServices.ProfileService) *fiber.App {
 	fiberConfig := fiber.Config{
 		ErrorHandler: handler.ErrorHandler,
 	}
@@ -31,7 +32,7 @@ func setupTestApp(mockProfileService *mockServices.ProfileService) *fiber.App {
 	app := fiber.New(fiberConfig)
 
 	// Initialize the controller
-	profileController := NewProfileController(mockProfileService)
+	profileController := controllers2.NewProfileController(mockProfileService)
 
 	// Middleware to simulate JWT Locals
 	app.Use(func(c *fiber.Ctx) error {
@@ -52,7 +53,7 @@ func (suite *ProfileControllerTestSuit) TestProfileUserInfoWhenSuccess() {
 
 	mockProfileService := new(mockServices.ProfileService)
 
-	app := setupTestApp(mockProfileService)
+	app := setupTestProfileController(mockProfileService)
 
 	mockUserId := uint64(123)
 
@@ -76,7 +77,7 @@ func (suite *ProfileControllerTestSuit) TestProfileUserInfoWhenFailedToGetUserPr
 
 	mockProfileService := new(mockServices.ProfileService)
 
-	app := setupTestApp(mockProfileService)
+	app := setupTestProfileController(mockProfileService)
 
 	mockProfileService.EXPECT().GetUserInfo(mock.Anything).Return(nil, fmt.Errorf("get user profile error"))
 
@@ -85,10 +86,6 @@ func (suite *ProfileControllerTestSuit) TestProfileUserInfoWhenFailedToGetUserPr
 
 	var errResponse response.GenericError
 	body, _ := io.ReadAll(res.Body)
-
-	// Debug response body
-	fmt.Println("Response Body:", string(body))
-
 	json.Unmarshal(body, &errResponse)
 
 	//'err' will typically be nil for most test cases

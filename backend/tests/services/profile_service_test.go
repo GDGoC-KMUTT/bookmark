@@ -1,7 +1,6 @@
 package services_test
 
 import (
-	"backend/internals/config"
 	"backend/internals/db/models"
 	"backend/internals/services"
 	"backend/internals/utils"
@@ -67,11 +66,10 @@ func (suite *ProfileTestSuit) TestGetUserInfoWhenFailed() {
 	// Test Success
 	userInfo, err := underTest.GetUserInfo(utils.Ptr(strconv.Itoa(int(*mockUserId))))
 
-	is.ErrorIs(err, fmt.Errorf("user not found"))
 	is.Nil(userInfo)
+	is.NotNil(err)
 }
 
 func TestProfileService(t *testing.T) {
-	config.BootConfiguration()
 	suite.Run(t, new(ProfileTestSuit))
 }

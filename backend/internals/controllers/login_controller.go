@@ -31,24 +31,28 @@ func NewLoginController(config *config.Config, loginSvc services.LoginService) L
 		loginSvc: loginSvc,
 	}
 
-	frontendUrl := fmt.Sprintf("%s://%s", *config.FrontendScheme, *config.FrontendUrl)
-	redirectUrl, err := url.JoinPath(frontendUrl, "/callback")
-	if err != nil {
-		logrus.Fatal("[OIDC] Unable to join url path", err)
+	if config.FrontendScheme != nil && config.FrontendUrl != nil {
+		frontendUrl := fmt.Sprintf("%s://%s", *config.FrontendScheme, *config.FrontendUrl)
+		redirectUrl, err := url.JoinPath(frontendUrl, "/callback")
+		if err != nil {
+			logrus.Fatal("[OIDC] Unable to join url path", err)
+		}
+
+		controller.OidcProvider, err = oidc.NewProvider(context.Background(), *config.OauthEndpoint)
+		if err != nil {
+			logrus.Fatal("[OIDC] Unable to create oidc provider", err)
+		}
+
+		controller.Oauth2Config = &oauth2.Config{
+			ClientID:     *config.OauthClientId,
+			ClientSecret: *config.OauthClientSecret,
+			RedirectURL:  redirectUrl,
+			Endpoint:     controller.OidcProvider.Endpoint(),
+			Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
+		}
+		return controller
 	}
 
-	controller.OidcProvider, err = oidc.NewProvider(context.Background(), *config.OauthEndpoint)
-	if err != nil {
-		logrus.Fatal("[OIDC] Unable to create oidc provider", err)
-	}
-
-	controller.Oauth2Config = &oauth2.Config{
-		ClientID:     *config.OauthClientId,
-		ClientSecret: *config.OauthClientSecret,
-		RedirectURL:  redirectUrl,
-		Endpoint:     controller.OidcProvider.Endpoint(),
-		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
-	}
 	return controller
 }
 
@@ -75,10 +79,9 @@ func (r *LoginController) LoginRedirect(c *fiber.Ctx) error {
 func (r *LoginController) LoginCallBack(c *fiber.Ctx) error {
 	// * parse body
 	body := new(payload.OauthCallback)
-	if err := c.BodyParser(body); err != nil {
+	if err := c.BodyParser(&body); err != nil {
 		return &response.GenericError{
-			Err:     err,
-			Message: "unable to parse body",
+			Err: err,
 		}
 	}
 
@@ -87,8 +90,7 @@ func (r *LoginController) LoginCallBack(c *fiber.Ctx) error {
 		var validationErrors validator.ValidationErrors
 		errors.As(err, &validationErrors)
 		return &response.GenericError{
-			Err:     validationErrors,
-			Message: "invalid body",
+			Err: validationErrors,
 		}
 	}
 
@@ -99,7 +101,7 @@ func (r *LoginController) LoginCallBack(c *fiber.Ctx) error {
 			Message: "failed to setup OAuth",
 		}
 	}
-	
+
 	user, err2 := r.loginSvc.GetOrCreateUserFromClaims(userInfo)
 	if err2 != nil {
 		return &response.GenericError{
