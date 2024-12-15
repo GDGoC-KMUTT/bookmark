@@ -33,6 +33,7 @@ jobs:
       - name: Test
         run: |
           cd ./backend
+          go install github.com/vektra/mockery/v2@v2.50.0
           go mod tidy
           mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories & mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices
           go test -cover -coverprofile=coverage.txt ./internals/services/ ./internals/controllers/
