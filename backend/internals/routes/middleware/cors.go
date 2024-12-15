@@ -14,10 +14,6 @@ var Cors = func() fiber.Handler {
 			origins += ", "
 		}
 	}
-	if origins == "" || origins == "*" {
-		origins = "http://localhost:3000" // Replace with the actual trusted frontend URL
-	}
-
 	config := cors.Config{
 		AllowOrigins:     origins,
 		AllowCredentials: true,

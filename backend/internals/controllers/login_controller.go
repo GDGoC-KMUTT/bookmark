@@ -57,6 +57,12 @@ func NewLoginController(config *config.Config, database *gorm.DB, loginSvc servi
 	return controller
 }
 
+// LoginRedirect
+// @ID loginRedirect
+// @Tags login
+// @Summary LoginRedirect
+// @Failure 400 {object} response.GenericError
+// @Router /login/redirect [get]
 func (r *LoginController) LoginRedirect(c *fiber.Ctx) error {
 	return c.Redirect(r.Oauth2Config.AuthCodeURL("state"))
 }
