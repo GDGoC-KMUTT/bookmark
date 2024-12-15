@@ -24,7 +24,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 		}
 
 		if e.Err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(response.ErrorResponse{
+			return c.Status(fiber.StatusInternalServerError).JSON(response.ErrorResponse{
 				Success: false,
 				Code:    e.Code,
 				Message: e.Message,
@@ -32,7 +32,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 			})
 		}
 
-		return c.Status(fiber.StatusBadRequest).JSON(response.ErrorResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(response.ErrorResponse{
 			Success: false,
 			Code:    e.Code,
 			Message: e.Message,

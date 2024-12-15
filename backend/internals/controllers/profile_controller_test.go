@@ -1,11 +1,21 @@
 package controllers
 
 import (
+	"backend/internals/entities/payload"
+	"backend/internals/entities/response"
+	"backend/internals/routes/handler"
+	"backend/internals/utils"
+	mockServices "backend/mocks/services"
+	"encoding/json"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -13,34 +23,79 @@ type ProfileControllerTestSuit struct {
 	suite.Suite
 }
 
-func (suite *ProfileControllerTestSuit) TestProfileUserInfo() {
+func setupTestApp(mockProfileService *mockServices.ProfileService) *fiber.App {
+	fiberConfig := fiber.Config{
+		ErrorHandler: handler.ErrorHandler,
+	}
+
+	app := fiber.New(fiberConfig)
+
+	// Initialize the controller
+	profileController := NewProfileController(mockProfileService)
+
+	// Middleware to simulate JWT Locals
+	app.Use(func(c *fiber.Ctx) error {
+		token := &jwt.Token{}
+		claims := jwt.MapClaims{"userId": float64(123)} // Simulate a valid userId claim
+		token.Claims = claims
+		c.Locals("user", token)
+		return c.Next()
+	})
+
+	// Register the route
+	app.Get("/profile/info", profileController.ProfileUserInfo)
+	return app
+}
+
+func (suite *ProfileControllerTestSuit) TestProfileUserInfoWhenSuccess() {
 	is := assert.New(suite.T())
-	// Setup the app as it is done in the main function
-	app := fiber.New(fiber.Config{})
-	//
-	// Create a new HTTP request
-	req, _ := http.NewRequest("GET", "/", nil)
 
-	// Perform the request using app.Test
-	res, err := app.Test(req, -1)
+	mockProfileService := new(mockServices.ProfileService)
 
-	// Verify that no error occurred
-	is.Nil(err)
+	app := setupTestApp(mockProfileService)
 
-	// Verify the status code
-	is.Equal(200, res.StatusCode)
+	mockUserId := uint64(123)
 
-	// Read the response body
+	mockProfileService.EXPECT().GetUserInfo(mock.Anything).Return(&payload.Profile{
+		Id: utils.Ptr(mockUserId),
+	}, nil)
+
+	req := httptest.NewRequest(http.MethodGet, "/profile/info", nil)
+	res, err := app.Test(req)
+
+	r := new(response.InfoResponse[payload.Profile])
 	body, _ := io.ReadAll(res.Body)
-	//
-	//// Verify the response body
-	is.Equal("OK", string(body))
+	json.Unmarshal(body, &r)
 
-	//mockProfileService := new(mockServices.ProfileService)
-	//
-	//underTest := NewProfileController(mockProfileService)
-	//
-	//response := underTest.ProfileUserInfo()
+	is.Nil(err)
+	is.Equal(mockUserId, *r.Data.Id)
+	is.Equal(http.StatusOK, res.StatusCode)
+}
+func (suite *ProfileControllerTestSuit) TestProfileUserInfoWhenFailedToGetUserProfile() {
+	is := assert.New(suite.T())
+
+	mockProfileService := new(mockServices.ProfileService)
+
+	app := setupTestApp(mockProfileService)
+
+	mockProfileService.EXPECT().GetUserInfo(mock.Anything).Return(nil, fmt.Errorf("get user profile error"))
+
+	req := httptest.NewRequest(http.MethodGet, "/profile/info", nil)
+	res, err := app.Test(req)
+
+	var errResponse response.GenericError
+	body, _ := io.ReadAll(res.Body)
+
+	// Debug response body
+	fmt.Println("Response Body:", string(body))
+
+	json.Unmarshal(body, &errResponse)
+
+	//'err' will typically be nil for most test cases
+	//The 'err' in this context doesn't reflect application logic errors.
+	is.Nil(err)
+	is.Equal(http.StatusInternalServerError, res.StatusCode)
+	is.Equal("failed to get user profile", errResponse.Message)
 }
 
 func TestProfileController(t *testing.T) {
