@@ -199,5 +199,8 @@ button:focus-visible {
     .bg-explore {
         background-color: hsl(var(--explore));
     }
+    .bg-footer {
+        background-color: hsl(var(--footer));
+    }
 }
 
