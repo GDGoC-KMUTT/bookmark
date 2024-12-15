@@ -39,12 +39,17 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
+      - name: Install Necessary Go Libraries
+        run: |
+          cd ./backend
+          go install github.com/vektra/mockery/v2@v2.50.0
+          go install github.com/gotesttools/gotestfmt/v2/cmd/gotestfmt@latest
+          go install github.com/boumenot/gocover-cobertura@latest
       - name: Generate mock interface
         run: |
           cd ./backend
           touch config.yml
           echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
-          go install github.com/vektra/mockery/v2@v2.50.0
           go mod tidy
           mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories 
           mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices 
@@ -53,13 +58,16 @@ jobs:
       - name: Test Services & Controllers
         run: |
           cd ./backend
-          go test -cover -coverprofile=coverage.txt ./internals/services/ ./internals/controllers/
+          go test -race -json -v -coverprofile=coverage.txt ./internals/controllers/ ./internals/services/ 2>&1 | tee /tmp/gotest.log | gotestfmt
+          gocover-cobertura < coverage.txt > coverage.xml
 
       - name: Archive code coverage results
         uses: actions/upload-artifact@v4
         with:
           name: code-coverage
-          path: ./backend/coverage.txt # Make sure to use the same file name you chose for the "-coverprofile" in the "Test" step
+          path: |
+            ./backend/coverage.txt
+            ./backend/coverage.xml
       - name: Check Code Coverage
         run: |
           cd ./backend
@@ -69,8 +77,9 @@ jobs:
             echo "Code coverage is below 80%. Failing the job."
             exit 1
           fi
+
   code_coverage:
-    name: "Code coverage report"
+    name: "code coverage report"
     if: github.event_name == 'pull_request' # Do not run when workflow is triggered by push to main branch
     runs-on: ubuntu-latest
     needs: [backend-test] # Depends on the artifact uploaded by the "unit_tests" job
@@ -79,11 +88,30 @@ jobs:
       actions: read # to download code coverage results from "test" job
       pull-requests: write # write permission needed to comment on PR
     steps:
-      - uses: fgrosse/go-coverage-report@v1.1.1 # Consider using a Git revision for maximum security
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
         with:
-          coverage-artifact-name: "code-coverage" # can be omitted if you used this default value
-          coverage-file-name: "coverage.txt" # can be omitted if you used this default value
-          skip-comment: true
+          name: code-coverage
+          path: .
+
+      - name: Generate code coverage report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: ./coverage.xml
+          badge: false
+          fail_below_min: false
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: "60 80"
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md
 
   deploy:
     runs-on: ubuntu-latest
