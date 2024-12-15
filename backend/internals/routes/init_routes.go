@@ -25,7 +25,8 @@ func SetupRoutes() {
 	var loginService = services.NewLoginService(userRepo)
 
 	// * Controller
-	var loginController = controllers.NewLoginController(config.Env, db.Gorm, loginService)
+	var loginController = controllers.NewLoginController(config.Env, loginService)
+	var profileController = controllers.NewProfileController(loginService)
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
@@ -43,6 +44,9 @@ func SetupRoutes() {
 	// * cores
 	app.Use(middleware.Cors)
 
+	// * Recover
+	app.Use(Recover())
+
 	api := app.Group("/api")
 	api.Static("/static", "./resources/static")
 
@@ -50,8 +54,8 @@ func SetupRoutes() {
 	login.Get("/redirect", loginController.LoginRedirect)
 	login.Post("/callback", loginController.LoginCallBack)
 
-	//profile := api.Group("/profile", middleware.Jwt())
-	//profile.Get("/info")
+	profile := api.Group("/profile", middleware.Jwt())
+	profile.Get("/info", profileController.ProfileUserInfo)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {
@@ -63,9 +67,6 @@ func SetupRoutes() {
 
 	// * swagger
 	api.Get("/swagger/*", swagger.HandlerDefault)
-
-	// * Recover
-	api.Use(Recover())
 
 	// * Not found
 	api.Use(handler.NotFoundHandler)

@@ -12,7 +12,7 @@ var Jwt = func() fiber.Handler {
 	config := jwtware.Config{
 		SigningKey:  jwtware.SigningKey{Key: []byte(*config.Env.SecretKey)},
 		TokenLookup: "cookie:login",
-		ContextKey:  "userId",
+		ContextKey:  "user",
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			return c.JSON(response.ErrorResponse{
 				Code:    strconv.Itoa(fiber.StatusUnauthorized),
