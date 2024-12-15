@@ -25,6 +25,7 @@ jobs:
           sudo apt update
           sudo apt install -y golang-go
           go install github.com/swaggo/swag/cmd/swag@latest
+          echo "$HOME/go/bin" >> $GITHUB_PATH
 
       - name: Compile React.js production build
         run: |
