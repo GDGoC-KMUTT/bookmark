@@ -1,16 +1,18 @@
 import { server } from "@/configs/server"
 import React, { useEffect } from "react"
-import { useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { toast } from "sonner"
 
 const Callback = () => {
     const [searchParams] = useSearchParams()
+    const navigate = useNavigate()
     const code = searchParams.get("code")
 
     const handleUserCallBack = async () => {
         await toast.promise(server.login.loginCallBack({ code: code ?? "" }), {
             loading: "callback...",
             success: () => {
+                navigate("/portal")
                 return "Successfully callback"
             },
             error: () => {
