@@ -10,12 +10,12 @@ import (
 )
 
 type ProfileController struct {
-	loginSvc services.LoginService
+	profileSvc services.ProfileService
 }
 
-func NewProfileController(loginSvc services.LoginService) ProfileController {
+func NewProfileController(profileSvc services.ProfileService) ProfileController {
 	return ProfileController{
-		loginSvc: loginSvc,
+		profileSvc: profileSvc,
 	}
 }
 
@@ -35,7 +35,7 @@ func (r *ProfileController) ProfileUserInfo(c *fiber.Ctx) error {
 	userId := claims["userId"].(float64)
 
 	// * get user profile
-	userProfile, err := r.loginSvc.GetUserInfo(utils.Ptr(strconv.Itoa(int(userId))))
+	userProfile, err := r.profileSvc.GetUserInfo(utils.Ptr(strconv.Itoa(int(userId))))
 	if err != nil {
 		return &response.GenericError{
 			Err:     err,

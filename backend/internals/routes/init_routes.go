@@ -23,10 +23,11 @@ func SetupRoutes() {
 
 	// * Services
 	var loginService = services.NewLoginService(userRepo)
+	var profileService = services.NewProfileService(userRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
-	var profileController = controllers.NewProfileController(loginService)
+	var profileController = controllers.NewProfileController(profileService)
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
