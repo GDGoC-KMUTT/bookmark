@@ -2,4 +2,4 @@
 /docs
 *.yml
 /build/**
-
+/mocks/**
