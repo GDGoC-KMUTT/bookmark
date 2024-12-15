@@ -9,6 +9,7 @@ import (
 	"backend/internals/routes/handler"
 	"backend/internals/routes/middleware"
 	"backend/internals/services"
+	services2 "backend/internals/utils/services"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
@@ -22,8 +23,8 @@ func SetupRoutes() {
 	var userRepo = repositories.NewUserRepository(db.Gorm)
 
 	// * third party
-	var oauthService = services.NewOAuthService(config.Env)
-	var jwtService = services.NewJwtService()
+	var oauthService = services2.NewOAuthService(config.Env)
+	var jwtService = services2.NewJwtService()
 
 	// * Services
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)

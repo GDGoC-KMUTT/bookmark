@@ -1,4 +1,4 @@
-package services
+package utilServices
 
 import (
 	"backend/internals/config"

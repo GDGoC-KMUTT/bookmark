@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	controllers2 "backend/internals/controllers"
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
 	"backend/internals/routes/handler"
@@ -32,7 +31,7 @@ func setupTestProfileController(mockProfileService *mockServices.ProfileService)
 	app := fiber.New(fiberConfig)
 
 	// Initialize the controller
-	profileController := controllers2.NewProfileController(mockProfileService)
+	profileController := NewProfileController(mockProfileService)
 
 	// Middleware to simulate JWT Locals
 	app.Use(func(c *fiber.Ctx) error {

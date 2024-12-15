@@ -172,6 +172,29 @@ func (suite *LoginServiceTestSuite) TestSignJwtTokenWhenSignStringError() {
 	is.Equal("failed to signed string", err.Error())
 }
 
+func (suite *LoginServiceTestSuite) TestGetOrCreateUserFromClaimWhenClaimNotSetError() {
+	is := assert.New(suite.T())
+	// Arrange
+	mockUserRepo := new(mockRepositories.UserRepository)
+	mockOAuthService := new(mockServices.OAuthService)
+	mockJwtService := new(mockServices.Jwt)
+
+	mockUserInfo := &oidc.UserInfo{
+		Email:         "test@gmail.com",
+		Profile:       "profile",
+		Subject:       "sub",
+		EmailVerified: true,
+	}
+
+	underTest := services.NewLoginService(mockUserRepo, mockOAuthService, mockJwtService)
+	// Test Success
+	result, err := underTest.GetOrCreateUserFromClaims(mockUserInfo)
+
+	is.NotNil(err)
+	is.Nil(result)
+	is.Equal("oidc: claims not set", err.Error())
+}
+
 func TestLoginService(t *testing.T) {
 	suite.Run(t, new(LoginServiceTestSuite))
 }

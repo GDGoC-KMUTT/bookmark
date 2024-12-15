@@ -6,6 +6,7 @@ import (
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
 	"backend/internals/utils"
+	services2 "backend/internals/utils/services"
 	"context"
 	"errors"
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -17,11 +18,11 @@ import (
 
 type loginService struct {
 	userRepo repositories.UserRepository
-	oauthSvc OAuthService
-	jwtSvc   Jwt
+	oauthSvc services2.OAuthService
+	jwtSvc   services2.Jwt
 }
 
-func NewLoginService(userRepo repositories.UserRepository, oauthClient OAuthService, jwtSvc Jwt) LoginService {
+func NewLoginService(userRepo repositories.UserRepository, oauthClient services2.OAuthService, jwtSvc services2.Jwt) LoginService {
 	return &loginService{
 		userRepo: userRepo,
 		oauthSvc: oauthClient,

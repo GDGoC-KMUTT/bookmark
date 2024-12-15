@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"backend/internals/config"
-	controllers2 "backend/internals/controllers"
 	"backend/internals/db/models"
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
@@ -37,7 +36,7 @@ func setupTestLoginController(conf *config.Config, loginSvc services.LoginServic
 
 	app := fiber.New(fiberConfig)
 
-	loginController := controllers2.NewLoginController(conf, loginSvc)
+	loginController := NewLoginController(conf, loginSvc)
 
 	app.Get("/login/redirect", loginController.LoginRedirect)
 	app.Post("/login/callback", loginController.LoginCallBack)
@@ -62,7 +61,7 @@ func (suite *LoginControllerTestSuite) TestCallBackWhenSuccess() {
 	mockUserId := utils.Ptr[uint64](1)
 	mockToken := utils.Ptr("signedToken")
 
-	mockLoginService.EXPECT().OAuthSetup(mock.Anything, mock.Anything, mock.Anything).Return(&oidc.UserInfo{
+	mockLoginService.EXPECT().OAuthSetup(mock.Anything).Return(&oidc.UserInfo{
 		Subject:       *mockFirstName,
 		Email:         *mockEmail,
 		Profile:       *mockProfileUrl,
@@ -148,7 +147,7 @@ func (suite *LoginControllerTestSuite) TestCallBackWhenFailedToSetupOAuth() {
 		Code: utils.Ptr("code"),
 	}
 
-	mockLoginService.EXPECT().OAuthSetup(mock.Anything, mock.Anything, mock.Anything).Return(nil, fmt.Errorf("failed to setup oauth"))
+	mockLoginService.EXPECT().OAuthSetup(mock.Anything).Return(nil, fmt.Errorf("failed to setup oauth"))
 
 	jsonBody, _ := json.Marshal(mockBodyReq)
 	req := httptest.NewRequest(http.MethodPost, "/login/callback", strings.NewReader(string(jsonBody)))
@@ -179,7 +178,7 @@ func (suite *LoginControllerTestSuite) TestCallBackWhenFailedToGetOrCreateFromCl
 	mockEmail := utils.Ptr("test@gmail.com")
 	mockProfileUrl := utils.Ptr("url")
 
-	mockLoginService.EXPECT().OAuthSetup(mock.Anything, mock.Anything, mock.Anything).Return(&oidc.UserInfo{
+	mockLoginService.EXPECT().OAuthSetup(mock.Anything).Return(&oidc.UserInfo{
 		Subject:       *mockFirstName,
 		Email:         *mockEmail,
 		Profile:       *mockProfileUrl,
@@ -219,7 +218,7 @@ func (suite *LoginControllerTestSuite) TestCallBackWhenFailedToSignJwt() {
 	mockProfileUrl := utils.Ptr("url")
 	mockUserId := utils.Ptr[uint64](1)
 
-	mockLoginService.EXPECT().OAuthSetup(mock.Anything, mock.Anything, mock.Anything).Return(&oidc.UserInfo{
+	mockLoginService.EXPECT().OAuthSetup(mock.Anything).Return(&oidc.UserInfo{
 		Subject:       *mockFirstName,
 		Email:         *mockEmail,
 		Profile:       *mockProfileUrl,
