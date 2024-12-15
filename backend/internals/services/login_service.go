@@ -18,12 +18,14 @@ import (
 type loginService struct {
 	userRepo repositories.UserRepository
 	oauthSvc OAuthService
+	jwtSvc   Jwt
 }
 
-func NewLoginService(userRepo repositories.UserRepository, oauthClient OAuthService) LoginService {
+func NewLoginService(userRepo repositories.UserRepository, oauthClient OAuthService, jwtSvc Jwt) LoginService {
 	return &loginService{
 		userRepo: userRepo,
 		oauthSvc: oauthClient,
+		jwtSvc:   jwtSvc,
 	}
 }
 
@@ -84,8 +86,8 @@ func (r *loginService) SignJwtToken(user *models.User, secret *string) (*string,
 	}
 
 	// Sign JWT token
-	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedJwtToken, err3 := jwtToken.SignedString([]byte(*secret))
+	jwtToken := r.jwtSvc.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedJwtToken, err3 := r.jwtSvc.SignedString(jwtToken, []byte(*secret))
 	if err3 != nil {
 		return nil, err3
 	}

@@ -23,9 +23,10 @@ func SetupRoutes() {
 
 	// * third party
 	var oauthService = services.NewOAuthService(config.Env)
+	var jwtService = services.NewJwtService()
 
 	// * Services
-	var loginService = services.NewLoginService(userRepo, oauthService)
+	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
 
 	// * Controller
