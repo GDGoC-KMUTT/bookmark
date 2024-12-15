@@ -68,7 +68,9 @@ jobs:
           name: code-coverage
           path: ./backend/coverage.txt # Make sure to use the same file name you chose for the "-coverprofile" in the "Test" step
       - name: code coverage
-        run: go tool cover -func=coverage.txt | grep total | awk '{print $3}'
+        run: |
+          cd ./backend
+          go tool cover -func=coverage.txt | grep total | awk '{print $3}'
 
   code_coverage:
     name: "Code coverage report"
