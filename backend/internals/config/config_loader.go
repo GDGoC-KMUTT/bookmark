@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var Env *EnvModel
+var Env *Config
 
 func init() {
 	BootConfiguration()
@@ -19,16 +19,16 @@ func init() {
 func BootConfiguration() {
 	utils.BootTimeLocation()
 	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
+	viper.SetConfigType("yml")
 
 	// Attempt to read the configuration from the current directory
 	viper.AddConfigPath(".")
 	if err := viper.ReadInConfig(); err != nil {
-		logrus.Debug("[CONFIG] config.yaml not found in the current path, trying parent directory.")
+		logrus.Printf("[CONFIG] config.yml not found in the current path, trying parent directory.")
 		// If reading from the current directory fails, try the parent directory
 		_, filename, _, ok := runtime.Caller(0)
 		if !ok {
-			logrus.Debug("[CONFIG] Could not get the directory of the current file")
+			logrus.Printf("[CONFIG] Could not get the directory of the current file")
 		}
 
 		dir := filepath.Dir(filename)
@@ -37,7 +37,7 @@ func BootConfiguration() {
 
 		// Try reading the configuration from the parent directory
 		if err := viper.ReadInConfig(); err != nil {
-			logrus.Debug("[CONFIG] config.yaml not found in the current path, trying parent directory.")
+			logrus.Printf("[CONFIG] config.yml not found in the current path, trying parent directory.")
 		}
 	}
 
@@ -48,5 +48,5 @@ func BootConfiguration() {
 		panic(fmt.Errorf("[CONFIG] fatal loading configuration: %w, maybe due to invalid configuration format", err))
 	}
 
-	logrus.Debug("[CONFIG] Loaded Configuration.")
+	logrus.Printf("[CONFIG] Loaded Configuration.")
 }

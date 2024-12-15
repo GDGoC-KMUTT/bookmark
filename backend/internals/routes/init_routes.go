@@ -4,9 +4,9 @@ import (
 	"backend/internals/config"
 	"backend/internals/entities/response"
 	"backend/internals/routes/handler"
+	"backend/internals/routes/middlewares"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
 	"github.com/sirupsen/logrus"
 	"path/filepath"
@@ -14,39 +14,48 @@ import (
 )
 
 func SetupRoutes() {
-
-	serverAddr := fmt.Sprintf("%s:%d", config.Env.ServerHost, config.Env.ServerPort)
+	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
 	// Initialize fiber instance
 	app := NewFiberApp()
 
 	// Register root endpoint
 	app.All("/", func(c *fiber.Ctx) error {
-		return c.JSON(response.InfoResponse{
+		return c.JSON(response.InfoResponse[string]{
 			Success: true,
 			Message: "BOOKMARK_API_ROOT",
 		})
 	})
 
-	allowOrigins := strings.Join(config.Env.ServerOrigins, ",")
-	app.Use(cors.New(cors.Config{
-		AllowOrigins:     allowOrigins,
-		AllowCredentials: true,
-	}))
+	// * cores
+	app.Use(middlewares.Cors)
 
-	v1 := app.Group("/api/v1")
-	v1.Static("/static", "./resources/static")
+	// * Recover
+	app.Use(Recover())
+
+	api := app.Group("/api")
+	api.Static("/static", "./resources/static")
+
+	//login := api.Group("/login")
+	//login.Get("/redirect", loginController.LoginRedirect)
+	//login.Post("/callback", loginController.LoginCallBack)
+	//
+	//profile := api.Group("/profile", middleware.Jwt())
+	//profile.Get("/info", profileController.ProfileUserInfo)
 
 	// Custom handler to set Content-Type header based on file extension
-	v1.Use("/static", func(c *fiber.Ctx) error {
+	api.Use("/static", func(c *fiber.Ctx) error {
 		filePath := c.Path()
 		contentType := getContentType(filePath)
 		c.Set("Content-Type", contentType)
 		return c.Next()
 	})
 
-	v1.Get("/swagger/*", swagger.HandlerDefault)
-	v1.Use(Recover())
+	// * swagger
+	api.Get("/swagger/*", swagger.HandlerDefault)
+
+	// * Not found
+	api.Use(handler.NotFoundHandler)
 
 	ListenAndServe(app, serverAddr)
 }

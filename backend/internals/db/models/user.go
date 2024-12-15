@@ -1,9 +1,14 @@
 package models
 
+import "time"
+
 type User struct {
-	UserId    *string `json:"userId" gorm:"not null;primaryKey"`
-	FirstName *string `json:"firstName" gorm:"not null"`
-	LastName  *string `json:"lastName" gorm:"not null"`
-	Email     *string `json:"email" gorm:"not null"`
-	Avatar    *string `json:"avatar" gorm:""`
+	Id        *uint64    `gorm:"primaryKey"`
+	Oid       *string    `gorm:"type:VARCHAR(255); index:idx_user_oid,unique; not null"` // OAuth ID from Microsoft Sign-in
+	Firstname *string    `gorm:"type:VARCHAR(255); not null"`
+	Lastname  *string    `gorm:"type:VARCHAR(255); not null"`
+	Email     *string    `gorm:"type:VARCHAR(255); index:idx_user_email,unique; not null"`
+	PhotoUrl  *string    `gorm:"type:TEXT; null"`
+	CreatedAt *time.Time `gorm:"not null"`
+	UpdatedAt *time.Time `gorm:"not null"`
 }
