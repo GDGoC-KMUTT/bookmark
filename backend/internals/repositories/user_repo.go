@@ -19,7 +19,7 @@ func (r *userRepository) CreateUser(user *models.User) error {
 	return r.db.Create(user).Error
 }
 
-func (r *userRepository) FindUserByID(id uint) (*models.User, error) {
+func (r *userRepository) FindUserByID(id *string) (*models.User, error) {
 	user := new(models.User)
 	result := r.db.First(&user, id)
 	return user, result.Error

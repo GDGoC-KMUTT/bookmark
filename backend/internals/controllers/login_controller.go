@@ -16,23 +16,20 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
-	"gorm.io/gorm"
 	"net/url"
 )
 
 type LoginController struct {
 	config       *config.Config
-	database     *gorm.DB
 	OidcProvider *oidc.Provider
 	OidcVerifier *oidc.IDTokenVerifier
 	Oauth2Config *oauth2.Config
 	loginSvc     services.LoginService
 }
 
-func NewLoginController(config *config.Config, database *gorm.DB, loginSvc services.LoginService) LoginController {
+func NewLoginController(config *config.Config, loginSvc services.LoginService) LoginController {
 	controller := LoginController{
 		config:   config,
-		database: database,
 		loginSvc: loginSvc,
 	}
 
