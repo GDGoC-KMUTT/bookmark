@@ -21,8 +21,11 @@ func SetupRoutes() {
 	// * Repositories
 	var userRepo = repositories.NewUserRepository(db.Gorm)
 
+	// * third party
+	var oauthService = services.NewOAuthService(config.Env)
+
 	// * Services
-	var loginService = services.NewLoginService(userRepo)
+	var loginService = services.NewLoginService(userRepo, oauthService)
 	var profileService = services.NewProfileService(userRepo)
 
 	// * Controller

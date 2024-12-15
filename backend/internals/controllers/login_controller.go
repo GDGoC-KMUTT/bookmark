@@ -94,7 +94,7 @@ func (r *LoginController) LoginCallBack(c *fiber.Ctx) error {
 		}
 	}
 
-	userInfo, err := r.loginSvc.OAuthSetup(body, r.Oauth2Config, r.OidcProvider)
+	userInfo, err := r.loginSvc.OAuthSetup(body)
 	if err != nil {
 		return &response.GenericError{
 			Err:     err,

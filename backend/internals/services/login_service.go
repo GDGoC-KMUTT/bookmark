@@ -17,23 +17,25 @@ import (
 
 type loginService struct {
 	userRepo repositories.UserRepository
+	oauthSvc OAuthService
 }
 
-func NewLoginService(userRepo repositories.UserRepository) LoginService {
+func NewLoginService(userRepo repositories.UserRepository, oauthClient OAuthService) LoginService {
 	return &loginService{
 		userRepo: userRepo,
+		oauthSvc: oauthClient,
 	}
 }
 
-func (r *loginService) OAuthSetup(body *payload.OauthCallback, oauthConfig *oauth2.Config, oidcProvider *oidc.Provider) (*oidc.UserInfo, error) {
+func (r *loginService) OAuthSetup(body *payload.OauthCallback) (*oidc.UserInfo, error) {
 	// * exchange code for token
-	token, err := oauthConfig.Exchange(context.Background(), *body.Code)
+	token, err := r.oauthSvc.Exchange(context.Background(), *body.Code)
 	if err != nil {
 		return nil, err
 	}
 
 	// * parse ID token from OAuth2 token
-	userInfo, err := oidcProvider.UserInfo(context.TODO(), oauth2.StaticTokenSource(token))
+	userInfo, err := r.oauthSvc.UserInfo(context.TODO(), oauth2.StaticTokenSource(token))
 	if err != nil {
 		return nil, err
 	}
@@ -89,5 +91,4 @@ func (r *loginService) SignJwtToken(user *models.User, secret *string) (*string,
 	}
 
 	return &signedJwtToken, nil
-
 }
