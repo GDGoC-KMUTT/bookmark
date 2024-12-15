@@ -20,12 +20,20 @@ jobs:
         with:
           node-version: "22.11.0"
 
+      - name: Install swag
+        run: |
+          sudo apt update
+          sudo apt install -y golang-go
+          go install github.com/swaggo/swag/cmd/swag@latest
+          echo "$HOME/go/bin" >> $GITHUB_PATH
+
       - name: Compile React.js production build
         run: |
           cd ./frontend
           npm i
           touch .env
           echo '${{secrets.FRONTEND_STAGING_ENV}}' > .env
+          yarn gen-api
           npm run build
       - name: Upload artifact
         uses: actions/upload-artifact@v4
