@@ -6,9 +6,6 @@ on:
       - main
     paths:
       - "backend/**"
-  push:
-    branches:
-      - main
 
 permissions:
   contents: read
