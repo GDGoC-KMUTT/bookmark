@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bookmark-database/internal/migration"
-	"bookmark-database/table"
+	"backend/internals/db/models"
+	"backend/internals/migration"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/bsthun/gut"
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -32,9 +33,34 @@ type MockData struct {
 	Articles           []map[string]interface{} `json:"articles"`
 }
 
+func loadConfig() error {
+	viper.SetConfigName("config")
+	viper.SetConfigType("yml")
+
+	viper.AddConfigPath("../")
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err != nil {
+		return fmt.Errorf("failed to read config: %w", err)
+	}
+
+	// Set default values
+	viper.SetDefault("DB_HOST", "localhost")
+	viper.SetDefault("DB_PORT", 5432)
+	viper.SetDefault("DB_NAME", "bookmark_local")
+	viper.SetDefault("DB_USERNAME", "bookmark")
+	viper.SetDefault("DB_AUTOMIGRATE", true)
+
+	return nil
+}
 func main() {
+	// Load configuration
+	if err := loadConfig(); err != nil {
+		gut.Fatal("Failed to load configuration", err)
+	}
+
 	// Read and parse mock data
-	mockDataBytes, err := os.ReadFile("mockData.json")
+	mockDataBytes, err := os.ReadFile("../mockData.json")
 	if err != nil {
 		gut.Fatal("Failed to read mock data file", err)
 	}
@@ -54,7 +80,15 @@ func main() {
 		},
 	)
 
-	dsn := "host=server1.scnn.net user=bookmark password=bookmarkisthebest2024 dbname=bookmark2 port=4040 sslmode=disable"
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+		viper.GetString("DB_HOST"),
+		viper.GetString("DB_USERNAME"),
+		viper.GetString("DB_PASSWORD"),
+		viper.GetString("DB_NAME"),
+		viper.GetInt("DB_PORT"),
+	)
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: lg,
 	})
@@ -73,24 +107,26 @@ func main() {
 		}
 	}
 
-	// Migrate schema
-	if err := db.AutoMigrate(
-		&table.Article{},
-		&table.Course{},
-		&table.CourseContent{},
-		&table.Enroll{},
-		&table.Field{},
-		&table.Module{},
-		&table.Step{},
-		&table.StepAuthor{},
-		&table.StepComment{},
-		&table.StepCommentUpvote{},
-		&table.StepEvaluate{},
-		&table.User{},
-		&table.UserEvaluate{},
-		&table.UserPass{},
-	); err != nil {
-		gut.Fatal("Failed to migrate schema", err)
+	if viper.GetBool("DB_AUTOMIGRATE") {
+
+		if err := db.AutoMigrate(
+			&models.Article{},
+			&models.Course{},
+			&models.CourseContent{},
+			&models.Enroll{},
+			&models.FieldType{},
+			&models.Module{},
+			&models.Step{},
+			&models.StepAuthor{},
+			&models.StepComment{},
+			&models.StepCommentUpvote{},
+			&models.StepEvaluate{},
+			&models.User{},
+			&models.UserEvaluate{},
+			&models.UserPass{},
+		); err != nil {
+			gut.Fatal("Failed to migrate schema", err)
+		}
 	}
 
 	err = db.Transaction(func(tx *gorm.DB) error {
