@@ -139,7 +139,14 @@ jobs:
           port: ${{secrets.SSH_PORT}}
           local_path: "./backend-build-artifact/*"
           remote_path: "/root/backend/prod/"
-
+      - name: Update file permission
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: chmod +x /root/backend/prod/backend-file-build
       - name: Start Application
         uses: appleboy/ssh-action@v1.2.0
         with:
