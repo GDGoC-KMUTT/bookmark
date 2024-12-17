@@ -22,8 +22,6 @@ jobs:
       - name: Go Production build
         run: |
           cd ./backend
-          touch config.yml
-          echo '${{secrets.BACKEND_PROD_ENV}}' > config.yml
           env GOOS=linux GOARCH=amd64 go build -o ./backend-file-build
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -50,6 +48,8 @@ jobs:
       - name: Generate mock interface
         run: |
           cd ./backend
+          touch config.yml
+          echo '${{secrets.BACKEND_PROD_ENV}}' > config.yml
           go mod tidy
           mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories 
           mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices 
@@ -128,7 +128,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script: pm2 stop 6
+          script: pm2 stop 6 && rm -rf /root/backend/prod/*
 
       - name: Deploy to server
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
