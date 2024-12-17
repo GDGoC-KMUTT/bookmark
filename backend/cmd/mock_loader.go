@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/internals/config"
 	"backend/internals/db/models"
 	"backend/internals/migration"
 	"encoding/json"
@@ -33,31 +34,9 @@ type MockData struct {
 	Articles           []map[string]interface{} `json:"articles"`
 }
 
-func loadConfig() error {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yml")
-
-	viper.AddConfigPath("../")
-	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err != nil {
-		return fmt.Errorf("failed to read config: %w", err)
-	}
-
-	// Set default values
-	viper.SetDefault("DB_HOST", "localhost")
-	viper.SetDefault("DB_PORT", 5432)
-	viper.SetDefault("DB_NAME", "bookmark_local")
-	viper.SetDefault("DB_USERNAME", "bookmark")
-	viper.SetDefault("DB_AUTOMIGRATE", true)
-
-	return nil
-}
 func main() {
-	// Load configuration
-	if err := loadConfig(); err != nil {
-		gut.Fatal("Failed to load configuration", err)
-	}
+
+	config.BootConfiguration()
 
 	// Read and parse mock data
 	mockDataBytes, err := os.ReadFile("../mockData.json")
