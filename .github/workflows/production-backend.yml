@@ -128,7 +128,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script: pm2 stop 6 && chmod u+w /root/backend/prod/config.yml
+          script: pm2 stop 6 && rm -rf /root/backend/prod/*
 
       - name: Deploy to server
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
