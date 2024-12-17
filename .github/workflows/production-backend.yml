@@ -49,7 +49,7 @@ jobs:
         run: |
           cd ./backend
           touch config.yml
-          echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
+          echo '${{secrets.BACKEND_PROD_ENV}}' > config.yml
           go mod tidy
           mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories 
           mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices 
