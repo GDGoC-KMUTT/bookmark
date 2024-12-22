@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/bsthun/gut"
@@ -39,7 +40,10 @@ func main() {
 	config.BootConfiguration()
 
 	// Read and parse mock data
-	mockDataBytes, err := os.ReadFile("../mockData.json")
+	basePath, _ := os.Getwd()
+	mockDataPath := filepath.Join(basePath, "mockData.json")
+	
+	mockDataBytes, err := os.ReadFile(mockDataPath)
 	if err != nil {
 		gut.Fatal("Failed to read mock data file", err)
 	}
