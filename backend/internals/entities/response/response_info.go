@@ -14,14 +14,16 @@ type InfoResponse[T any] struct {
 func Ok[T any](ctx *fiber.Ctx, data T, meta ...any) error {
 	if len(meta) > 0 {
 		return ctx.Status(200).JSON(InfoResponse[T]{
-			Code: fiber.StatusOK,
-			Data: data,
+			Success: true,
+			Code:    fiber.StatusOK,
+			Data:    data,
 		})
 	}
 
 	return ctx.Status(200).JSON(InfoResponse[T]{
-		Code: fiber.StatusOK,
-		Data: data,
+		Success: true,
+		Code:    fiber.StatusOK,
+		Data:    data,
 	})
 }
 
