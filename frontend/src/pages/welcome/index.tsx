@@ -1,4 +1,3 @@
-import { Step } from "@/components/step/step"
 import { SERVER_HOST } from "@/configs/server"
 import { toast } from "sonner"
 
@@ -31,7 +30,6 @@ const index = () => {
                     >
                         Get Started!
                     </button>
-                    <Step />
                 </div>
             </div>
         </div>
