@@ -6,7 +6,7 @@
       "firstname": "John",
       "lastname": "Smith",
       "email": "john.smith@example.com",
-      "photo_url": "https://example.com/photos/john.jpg",
+      "photo_url": "https://images.pexels.com/photos/819497/pexels-photo-819497.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2a",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
@@ -16,7 +16,17 @@
       "firstname": "Jane",
       "lastname": "Doe",
       "email": "jane.doe@example.com",
-      "photo_url": "https://example.com/photos/jane.jpg",
+      "photo_url": "https://images.pexels.com/photos/8517921/pexels-photo-8517921.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "id": 3,
+      "oid": "fb13e733-3b61-4b6c-8802-486d2a99f56d",
+      "firstname": "Jame",
+      "lastname": "Smith",
+      "email": "jame.smith@example.com",
+      "photo_url": "https://images.pexels.com/photos/39866/entrepreneur-startup-start-up-man-39866.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     }
@@ -24,15 +34,43 @@
   "fields": [
     {
       "id": 1,
-      "name": "Computer Science",
-      "image_url": "https://example.com/fields/cs.jpg",
+      "name": "Microcontroller",
+      "image_url": "https://pngimg.com/d/microcontroller_PNG31.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
       "id": 2,
-      "name": "Data Science",
-      "image_url": "https://example.com/fields/ds.jpg",
+      "name": "Internet of Things",
+      "image_url": "https://png.pngtree.com/png-clipart/20220510/original/pngtree-internet-of-things-iot-smart-connection-and-control-device-png-image_7693667.png",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "id": 3,
+      "name": "Smart Home",
+      "image_url": "https://png.pngtree.com/png-clipart/20220510/original/pngtree-internet-of-things-iot-smart-connection-and-control-device-png-image_7693667.png",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "id": 4,
+      "name": "Web Development",
+      "image_url": "https://digisoft.in/assets/img/intro_images/responsive-website-developement.png",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "id": 5,
+      "name": "Database",
+      "image_url": "https://static.vecteezy.com/system/resources/thumbnails/020/043/127/small_2x/computation-of-big-data-center-information-processing-database-png.png",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "id": 6,
+      "name": "Infrastructure",
+      "image_url": "https://cdni.iconscout.com/illustration/premium/thumb/hybrid-it-infrastructure-illustration-download-in-svg-png-gif-file-formats--world-logo-cloud-various-themes-set-045-pack-business-illustrations-6503410.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     }
@@ -45,13 +83,67 @@
       "image_url": "https://example.com/modules/python-basics.jpg",
       "created_at": "2024-01-15T10:00:00Z",
       "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Python Intermediate",
+      "description": "Start to learn Python at an intermediate level.",
+      "image_url": "https://example.com/modules/python-basics.jpg",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Get Start with Iot",
+      "description": "Introduction to Internet of Things",
+      "image_url": "https://example.com/modules/python-basics.jpg",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": 4,
+      "title": "Practice with various Iot labs",
+      "description": "Learner will learn with many interesting labs.",
+      "image_url": "https://example.com/modules/python-basics.jpg",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": 5,
+      "title": "How to design database",
+      "description": "Introduction to design database",
+      "image_url": "https://example.com/modules/python-basics.jpg",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": 6,
+      "title": "How to create database",
+      "description": "Introduction to create and migrate database",
+      "image_url": "https://example.com/modules/python-basics.jpg",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
     }
   ],
   "courses": [
     {
       "id": 1,
       "name": "Programming Fundamentals",
-      "field_id": 1,
+      "field_id": 3,
+      "created_at": "2024-01-15T09:00:00Z",
+      "updated_at": "2024-01-15T09:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Basic Internet of Things",
+      "field_id": 2,
+      "created_at": "2024-01-15T09:00:00Z",
+      "updated_at": "2024-01-15T09:00:00Z"
+    },
+    {
+      "id": 3,
+      "name": "How to design and create database",
+      "field_id": 5,
       "created_at": "2024-01-15T09:00:00Z",
       "updated_at": "2024-01-15T09:00:00Z"
     }
@@ -62,10 +154,76 @@
       "module_id": 1,
       "title": "Variables and Types",
       "description": "Learn about Python variables and data types",
-      "gems": 10,
+      "gems": 5,
       "content": "# Introduction to Variables\nIn Python, variables are...",
-      "outcome": "After this lesson, you will be able to:\n- Create variables\n- Understand data types",
-      "check": true,
+      "outcome": "# After this lesson, you will be able to:\n- Create variables\n- Understand data types",
+      "check": "# Create Variable and types",
+      "error": "# Error of Variable...",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "id": 2,
+      "module_id": 2,
+      "title": "Function and other",
+      "description": "Learn about Python functions and other interesting things",
+      "gems": 10,
+      "content": "# Introduction to Function\nIn Python, it has...",
+      "outcome": "# After this lesson, you will be able to:\n- Create function base on your needs",
+      "check": "# Create python function",
+      "error": "# Error of function...",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "id": 3,
+      "module_id": 3,
+      "title": "Start to learn Iot",
+      "description": "Learn about basic Iot",
+      "gems": 5,
+      "content": "# Introduction to Iot...",
+      "outcome": "# After this lesson, you will be able to...",
+      "check": "# Know basic Iot...",
+      "error": "# Error of Some function of Iot...",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "id": 4,
+      "module_id": 4,
+      "title": "Iot Lab",
+      "description": "Learn about Iot with real lab",
+      "gems": 10,
+      "content": "# Practice with Iot lab...",
+      "outcome": "# After this lesson, you will be able to:\n- Create some Iot...",
+      "check": "# Run Iot Lab successfully...",
+      "error": "# Error of ...",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "id": 5,
+      "module_id": 5,
+      "title": "Get start to learn basic of database design",
+      "description": "Learn about how to design database",
+      "gems": 5,
+      "content": "# Introduction to design database\nIn database, there are...",
+      "outcome": "# After this lesson, you will be able to:\n- Design database\n- Understand how to...",
+      "check": "# Design database with...",
+      "error": "# Error of database...",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "id": 6,
+      "module_id": 6,
+      "title": "How to create and migrate",
+      "description": "Learn about how to create and migrate database efficiently",
+      "gems": 10,
+      "content": "# Introduction to create database\nIn Database, it has...",
+      "outcome": "# After this lesson, you will be able to:\n- Create and migrate database",
+      "check": "# Create database with...\n Migrate database",
+      "error": "# Error of database...",
       "created_at": "2024-01-15T11:00:00Z",
       "updated_at": "2024-01-15T11:00:00Z"
     }
@@ -79,15 +237,60 @@
       "prompt": "Explain what a variable is in your own words.",
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "id": 2,
+      "step_id": 2,
+      "order": 1,
+      "type": "text",
+      "prompt": "Check the answer of the python function.",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "id": 3,
+      "step_id": 3,
+      "order": 1,
+      "type": "image",
+      "prompt": "Check this Iot code image correct or not",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "id": 4,
+      "step_id": 5,
+      "order": 1,
+      "type": "image",
+      "prompt": "Check this database design image correct or not",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "id": 5,
+      "step_id": 6,
+      "order": 1,
+      "type": "check",
+      "prompt": "Check the answer of create and migrate database",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
     }
   ],
   "user_evaluates": [
     {
-      "user_id": 2,
+      "user_id": 3,
       "step_evaluate_id": 1,
       "content": "A variable is like a container that holds data",
       "check": true,
       "comment": "Good explanation!",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_evaluate_id": 2,
+      "content": "The python function have various function. For example...",
+      "check": false,
+      "comment": "Your answer is not correct.",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     }
@@ -96,6 +299,38 @@
     {
       "step_id": 1,
       "user_id": 1
+    },
+    {
+      "step_id": 1,
+      "user_id": 2
+    },
+    {
+      "step_id": 2,
+      "user_id": 1
+    },
+    {
+      "step_id": 2,
+      "user_id": 3
+    },
+    {
+      "step_id": 3,
+      "user_id": 1
+    },
+    {
+      "step_id": 3,
+      "user_id": 3
+    },
+    {
+      "step_id": 4,
+      "user_id": 2
+    },
+    {
+      "step_id": 5,
+      "user_id": 1
+    },
+    {
+      "step_id": 6,
+      "user_id": 3
     }
   ],
   "step_comments": [
@@ -106,6 +341,22 @@
       "content": "Great explanation of variables!",
       "created_at": "2024-01-16T11:00:00Z",
       "updated_at": "2024-01-16T11:00:00Z"
+    },
+    {
+      "id": 2,
+      "step_id": 3,
+      "user_id": 1,
+      "content": "Greate explanation of Iot basic!",
+      "created_at": "2024-01-16T11:00:00Z",
+      "updated_at": "2024-01-16T11:00:00Z"
+    },
+    {
+      "id": 3,
+      "step_id": 5,
+      "user_id": 3,
+      "content": "Should improve the quality of this step.",
+      "created_at": "2024-01-16T11:00:00Z",
+      "updated_at": "2024-01-16T11:00:00Z"
     }
   ],
   "step_comment_upvotes": [
@@ -114,13 +365,45 @@
       "user_id": 1,
       "created_at": "2024-01-16T12:00:00Z",
       "updated_at": "2024-01-16T12:00:00Z"
+    },
+    {
+      "step_comment_id": 2,
+      "user_id": 3,
+      "created_at": "2024-01-16T12:00:00Z",
+      "updated_at": "2024-01-16T12:00:00Z"
+    },
+    {
+      "step_comment_id": 3,
+      "user_id": 1,
+      "created_at": "2024-01-16T12:00:00Z",
+      "updated_at": "2024-01-16T12:00:00Z"
+    },
+    {
+      "step_comment_id": 3,
+      "user_id": 3,
+      "created_at": "2024-01-16T12:00:00Z",
+      "updated_at": "2024-01-16T12:00:00Z"
     }
   ],
   "enrols": [
     {
       "id": 1,
-      "user_id": 2,
+      "user_id": 3,
       "course_id": 1,
+      "created_at": "2024-01-15T13:00:00Z",
+      "updated_at": "2024-01-15T13:00:00Z"
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "course_id": 2,
+      "created_at": "2024-01-15T13:00:00Z",
+      "updated_at": "2024-01-15T13:00:00Z"
+    },
+    {
+      "id": 3,
+      "user_id": 1,
+      "course_id": 3,
       "created_at": "2024-01-15T13:00:00Z",
       "updated_at": "2024-01-15T13:00:00Z"
     }
@@ -130,8 +413,62 @@
       "course_id": 1,
       "order": 1,
       "type": "module",
-      "text": "Getting Started with Python",
+      "text": null,
       "module_id": 1,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 1,
+      "order": 2,
+      "type": "text",
+      "text": "หลังจากที่เราเรียน Python ขั้น basic ไปแล้ว ก็ถึงเวลาที่เราจะอัปเลเวลไปเรียนขั้น intermediate กัน!!",
+      "module_id": null,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 1,
+      "order": 3,
+      "type": "module",
+      "text": null,
+      "module_id": 2,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 2,
+      "order": 1,
+      "type": "module",
+      "text": null,
+      "module_id": 3,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 2,
+      "order": 2,
+      "type": "module",
+      "text": null,
+      "module_id": 4,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 3,
+      "order": 1,
+      "type": "module",
+      "text": null,
+      "module_id": 5,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 3,
+      "order": 2,
+      "type": "module",
+      "text": null,
+      "module_id": 6,
       "created_at": "2024-01-15T15:00:00Z",
       "updated_at": "2024-01-15T15:00:00Z"
     }
@@ -139,11 +476,31 @@
   "user_passes": [
     {
       "id": 1,
-      "user_id": 2,
+      "user_id": 3,
       "type": "step",
       "step_id": 1,
-      "course_id": null,
-      "module_id": null,
+      "course_id": 1,
+      "module_id": 1,
+      "created_at": "2024-01-17T09:00:00Z",
+      "updated_at": "2024-01-17T09:00:00Z"
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "type": "step",
+      "step_id": 2,
+      "course_id": 1,
+      "module_id": 2,
+      "created_at": "2024-01-17T09:00:00Z",
+      "updated_at": "2024-01-17T09:00:00Z"
+    },
+    {
+      "id": 3,
+      "user_id": 2,
+      "type": "step",
+      "step_id": 3,
+      "course_id": 2,
+      "module_id": 1,
       "created_at": "2024-01-17T09:00:00Z",
       "updated_at": "2024-01-17T09:00:00Z"
     }
@@ -152,6 +509,27 @@
     {
       "id": 1,
       "title": "Getting Started with Programming",
+      "href": "/articles/getting-started",
+      "created_at": "2024-01-15T16:00:00Z",
+      "updated_at": "2024-01-15T16:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Understanding serial port: COM port in Windows and TTY device in UNIX",
+      "href": "/articles/getting-started",
+      "created_at": "2024-01-15T16:00:00Z",
+      "updated_at": "2024-01-15T16:00:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Baud Rate คืออะไร ใช้ประโยชน์อะไรบ้างในการเชื่อมต่อแบบ serial",
+      "href": "/articles/getting-started",
+      "created_at": "2024-01-15T16:00:00Z",
+      "updated_at": "2024-01-15T16:00:00Z"
+    },
+    {
+      "id": 4,
+      "title": "วิธีการใช้งาน SSH เบื้องต้น และแนะนำ SSH client แบบต่างๆ",
       "href": "/articles/getting-started",
       "created_at": "2024-01-15T16:00:00Z",
       "updated_at": "2024-01-15T16:00:00Z"
