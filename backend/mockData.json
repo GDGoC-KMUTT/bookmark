@@ -1,160 +1,167 @@
 {
-  "users": [
-    {
-      "id": 1,
-      "oid": "5ab23c4d-1234-5678-90ab-cdef12345678",
-      "firstname": "John",
-      "lastname": "Smith",
-      "email": "john.smith@example.com",
-      "photo_url": "https://example.com/photos/john.jpg",
-      "created_at": "2024-01-15T08:00:00Z",
-      "updated_at": "2024-01-15T08:00:00Z"
-    },
-    {
-      "id": 2,
-      "oid": "6bc34d5e-2345-6789-01bc-defg23456789",
-      "firstname": "Jane",
-      "lastname": "Doe",
-      "email": "jane.doe@example.com",
-      "photo_url": "https://example.com/photos/jane.jpg",
-      "created_at": "2024-01-15T08:00:00Z",
-      "updated_at": "2024-01-15T08:00:00Z"
-    }
-  ],
-  "fields": [
-    {
-      "id": 1,
-      "name": "Computer Science",
-      "image_url": "https://example.com/fields/cs.jpg",
-      "created_at": "2024-01-15T08:00:00Z",
-      "updated_at": "2024-01-15T08:00:00Z"
-    },
-    {
-      "id": 2,
-      "name": "Data Science",
-      "image_url": "https://example.com/fields/ds.jpg",
-      "created_at": "2024-01-15T08:00:00Z",
-      "updated_at": "2024-01-15T08:00:00Z"
-    }
-  ],
-  "modules": [
-    {
-      "id": 1,
-      "title": "Python Basics",
-      "description": "Introduction to Python programming",
-      "image_url": "https://example.com/modules/python-basics.jpg",
-      "created_at": "2024-01-15T10:00:00Z",
-      "updated_at": "2024-01-15T10:00:00Z"
-    }
-  ],
-  "courses": [
-    {
-      "id": 1,
-      "name": "Programming Fundamentals",
-      "field_id": 1,
-      "created_at": "2024-01-15T09:00:00Z",
-      "updated_at": "2024-01-15T09:00:00Z"
-    }
-  ],
-  "steps": [
-    {
-      "id": 1,
-      "module_id": 1,
-      "title": "Variables and Types",
-      "description": "Learn about Python variables and data types",
-      "gems": 10,
-      "content": "# Introduction to Variables\nIn Python, variables are...",
-      "outcome": "After this lesson, you will be able to:\n- Create variables\n- Understand data types",
-      "check": true,
-      "created_at": "2024-01-15T11:00:00Z",
-      "updated_at": "2024-01-15T11:00:00Z"
-    }
-  ],
-  "step_evaluates": [
-    {
-      "id": 1,
-      "step_id": 1,
-      "order": 1,
-      "type": "text",
-      "prompt": "Explain what a variable is in your own words.",
-      "created_at": "2024-01-16T09:00:00Z",
-      "updated_at": "2024-01-16T09:00:00Z"
-    }
-  ],
-  "user_evaluates": [
-    {
-      "user_id": 2,
-      "step_evaluate_id": 1,
-      "content": "A variable is like a container that holds data",
-      "check": true,
-      "comment": "Good explanation!",
-      "created_at": "2024-01-16T10:00:00Z",
-      "updated_at": "2024-01-16T10:00:00Z"
-    }
-  ],
-  "step_authors": [
-    {
-      "step_id": 1,
-      "user_id": 1
-    }
-  ],
-  "step_comments": [
-    {
-      "id": 1,
-      "step_id": 1,
-      "user_id": 2,
-      "content": "Great explanation of variables!",
-      "created_at": "2024-01-16T11:00:00Z",
-      "updated_at": "2024-01-16T11:00:00Z"
-    }
-  ],
-  "step_comment_upvotes": [
-    {
-      "step_comment_id": 1,
-      "user_id": 1,
-      "created_at": "2024-01-16T12:00:00Z",
-      "updated_at": "2024-01-16T12:00:00Z"
-    }
-  ],
-  "enrols": [
-    {
-      "id": 1,
-      "user_id": 2,
-      "course_id": 1,
-      "created_at": "2024-01-15T13:00:00Z",
-      "updated_at": "2024-01-15T13:00:00Z"
-    }
-  ],
-  "course_contents": [
-    {
-      "course_id": 1,
-      "order": 1,
-      "type": "module",
-      "text": "Getting Started with Python",
-      "module_id": 1,
-      "created_at": "2024-01-15T15:00:00Z",
-      "updated_at": "2024-01-15T15:00:00Z"
-    }
-  ],
-  "user_passes": [
-    {
-      "id": 1,
-      "user_id": 2,
-      "type": "step",
-      "step_id": 1,
-      "course_id": null,
-      "module_id": null,
-      "created_at": "2024-01-17T09:00:00Z",
-      "updated_at": "2024-01-17T09:00:00Z"
-    }
-  ],
-  "articles": [
-    {
-      "id": 1,
-      "title": "Getting Started with Programming",
-      "href": "/articles/getting-started",
-      "created_at": "2024-01-15T16:00:00Z",
-      "updated_at": "2024-01-15T16:00:00Z"
-    }
-  ]
+    "users": [
+        {
+            "id": 1,
+            "oid": "5ab23c4d-1234-5678-90ab-cdef12345678",
+            "firstname": "John",
+            "lastname": "Smith",
+            "email": "john.smith@example.com",
+            "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrufL5XMgdQN8yrEq-kW62Ixhu60NtaPLRSA&s",
+            "created_at": "2024-01-15T08:00:00Z",
+            "updated_at": "2024-01-15T08:00:00Z"
+        },
+        {
+            "id": 2,
+            "oid": "6bc34d5e-2345-6789-01bc-defg23456789",
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "email": "jane.doe@example.com",
+            "photo_url": "https://example.com/photos/jane.jpg",
+            "created_at": "2024-01-15T08:00:00Z",
+            "updated_at": "2024-01-15T08:00:00Z"
+        }
+    ],
+    "fields": [
+        {
+            "id": 1,
+            "name": "Computer Science",
+            "image_url": "https://example.com/fields/cs.jpg",
+            "created_at": "2024-01-15T08:00:00Z",
+            "updated_at": "2024-01-15T08:00:00Z"
+        },
+        {
+            "id": 2,
+            "name": "Data Science",
+            "image_url": "https://example.com/fields/ds.jpg",
+            "created_at": "2024-01-15T08:00:00Z",
+            "updated_at": "2024-01-15T08:00:00Z"
+        }
+    ],
+    "modules": [
+        {
+            "id": 1,
+            "title": "Python Basics",
+            "description": "Introduction to Python programming",
+            "image_url": "https://example.com/modules/python-basics.jpg",
+            "created_at": "2024-01-15T10:00:00Z",
+            "updated_at": "2024-01-15T10:00:00Z"
+        }
+    ],
+    "courses": [
+        {
+            "id": 1,
+            "name": "Programming Fundamentals",
+            "field_id": 1,
+            "created_at": "2024-01-15T09:00:00Z",
+            "updated_at": "2024-01-15T09:00:00Z"
+        }
+    ],
+    "steps": [
+        {
+            "id": 1,
+            "module_id": 1,
+            "title": "Variables and Types",
+            "description": "Learn about Python variables and data types",
+            "gems": 10,
+            "content": "# Introduction to Variables\nIn Python, variables are...",
+            "outcome": "After this lesson, you will be able to:\n- Create variables\n- Understand data types",
+            "check": true,
+            "created_at": "2024-01-15T11:00:00Z",
+            "updated_at": "2024-01-15T11:00:00Z"
+        }
+    ],
+    "step_evaluates": [
+        {
+            "id": 1,
+            "step_id": 1,
+            "order": 1,
+            "type": "text",
+            "prompt": "Explain what a variable is in your own words.",
+            "created_at": "2024-01-16T09:00:00Z",
+            "updated_at": "2024-01-16T09:00:00Z"
+        }
+    ],
+    "user_evaluates": [
+        {
+            "user_id": 2,
+            "step_evaluate_id": 1,
+            "content": "A variable is like a container that holds data",
+            "check": true,
+            "comment": "Good explanation!",
+            "created_at": "2024-01-16T10:00:00Z",
+            "updated_at": "2024-01-16T10:00:00Z"
+        }
+    ],
+    "step_authors": [
+        {
+            "step_id": 1,
+            "user_id": 1
+        }
+    ],
+    "step_comments": [
+        {
+            "id": 1,
+            "step_id": 1,
+            "user_id": 2,
+            "content": "Great explanation of variables!",
+            "created_at": "2024-01-16T11:00:00Z",
+            "updated_at": "2024-01-16T11:00:00Z"
+        }
+    ],
+    "step_comment_upvotes": [
+        {
+            "step_comment_id": 1,
+            "user_id": 1,
+            "created_at": "2024-01-16T12:00:00Z",
+            "updated_at": "2024-01-16T12:00:00Z"
+        }
+    ],
+    "enrols": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "course_id": 1,
+            "created_at": "2024-01-15T13:00:00Z",
+            "updated_at": "2024-01-15T13:00:00Z"
+        },
+        {
+            "id": 2,
+            "user_id": 1,
+            "course_id": 1,
+            "created_at": "2024-08-16T10:00:00Z",
+            "updated_at": "2024-08-16T10:00:00Z"
+        }
+    ],
+    "course_contents": [
+        {
+            "course_id": 1,
+            "order": 1,
+            "type": "module",
+            "text": "Getting Started with Python",
+            "module_id": 1,
+            "created_at": "2024-01-15T15:00:00Z",
+            "updated_at": "2024-01-15T15:00:00Z"
+        }
+    ],
+    "user_passes": [
+        {
+            "id": 1,
+            "user_id": 2,
+            "type": "step",
+            "step_id": 1,
+            "course_id": null,
+            "module_id": null,
+            "created_at": "2024-01-17T09:00:00Z",
+            "updated_at": "2024-01-17T09:00:00Z"
+        }
+    ],
+    "articles": [
+        {
+            "id": 1,
+            "title": "Getting Started with Programming",
+            "href": "/articles/getting-started",
+            "created_at": "2024-01-15T16:00:00Z",
+            "updated_at": "2024-01-15T16:00:00Z"
+        }
+    ]
 }
