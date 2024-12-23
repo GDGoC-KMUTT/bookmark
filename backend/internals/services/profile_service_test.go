@@ -80,7 +80,7 @@ func (suite *ProfileTestSuit) TestGetTotalGemsWhenSuccess() {
 	mockTotalGems := 100
 
 	// mock user repo
-	mockUserRepo.EXPECT().GetTotalGemsByUserID(mockUserID).Return(uint64(mockTotalGems), nil)
+	mockUserRepo.EXPECT().GetTotalGemsByUserID(mockUserID).Return(mockTotalGems, nil)
 
 	// Test
 	underTest := services.NewProfileService(mockUserRepo)
