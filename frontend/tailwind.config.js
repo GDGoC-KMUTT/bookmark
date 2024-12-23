@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import tailwindcssAnimate from "tailwindcss-animate"
+
 export default {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
     theme: {
@@ -73,6 +75,6 @@ export default {
             sans: ['"Ubuntu"', '"Noto Sans Thai"', "sans-serif", "Source Code Pro"],
         },
     },
-    plugins: [require("tailwindcss-animate")],
+    plugins: [tailwindcssAnimate],
 }
 
