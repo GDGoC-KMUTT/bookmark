@@ -21,6 +21,7 @@ import (
 func SetupRoutes() {
 	// * Repositories
 	var userRepo = repositories.NewUserRepository(db.Gorm)
+	var gemRepo = repositories.NewGemRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -29,10 +30,12 @@ func SetupRoutes() {
 	// * Services
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
+	var gemService = services.NewGemService(gemRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
 	var profileController = controllers.NewProfileController(profileService)
+	var gemController = controllers.NewGemController(gemService)
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
@@ -62,6 +65,9 @@ func SetupRoutes() {
 
 	profile := api.Group("/profile", middleware.Jwt())
 	profile.Get("/info", profileController.ProfileUserInfo)
+
+	gem := api.Group("/gems", middleware.Jwt())
+	gem.Get("/total", gemController.GetUserGems)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {

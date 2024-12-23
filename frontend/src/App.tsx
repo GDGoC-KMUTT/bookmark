@@ -8,8 +8,8 @@ import AppLayout from "./components/layouts/app-layout"
 function App() {
     return (
         <ToastProvider>
-            <Navbar />
             <BrowserRouter>
+                <Navbar />
                 <Routes>
                     <Route path="/" element={<AppLayout />} />
                     {router.map((item) => (
