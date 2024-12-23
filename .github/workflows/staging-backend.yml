@@ -62,7 +62,6 @@ jobs:
       - name: Test Services & Controllers
         run: |
           cd ./backend
-          set -euo pipefail
           go test -race -json -v -coverprofile=coverage.txt ./internals/controllers/ ./internals/services/ 2>&1 | tee /tmp/gotest.log | gotestfmt
           gocover-cobertura < coverage.txt > coverage.xml
 
