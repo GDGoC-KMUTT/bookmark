@@ -43,6 +43,10 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
+      - name: Set up gotestfmt
+        uses: gotesttools/gotestfmt-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Necessary Go Libraries
         run: |
           cd ./backend
