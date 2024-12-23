@@ -35,42 +35,42 @@
     {
       "id": 1,
       "name": "Microcontroller",
-      "image_url": "https://pngimg.com/d/microcontroller_PNG31.png",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/microcontroller.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
       "id": 2,
       "name": "Internet of Things",
-      "image_url": "https://png.pngtree.com/png-clipart/20220510/original/pngtree-internet-of-things-iot-smart-connection-and-control-device-png-image_7693667.png",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/internetofthings.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
       "id": 3,
       "name": "Smart Home",
-      "image_url": "https://png.pngtree.com/png-clipart/20220510/original/pngtree-internet-of-things-iot-smart-connection-and-control-device-png-image_7693667.png",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/application.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
       "id": 4,
       "name": "Web Development",
-      "image_url": "https://digisoft.in/assets/img/intro_images/responsive-website-developement.png",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/web.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
       "id": 5,
       "name": "Database",
-      "image_url": "https://static.vecteezy.com/system/resources/thumbnails/020/043/127/small_2x/computation-of-big-data-center-information-processing-database-png.png",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/database.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
       "id": 6,
       "name": "Infrastructure",
-      "image_url": "https://cdni.iconscout.com/illustration/premium/thumb/hybrid-it-infrastructure-illustration-download-in-svg-png-gif-file-formats--world-logo-cloud-various-themes-set-045-pack-business-illustrations-6503410.png",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/infrastructure.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     }
