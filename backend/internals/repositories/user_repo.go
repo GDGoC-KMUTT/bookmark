@@ -38,3 +38,17 @@ func (r *userRepository) UpdateUser(user *models.User) error {
 func (r *userRepository) DeleteUser(id uint) error {
 	return r.db.Delete(&models.User{}, id).Error
 }
+
+func (r *userRepository) GetTotalGemsByUserID(userID uint) (uint64, error) {
+	var totalGems uint64
+	err := r.db.Table("user_passes").
+		Joins("INNER JOIN steps ON user_passes.step_id = steps.id").
+		Where("user_passes.user_id = ?", userID).
+		Select("COALESCE(SUM(steps.gems), 0) AS total_gems"). // Convert NULL to 0
+		Scan(&totalGems).Error
+	if err != nil {
+		return 0, err
+	}
+	return totalGems, nil
+}
+

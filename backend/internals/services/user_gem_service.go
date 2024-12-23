@@ -6,10 +6,10 @@ import (
 )
 
 type gemService struct {
-	gemRepo repositories.GemRepository
+	gemRepo repositories.UserRepository
 }
 
-func NewGemService(gemRepo repositories.GemRepository) GemService {
+func NewGemService(gemRepo repositories.UserRepository) GemService {
 	return &gemService{
 		gemRepo: gemRepo,
 	}

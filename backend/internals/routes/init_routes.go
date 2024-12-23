@@ -21,7 +21,6 @@ import (
 func SetupRoutes() {
 	// * Repositories
 	var userRepo = repositories.NewUserRepository(db.Gorm)
-	var gemRepo = repositories.NewGemRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -30,7 +29,7 @@ func SetupRoutes() {
 	// * Services
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
-	var gemService = services.NewGemService(gemRepo)
+	var gemService = services.NewGemService(userRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
