@@ -70,6 +70,50 @@ func (suite *ProfileTestSuit) TestGetUserInfoWhenFailed() {
 	is.NotNil(err)
 }
 
+func (suite *ProfileTestSuit) TestGetTotalGemsWhenSuccess() {
+	is := assert.New(suite.T())
+	// Arrange
+	mockUserRepo := new(mockRepositories.UserRepository)
+
+	// Mock data
+	mockUserID := uint(1)
+	mockTotalGems := 100
+
+	// mock user repo
+	mockUserRepo.EXPECT().GetTotalGemsByUserID(mockUserID).Return(mockTotalGems, nil)
+
+	// Test
+	underTest := services.NewProfileService(mockUserRepo)
+
+	// Test Success
+	gemTotal, err := underTest.GetTotalGems(mockUserID)
+
+	is.Equal(mockUserID, gemTotal.UserID)
+	is.Equal(mockTotalGems, gemTotal.Total)
+	is.NoError(err)
+}
+
+func (suite *ProfileTestSuit) TestGetTotalGemsWhenFailed() {
+	is := assert.New(suite.T())
+	// Arrange
+	mockUserRepo := new(mockRepositories.UserRepository)
+
+	// Mock data
+	mockUserID := uint(1)
+
+	// mock user repo
+	mockUserRepo.EXPECT().GetTotalGemsByUserID(mockUserID).Return(0, fmt.Errorf("gems data not found"))
+
+	// Test
+	underTest := services.NewProfileService(mockUserRepo)
+
+	// Test Failure
+	gemTotal, err := underTest.GetTotalGems(mockUserID)
+
+	is.Nil(gemTotal)
+	is.NotNil(err)
+}
+
 func TestProfileService(t *testing.T) {
 	suite.Run(t, new(ProfileTestSuit))
 }
