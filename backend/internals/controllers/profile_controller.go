@@ -45,3 +45,30 @@ func (r *ProfileController) ProfileUserInfo(c *fiber.Ctx) error {
 
 	return response.Ok(c, userProfile)
 }
+
+// GetUserGems
+// @ID getUserGems
+// @Tags gems
+// @Summary Fetch total gems for the user
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.InfoResponse[payload.GemTotal]
+// @Failure 400 {object} response.GenericError
+// @Router /profile/totalgems [get]
+func (r *ProfileController) GetUserGems(c *fiber.Ctx) error {
+	// * login state
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["userId"].(float64)
+
+	// * get total gems for user
+	totalGems, err := r.profileSvc.GetTotalGems(uint(userId))
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to fetch total gems",
+		}
+	}
+
+	return response.Ok(c, totalGems)
+}

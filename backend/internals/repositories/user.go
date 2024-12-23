@@ -9,4 +9,5 @@ type UserRepository interface {
 	UpdateUser(user *models.User) error
 	DeleteUser(id uint) error
 	GetTotalGemsByUserID(userID uint) (uint64, error)
+	GetUserCompletedSteps(userID uint) ([]models.UserActivity, error)
 }

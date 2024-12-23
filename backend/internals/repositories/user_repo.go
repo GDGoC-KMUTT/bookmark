@@ -52,3 +52,12 @@ func (r *userRepository) GetTotalGemsByUserID(userID uint) (uint64, error) {
 	return totalGems, nil
 }
 
+func (r *userRepository) GetUserCompletedSteps(userID uint) ([]models.UserActivity, error) {
+    var userActivities []models.UserActivity
+    result := r.db.Where("user_id = ?", userID).Find(&userActivities)
+    if result.Error != nil {
+        return nil, result.Error
+    }
+
+    return userActivities, nil
+}
