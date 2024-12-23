@@ -55,6 +55,12 @@ const Navbar = () => {
 
     return (
         <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between">
+            {error && (
+                <div className="absolute top-0 left-0 w-full bg-red-500 text-white p-2 text-center">
+                    {error}
+                </div>
+            )}
+
             <div className="flex items-center space-x-8">
                 <img src="src/assets/logo2.png" alt="Logo" className="w-8 h-8" />
                 <div className="flex space-x-8">
