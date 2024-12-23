@@ -40,7 +40,7 @@ const index = () => {
                         <img src={logo1} width={"96px"} height={"96px"} />
                         <h1 className="text-[56px] ml-4">Bookmark</h1>
                     </div>
-                    <div className="relative w-[400px] h-[70px]">
+                    <div className="relative w-[400px] h-[70px] cursor-pointer">
                         <div className="absolute inset-0 bg-[#FFFFFF] opacity-20 rounded-[36px]"></div>
                         <div className="flex flex-row justify-center items-center h-full">
                             <h1 className="text-[28px] text-center">Login</h1>
