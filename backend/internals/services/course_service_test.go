@@ -97,10 +97,9 @@ func (suite *CourseTestSuite) TestGetTotalStepsByCourseIdSuccess() {
 
     // Assert
     is.NoError(err)
-    is.Equal(expectedPayload, actualPayload)  // Compare the entire struct instead of just the total steps
+    is.Equal(expectedPayload, actualPayload)  // Compare the entire struct
     mockCourseRepo.AssertExpectations(suite.T())  // Verify that the expectations were met
 }
-
 
 func (suite *CourseTestSuite) TestGetTotalStepsByCourseIdFetchError() {
 	is := assert.New(suite.T())
