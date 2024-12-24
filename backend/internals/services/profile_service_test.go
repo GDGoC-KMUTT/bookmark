@@ -76,21 +76,49 @@ func (suite *ProfileTestSuit) TestGetTotalGemsWhenSuccess() {
 	mockUserRepo := new(mockRepositories.UserRepository)
 
 	// Mock data
-	mockUserID := uint(1)
-	mockTotalGems := 100
+	mockUserID := uint(1) // Use uint instead of uint64 to match the method signature
+	mockModuleID := uint64(101)
+	mockStepID := uint64(201)
+	mockGems := int64(50)
 
-	// mock user repo
-	mockUserRepo.EXPECT().GetTotalGemsByUserID(mockUserID).Return(mockTotalGems, nil)
+	mockModule := &models.Module{
+		Id:          utils.Ptr(mockModuleID),
+		Title:       utils.Ptr("Test Module"),
+		Description: utils.Ptr("This is a test module"),
+	}
+
+	mockStep := &models.Step{
+		Id:          utils.Ptr(mockStepID),
+		ModuleId:    utils.Ptr(mockModuleID),
+		Module:      mockModule,
+		Title:       utils.Ptr("Test Step"),
+		Description: utils.Ptr("This is a test step"),
+		Gems:        utils.Ptr(mockGems),
+	}
+
+	mockUserPass := &models.UserPass{
+		Id:     utils.Ptr(uint64(1)),
+		UserId: utils.Ptr(uint64(mockUserID)), // Ensure the type matches `uint64` here for compatibility
+		StepId: utils.Ptr(mockStepID),
+		Step:   mockStep,
+		Type:   utils.Ptr("step"),
+	}
+
+	// Mock repository behavior
+	mockUserRepo.EXPECT().
+		GetTotalGemsByUserID(mockUserID).
+		Return(mockUserPass.Step.Gems, nil) // Use the gems from the step in mockUserPass
 
 	// Test
 	underTest := services.NewProfileService(mockUserRepo)
 
-	// Test Success
-	gemTotal, err := underTest.GetTotalGems(mockUserID)
+	// Act
+	totalGems, err := underTest.GetTotalGems(mockUserID)
 
-	is.Equal(mockUserID, gemTotal.UserID)
-	is.Equal(mockTotalGems, gemTotal.Total)
+	// Assert
 	is.NoError(err)
+	is.Equal(mockUserID, totalGems.UserID)
+	is.Equal(mockGems, totalGems.Total)
 }
 
 func (suite *ProfileTestSuit) TestGetTotalGemsWhenFailed() {
