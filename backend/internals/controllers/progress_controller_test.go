@@ -38,7 +38,7 @@ func setupTestProgressController(mockProgressService *mockServices.ProgressServi
 		return c.Next()
 	})
 
-	app.Get("/progress/:courseID/percentage", progressController.GetCompletionPercentage)
+	app.Get("/progress/:courseId/percentage", progressController.GetCompletionPercentage)
 	return app
 }
 

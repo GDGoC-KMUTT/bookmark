@@ -31,7 +31,7 @@ func setupTestCourseController(courseSvc services.CourseService) *fiber.App {
 	})
 
 	app.Get("/courses/current", controller.GetCurrentCourse)
-	app.Get("/courses/:course_id/total-steps", controller.GetTotalStepsByCourseId)
+	app.Get("/courses/:courseId/total-steps", controller.GetTotalStepsByCourseId)
 
 	return app
 }
