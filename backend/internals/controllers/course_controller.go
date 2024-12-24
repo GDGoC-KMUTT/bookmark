@@ -27,7 +27,7 @@ func NewCourseController(courseSvc services.CourseService) CourseController {
 // @Accept json
 // @Produce json
 // @Param field_id path uint true "Field ID"
-// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldImage]
+// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
 // @Failure 400 {object} response.GenericError
 // @Router /courses/field/{field_id} [get]
 func (r *CourseController) GetCoursesByFieldId(c *fiber.Ctx) error {
@@ -58,9 +58,9 @@ func (r *CourseController) GetCoursesByFieldId(c *fiber.Ctx) error {
 // @Summary Get all courses that a user has enrolled in
 // @Accept json
 // @Produce json
-// @Success 200 {object} response.InfoResponse[[]payload.Enroll]
+// @Success 200 {object} response.InfoResponse[[]payload.EnrollwithCourse]
 // @Failure 400 {object} response.GenericError
-// @Router /courses/enrolled [get]
+// @Router /course/enrolled [get]
 func (r *CourseController) GetEnrollCourseByUserId(c *fiber.Ctx) error {
     // * login state
     user := c.Locals("user").(*jwt.Token)

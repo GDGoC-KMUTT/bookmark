@@ -52,3 +52,31 @@ func (r *courseRepository) FindEnrollCourseByUserId(userId int) ([]*models.Enrol
 	return enrollments, nil
 }
 
+func (r *courseRepository) FindCourseByCourseId(courseId *uint64) (*models.Course, error) {
+	var course models.Course
+	result := r.db.Where("id = ?", courseId).First(&course)
+
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, result.Error
+	}
+	return &course, nil
+}
+
+func (r *courseRepository) FindFieldByFieldId(fieldId uint64) (*models.FieldType, error) {
+	var field models.FieldType
+	result := r.db.Where("id = ?", fieldId).First(&field)
+
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			// Return nil if the field is not found
+			return nil, nil
+		}
+		// Return error if any other error occurs
+		return nil, result.Error
+	}
+	// Return the field details if found
+	return &field, nil
+}
