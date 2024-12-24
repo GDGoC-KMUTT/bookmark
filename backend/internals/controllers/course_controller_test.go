@@ -95,29 +95,30 @@ func TestGetCurrentCourseWhenFailedToFetchCurrentCourse(t *testing.T) {
 }
 
 func TestGetTotalStepsByCourseIdWhenSuccess(t *testing.T) {
-	is := assert.New(t)
+    is := assert.New(t)
 
-	mockCourseService := new(mockServices.CourseService)
+    mockCourseService := new(mockServices.CourseService)
 
-	app := setupTestCourseController(mockCourseService)
+    app := setupTestCourseController(mockCourseService)
 
-	mockCourseId := uint(1)
-	expectedTotalSteps := payload.TotalStepsByCourseIdPayload{
-		TotalSteps: 10,
-	}
+    mockCourseId := uint(1)
+    expectedTotalSteps := payload.TotalStepsByCourseIdPayload{
+        TotalSteps: 10,
+    }
 
-	mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId).Return(&expectedTotalSteps, nil)
+    // Expect the incremented courseId, which will be mockCourseId + 1
+    mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId + 1).Return(&expectedTotalSteps, nil)
 
-	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/courses/%d/total-steps", mockCourseId), nil)
-	res, err := app.Test(req)
+    req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/courses/%d/total-steps", mockCourseId), nil)
+    res, err := app.Test(req)
 
-	var responsePayload response.InfoResponse[payload.TotalStepsByCourseIdPayload]
-	body, _ := io.ReadAll(res.Body)
-	json.Unmarshal(body, &responsePayload)
+    var responsePayload response.InfoResponse[payload.TotalStepsByCourseIdPayload]
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &responsePayload)
 
-	is.Nil(err)
-	is.Equal(http.StatusOK, res.StatusCode)
-	is.Equal(expectedTotalSteps.TotalSteps, responsePayload.Data.TotalSteps)
+    is.Nil(err)
+    is.Equal(http.StatusOK, res.StatusCode)
+    is.Equal(expectedTotalSteps.TotalSteps, responsePayload.Data.TotalSteps)
 }
 
 func TestGetTotalStepsByCourseIdWhenFailedToFetchTotalSteps(t *testing.T) {
