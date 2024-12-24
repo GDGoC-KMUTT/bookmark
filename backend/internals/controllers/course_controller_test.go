@@ -43,7 +43,7 @@ func TestGetCurrentCourseWhenSuccess(t *testing.T) {
 
     app := setupTestCourseController(mockCourseService)
 
-    mockUserId := uint(123)
+    mockUserId := uint64(123)
     mockCourseId := uint64(1)
     mockCourseName := "Test Course"
     
