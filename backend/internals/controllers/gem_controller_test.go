@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
+	"github.com/stretchr/testify/mock"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
@@ -46,7 +46,7 @@ func TestGetUserGemsWhenSuccess(t *testing.T) {
         Total: 100,
     }
 
-    mockProfileService.EXPECT().GetTotalGems().Return(&expectedGems, nil)
+    mockProfileService.EXPECT().GetTotalGems(mock.Anything).Return(&expectedGems, nil)
 
     req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)  // Correct URL path
     req.Header.Set("Authorization", "Bearer mockToken")  // Add mock JWT token to the header
@@ -69,7 +69,7 @@ func TestGetUserGemsWhenFailedToFetchTotalGems(t *testing.T) {
 
     app := setupTestGemController(mockProfileService)
 
-    mockProfileService.EXPECT().GetTotalGems().Return(nil, fmt.Errorf("failed to fetch total gems"))
+    mockProfileService.EXPECT().GetTotalGems(mock.Anything).Return(nil, fmt.Errorf("failed to fetch total gems"))
 
     req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)  // Correct URL path
     req.Header.Set("Authorization", "Bearer mockToken")  // Add mock JWT token to the header
