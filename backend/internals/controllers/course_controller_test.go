@@ -43,15 +43,15 @@ func TestGetCurrentCourseWhenSuccess(t *testing.T) {
 
     app := setupTestCourseController(mockCourseService)
 
-    // Use uint, matching the controller's expectation
-    mockUserId := uint(123) // Changed from uint64 to uint
+    mockUserId := uint(123)
+    mockCourseId := uint64(1)
     mockCourseName := "Test Course"
+    
     expectedCourse := payload.Course{
-        Id:   &mockUserId,
+        Id:   &mockCourseId,
         Name: &mockCourseName,
     }
 
-    // Ensure the mock expects uint, not uint64
     mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
 
     req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
