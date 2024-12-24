@@ -31,7 +31,7 @@ func SetupRoutes() {
 	// * Services
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
-	var courseService = services.NewCourseService(courseRepo)
+	var courseService = services.NewCourseService(courseRepo, fieldTypeRepo)
 	var articleService = services.NewArticleService(articleRepo)
 
 	// * Controller
@@ -71,6 +71,7 @@ func SetupRoutes() {
 
 	course := api.Group("/course", middleware.Jwt())
 	course.Get("/field/:field_id", courseController.GetCoursesByFieldId)
+	course.Get("/field_types", courseController.GetAllFieldTypes)
 
 	article := api.Group("/article", middleware.Jwt())
 	article.Get("/", ArticleController.GetAllArticles)

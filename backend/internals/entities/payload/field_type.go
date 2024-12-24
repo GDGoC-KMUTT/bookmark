@@ -2,7 +2,7 @@ package payload
 
 type FieldType struct {
 	Id       *uint64 `json:"id"`
-	Name     *uint64 `json:"name"`
+	Name     *string `json:"name"`
 	ImageUrl *string `json:"image_url"`
 }
 

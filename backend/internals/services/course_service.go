@@ -6,12 +6,14 @@ import (
 )
 
 type courseService struct {
-	courseRepo repositories.CourseRepository
+	courseRepo    repositories.CourseRepository
+	fieldTypeRepo repositories.FieldTypeRepository
 }
 
-func NewCourseService(courseRepo repositories.CourseRepository) CourseService {
+func NewCourseService(courseRepo repositories.CourseRepository, fieldTypeRepo repositories.FieldTypeRepository) CourseService {
 	return &courseService{
-		courseRepo: courseRepo,
+		courseRepo:    courseRepo,
+		fieldTypeRepo: fieldTypeRepo,
 	}
 }
 
@@ -33,4 +35,22 @@ func (r *courseService) GetCourseByFieldId(fieldId *uint) ([]payload.CourseWithF
 	}
 
 	return result, nil
+}
+
+func (r *courseService) GetAllFieldTypes() ([]payload.FieldType, error) {
+	fieldTypes, tx := r.fieldTypeRepo.FindAllFieldType()
+	if tx != nil {
+		return nil, tx
+	}
+
+	var result []payload.FieldType
+	for _, fieldType := range fieldTypes {
+		result = append(result, payload.FieldType{
+			Id:       fieldType.Id,
+			Name:     fieldType.Name,
+			ImageUrl: fieldType.ImageUrl,
+		})
+	}
+	return result, nil
+
 }
