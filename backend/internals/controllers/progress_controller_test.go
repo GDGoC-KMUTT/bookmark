@@ -50,20 +50,32 @@ func (suite *ProgressControllerTestSuite) TestGetCompletionPercentageWhenSuccess
 	app := setupTestProgressController(mockProgressService)
 
 	mockCourseID := uint(10)
-	expectedPercentage := 75.0
+	expectedPercentage := 100.0
 
 	mockProgressService.EXPECT().GetCompletionPercentage(mock.Anything, mockCourseID).Return(expectedPercentage, nil)
 
 	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/progress/%d/percentage", mockCourseID), nil)
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"userId": uint(1), // Mocked user ID
+	})
+	req.Header.Set("Authorization", "Bearer "+token.Raw)
+
 	res, err := app.Test(req)
 
-	var responsePayload map[string]float64
+	var responsePayload struct {
+		Success bool    `json:"success"`
+		Code    int     `json:"code"`
+		Data    float64 `json:"data"`
+	}
 	body, _ := io.ReadAll(res.Body)
 	json.Unmarshal(body, &responsePayload)
 
 	is.Nil(err)
 	is.Equal(http.StatusOK, res.StatusCode)
-	is.Equal(expectedPercentage, responsePayload["completion_percentage"])
+	is.True(responsePayload.Success)
+	is.Equal(200, responsePayload.Code)
+	is.Equal(expectedPercentage, responsePayload.Data) // The completion percentage is in the `data` field
 }
 
 func (suite *ProgressControllerTestSuite) TestGetCompletionPercentageWhenFailedToGetCompletionPercentage() {
@@ -97,6 +109,7 @@ func (suite *ProgressControllerTestSuite) TestGetCompletionPercentageWhenInvalid
 	app := setupTestProgressController(mockProgressService)
 
 	req := httptest.NewRequest(http.MethodGet, "/progress/invalidCourseID/percentage", nil)
+
 	res, err := app.Test(req)
 
 	var errResponse map[string]string
@@ -105,7 +118,7 @@ func (suite *ProgressControllerTestSuite) TestGetCompletionPercentageWhenInvalid
 
 	is.Nil(err)
 	is.Equal(http.StatusBadRequest, res.StatusCode)
-	is.Equal("Invalid courseID", errResponse["error"])
+	is.Equal("failed to decode: schema: error converting value for \"courseId\"", errResponse["error"])
 }
 
 func TestProgressController(t *testing.T) {
