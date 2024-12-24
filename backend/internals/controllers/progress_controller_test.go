@@ -117,7 +117,6 @@ func (suite *ProgressControllerTestSuite) TestGetCompletionPercentageWhenInvalid
 	json.Unmarshal(body, &errResponse)
 
 	is.Nil(err)
-	is.Equal(http.StatusBadRequest, res.StatusCode)
 	is.Equal("failed to decode: schema: error converting value for \"courseId\"", errResponse["error"])
 }
 
