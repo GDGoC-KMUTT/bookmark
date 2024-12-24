@@ -73,8 +73,8 @@ const Portal = () => {
     }
 
     return (
-        <div className="w-full h-full">
-            <div className="flex justify-center mx-auto px-8 bg-gray-50 p-28">
+        <div className="flex flex-col w-screen bg-gray-50 ">
+            <div className="flex justify-center mx-auto px-8 p-28">
                 {/* Main Sections Container */}
                 <div className="space-y-12">
                     {/* Enrollment Section */}
