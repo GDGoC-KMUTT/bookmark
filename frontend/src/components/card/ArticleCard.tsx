@@ -1,14 +1,19 @@
 import { PayloadArticle } from "@/api/api"
 import { Text } from "lucide-react"
 import { FC } from "react"
+import { useNavigate } from "react-router-dom"
 
 interface IArticleCard {
     article: PayloadArticle
 }
 
 const ArticleCard: FC<IArticleCard> = ({ article }) => {
+    const navigate = useNavigate()
     return (
-        <div className="flex flex-col p-4 w-[380px] h-[200px] bg-background rounded-sm border border-border break-words m-2">
+        <div
+            className="flex flex-col p-4 w-[380px] h-[200px] bg-background rounded-sm border border-border break-words m-2"
+            onClick={() => navigate(`${article?.href}`)}
+        >
             <div className="text-wrap">
                 <div className="flex items-center text-border">
                     <Text className="stroke-2 w-5 h-5" />
