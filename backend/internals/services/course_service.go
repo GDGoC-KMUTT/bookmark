@@ -41,7 +41,6 @@ func (r *courseService) GetCurrentCourse(userID uint) (*payload.Course, error) {
 		return nil, err
 	}
 
-	// Create payload for the course
 	courseDetails := &payload.Course{
 		Id:   course.Id,
 		Name: course.Name,
@@ -51,13 +50,11 @@ func (r *courseService) GetCurrentCourse(userID uint) (*payload.Course, error) {
 }
 
 func (r *courseService) GetTotalStepsByCourseId(courseID uint) (*payload.TotalStepsByCourseIdPayload, error) {
-	// Fetch the total steps using the repository method
 	totalSteps, err := r.courseRepo.GetTotalStepsByCourseId(courseID)
 	if err != nil {
 		return nil, err
 	}
 
-	// Create and return the payload with the courseId and total steps
 	return &payload.TotalStepsByCourseIdPayload{
 		CourseId:   courseID,
 		TotalSteps: totalSteps,

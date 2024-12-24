@@ -72,11 +72,9 @@ func (suite *ProfileTestSuit) TestGetUserInfoWhenFailed() {
 
 func (suite *ProfileTestSuit) TestGetTotalGemsWhenSuccess() {
 	is := assert.New(suite.T())
-	// Arrange
 	mockUserRepo := new(mockRepositories.UserRepository)
 
-	// Mock data
-	mockUserID := uint(1) // Use uint for compatibility with GetTotalGems
+	mockUserID := uint(1)
 	mockModuleID := uint64(101)
 	mockStepID := uint64(201)
 	mockGems := int64(50)
@@ -98,30 +96,25 @@ func (suite *ProfileTestSuit) TestGetTotalGemsWhenSuccess() {
 
 	mockUserPass := &models.UserPass{
 		Id:     utils.Ptr(uint64(1)),
-		UserId: utils.Ptr(uint64(mockUserID)), // Ensure compatibility
+		UserId: utils.Ptr(uint64(mockUserID)),
 		StepId: utils.Ptr(mockStepID),
 		Step:   mockStep,
 		Type:   utils.Ptr("step"),
 	}
 
-	// Dereference the Gems pointer and convert to uint64
 	var totalGems uint64
 	if mockUserPass.Step.Gems != nil {
 		totalGems = uint64(*mockUserPass.Step.Gems)
 	}
 
-	// Mock repository behavior
 	mockUserRepo.EXPECT().
 		GetTotalGemsByUserID(mockUserID).
-		Return(totalGems, nil) // Use the converted value
+		Return(totalGems, nil)
 
-	// Test
 	underTest := services.NewProfileService(mockUserRepo)
 
-	// Act
 	result, err := underTest.GetTotalGems(mockUserID)
 
-	// Assert
 	is.NoError(err)
 	is.Equal(mockUserID, result.UserID)
 	is.Equal(totalGems, result.Total)
@@ -129,19 +122,14 @@ func (suite *ProfileTestSuit) TestGetTotalGemsWhenSuccess() {
 
 func (suite *ProfileTestSuit) TestGetTotalGemsWhenFailed() {
 	is := assert.New(suite.T())
-	// Arrange
 	mockUserRepo := new(mockRepositories.UserRepository)
 
-	// Mock data
 	mockUserID := uint(1)
 
-	// mock user repo
 	mockUserRepo.EXPECT().GetTotalGemsByUserID(mockUserID).Return(0, fmt.Errorf("gems data not found"))
 
-	// Test
 	underTest := services.NewProfileService(mockUserRepo)
 
-	// Test Failure
 	gemTotal, err := underTest.GetTotalGems(mockUserID)
 
 	is.Nil(gemTotal)

@@ -17,15 +17,12 @@ func NewProgressService(userRepo repositories.UserRepository, courseRepo reposit
 	}
 }
 
-// Ensure that progressService implements the ProgressService interface
 func (s *progressService) GetCompletionPercentage(userID uint, courseID uint) (float64, error) {
-    // Fetch all course steps
     steps, err := s.courseRepo.GetAllCourseSteps(courseID)
     if err != nil {
         return 0, fmt.Errorf("failed to fetch course steps")
     }
 
-    // Fetch user's completed steps
     userSteps, err := s.userRepo.GetUserCompletedSteps(userID)
     if err != nil {
         return 0, fmt.Errorf("failed to fetch user completed steps: %w", err)

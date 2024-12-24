@@ -86,10 +86,8 @@ func (r *CourseController) GetCurrentCourse(c *fiber.Ctx) error {
 // @Failure 400 {object} response.GenericError
 // @Router /courses/{course_id}/total-steps [get]
 func (r *CourseController) GetTotalStepsByCourseId(c *fiber.Ctx) error {
-	// Define the parameter struct for the course ID
 	param := new(payload.CourseIdParam)
 
-	// Parse the course_id parameter from the URL
 	if err := c.ParamsParser(param); err != nil {
 		return &response.GenericError{
 			Err:     err,
@@ -97,7 +95,6 @@ func (r *CourseController) GetTotalStepsByCourseId(c *fiber.Ctx) error {
 		}
 	}
 
-	// Fetch the total steps for the course based on the course ID
 	totalSteps, err := r.courseSvc.GetTotalStepsByCourseId(param.CourseId)
 	if err != nil {
 		return &response.GenericError{
@@ -106,6 +103,5 @@ func (r *CourseController) GetTotalStepsByCourseId(c *fiber.Ctx) error {
 		}
 	}
 
-	// Return the total steps in the response
 	return response.Ok(c, totalSteps)
 }

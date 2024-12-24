@@ -45,7 +45,6 @@ func (pc *ProgressController) GetCompletionPercentage(c *fiber.Ctx) error {
 		})
 	}
 
-	// Call the service to get the completion percentage
 	percentage, err := pc.progressService.GetCompletionPercentage(userId, uint(courseID))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
