@@ -43,18 +43,18 @@ func TestGetCurrentCourseWhenSuccess(t *testing.T) {
 
     app := setupTestCourseController(mockCourseService)
 
-    // Use uint64 consistently
-    mockUserId := uint(123) // Ensure this is uint64
-    mockCourseId := uint64(1) // Ensure courseId is also uint64
+    // `userId` is `uint`, as expected in the controller
+    mockUserId := uint(123)  // `userId` as `uint`
+    mockCourseId := uint64(1) // `courseId` as `uint64`, as expected in the payload
     mockCourseName := "Test Course"
     
-    // Define the expected course with a pointer to uint64 for Id
+    // The expected course response uses `uint64` for Id, as per the Course struct
     expectedCourse := payload.Course{
-        Id:   &mockCourseId,
+        Id:   &mockCourseId,   // `courseId` is `uint64`
         Name: &mockCourseName,
     }
 
-    // Ensure that the mock expects uint64 for the userId (not uint)
+    // Mock expects `uint` for userId, as per the controller method signature
     mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
 
     req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
@@ -66,11 +66,13 @@ func TestGetCurrentCourseWhenSuccess(t *testing.T) {
     body, _ := io.ReadAll(res.Body)
     json.Unmarshal(body, &responsePayload)
 
-    // Assertions for the expected values in the response
+    // Assertions
     is.Nil(err)
     is.Equal(http.StatusOK, res.StatusCode)
-    is.Equal(*expectedCourse.Id, *responsePayload.Data.Id) // Compare courseId (not userId)
-    is.Equal(*expectedCourse.Name, *responsePayload.Data.Name) // Compare courseName
+
+    // Assert that the response courseId (uint64) matches the expected courseId
+    is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
+    is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
 }
 
 func TestGetCurrentCourseWhenFailedToFetchCurrentCourse(t *testing.T) {
