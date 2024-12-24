@@ -83,22 +83,26 @@ func (suite *CourseTestSuite) TestGetTotalStepsByCourseIdSuccess() {
     mockCourseRepo := new(mockRepositories.CourseRepository)
     mockCourseID := uint(10)
 
-    // Mock the return value for GetTotalStepsByCourseId
+    // Create the expected payload
     expectedPayload := &payload.TotalStepsByCourseIdPayload{
         CourseId: mockCourseID,
         TotalSteps: 3,
     }
-    mockCourseRepo.On("GetTotalStepsByCourseId", mockCourseID).Return(expectedPayload, nil)
 
+    // Mock the method to return the total steps as an int (not a payload)
+    mockCourseRepo.On("GetTotalStepsByCourseId", mockCourseID).Return(3, nil)
+
+    // Create the service with the mock repository
     underTest := services.NewCourseService(mockCourseRepo)
 
     // Act
     actualPayload, err := underTest.GetTotalStepsByCourseId(mockCourseID)
 
     // Assert
-    is.NoError(err)
-    is.Equal(expectedPayload, actualPayload)  // Compare the entire struct
-    mockCourseRepo.AssertExpectations(suite.T())  // Verify that the expectations were met
+    is.NoError(err)  // Make sure no error was returned
+    is.Equal(expectedPayload, actualPayload)  // Compare the full struct
+
+    mockCourseRepo.AssertExpectations(suite.T())  // Verify that the mock expectations were met
 }
 
 func (suite *CourseTestSuite) TestGetTotalStepsByCourseIdFetchError() {
