@@ -4,8 +4,10 @@ import (
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
 	"backend/internals/services"
-	"github.com/golang-jwt/jwt/v5"
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type CourseController struct {
@@ -63,13 +65,12 @@ func (r *CourseController) GetCurrentCourse(c *fiber.Ctx) error {
 	claims := user.Claims.(jwt.MapClaims)
 	userID := claims["userId"].(float64)
 
-	// Get the current course for the user
 	course, err := r.courseSvc.GetCurrentCourse(uint(userID))
 	if err != nil {
-		return &response.GenericError{
+		return c.Status(http.StatusInternalServerError).JSON(&response.GenericError{
 			Err:     err,
 			Message: "failed to fetch current course",
-		}
+		})
 	}
 
 	return response.Ok(c, course)

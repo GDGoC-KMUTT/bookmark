@@ -10,7 +10,6 @@ const Navbar = () => {
     const [totalGems, setTotalGems] = useAtom(totalGemsAtom);
     const [course, setCurrentCourse] = useAtom(currentCourse);
     const [progress, setProgress] = useAtom(progressAtom);
-    const [error, setError] = useState<string | null>(null)
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -30,7 +29,6 @@ const Navbar = () => {
                     setTotalGems(gemsResponse.data.total as number);  // Set total gems atom
                 } else {
                     setTotalGems(0);
-                    setError("Gems data is unavailable.");
                 }
 
                 const currentCourse = await server.courses.getCurrentCourse();
@@ -43,10 +41,9 @@ const Navbar = () => {
                     // console.log("Progress Data:", progressResponse.completion_percentage);
                 } else {
                     setCurrentCourse('No active course');
-                    setError("Course data is unavailable.");
                 }
             } catch (error) {
-                setError("Failed to fetch profile data or gem count.")
+                throw error;
             }
         };
 
@@ -55,12 +52,6 @@ const Navbar = () => {
 
     return (
         <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between">
-            {error && (
-                <div className="absolute top-0 left-0 w-full bg-red-500 text-white p-2 text-center">
-                    {error}
-                </div>
-            )}
-
             <div className="flex items-center space-x-8">
                 <img src="src/assets/logo2.png" alt="Logo" className="w-8 h-8" />
                 <div className="flex space-x-8">
