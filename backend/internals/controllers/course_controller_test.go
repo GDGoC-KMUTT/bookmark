@@ -66,7 +66,7 @@ func TestGetCurrentCourseWhenSuccess(t *testing.T) {
     is.Nil(err)
     is.Equal(http.StatusOK, res.StatusCode)
 
-    is.Equal(expectedCourse.Id, responsePayload.Data.Id)
+    is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
     is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
 }
 

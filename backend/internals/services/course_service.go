@@ -41,10 +41,8 @@ func (r *courseService) GetCurrentCourse(userID uint) (*payload.Course, error) {
 		return nil, err
 	}
 
-	incrementedCourseId := *course.Id + 1
-
 	courseDetails := &payload.Course{
-		Id:   &incrementedCourseId,
+		Id:   course.Id,
 		Name: course.Name,
 	}
 
