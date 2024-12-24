@@ -76,33 +76,24 @@ func (suite *CourseTestSuite) TestGetCurrentCourseFetchError() {
 }
 
 func (suite *CourseTestSuite) TestGetTotalStepsByCourseIdSuccess() {
-	is := assert.New(suite.T())
+    is := assert.New(suite.T())
 
-	// Arrange
-	mockCourseRepo := new(mockRepositories.CourseRepository)
-	mockCourseID := uint(10)
+    // Arrange
+    mockCourseRepo := new(mockRepositories.CourseRepository)
+    mockCourseID := uint(10)
 
-	// Mock data for steps with *uint64 pointers
-	mockSteps := []models.Step{
-		{Id: PtrUint64(1)},  // Use PtrUint64 to assign *uint64
-		{Id: PtrUint64(2)},
-		{Id: PtrUint64(3)},
-	}
+    // Mock the return value for GetTotalStepsByCourseId
+    mockCourseRepo.On("GetTotalStepsByCourseId", mockCourseID).Return(3, nil)  // Return 3 steps for course 10
 
-	// Set up expectations for the mock repository method
-	mockCourseRepo.EXPECT().
-		GetAllCourseSteps(mockCourseID).
-		Return(mockSteps, nil)
+    underTest := services.NewCourseService(mockCourseRepo)
 
-	underTest := services.NewCourseService(mockCourseRepo)
+    // Act
+    totalSteps, err := underTest.GetTotalStepsByCourseId(mockCourseID)
 
-	// Act
-	payload, err := underTest.GetTotalStepsByCourseId(mockCourseID)
-
-	// Assert
-	is.NoError(err)
-	is.Equal(mockCourseID, payload.CourseId)
-	is.Equal(len(mockSteps), payload.TotalSteps)
+    // Assert
+    is.NoError(err)
+    is.Equal(3, totalSteps)  // Assert that the total steps are 3
+    mockCourseRepo.AssertExpectations(suite.T())  // Verify that the expectations were met
 }
 
 func (suite *CourseTestSuite) TestGetTotalStepsByCourseIdFetchError() {
