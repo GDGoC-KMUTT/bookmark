@@ -22,6 +22,14 @@ func setupTestCourseController(courseSvc services.CourseService) *fiber.App {
 
 	controller := NewCourseController(courseSvc)
 
+	app.Use(func(c *fiber.Ctx) error {
+		token := jwt.New(jwt.SigningMethodHS256)
+		claims := token.Claims.(jwt.MapClaims)
+		claims["userId"] = float64(123)
+		c.Locals("user", token)
+		return c.Next()
+	})
+
 	app.Get("/courses/current", controller.GetCurrentCourse)
 	app.Get("/courses/:course_id/total-steps", controller.GetTotalStepsByCourseId)
 
@@ -29,46 +37,34 @@ func setupTestCourseController(courseSvc services.CourseService) *fiber.App {
 }
 
 func TestGetCurrentCourseWhenSuccess(t *testing.T) {
-    is := assert.New(t)
+	is := assert.New(t)
 
-    mockCourseService := new(mockServices.CourseService)
+	mockCourseService := new(mockServices.CourseService)
 
-    app := setupTestCourseController(mockCourseService)
+	app := setupTestCourseController(mockCourseService)
 
-    mockUserId := uint64(123)
+	mockUserId := uint64(123)
+	mockCourseName := "Test Course"
+	expectedCourse := payload.Course{
+		Id:   &mockUserId,
+		Name: &mockCourseName,
+	}
 
-    mockCourseName := "Test Course"
-    expectedCourse := payload.Course{
-        Id:      &mockUserId,
-        Name:    &mockCourseName,
-        FieldId: nil,
-    }
+	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
 
-    mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
+	req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
+	req.Header.Set("Authorization", "Bearer mockToken")
 
-    app.Use(func(c *fiber.Ctx) error {
-        token := &jwt.Token{
-            Claims: jwt.MapClaims{
-                "userId": mockUserId,
-            },
-        }
-        c.Locals("user", token)
-        return c.Next()
-    })
+	res, err := app.Test(req)
 
-    req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
-    req.Header.Set("Authorization", "Bearer mockToken")
+	var responsePayload response.InfoResponse[payload.Course]
+	body, _ := io.ReadAll(res.Body)
+	json.Unmarshal(body, &responsePayload)
 
-    res, err := app.Test(req)
-
-    var responsePayload response.InfoResponse[payload.Course]
-    body, _ := io.ReadAll(res.Body)
-    json.Unmarshal(body, &responsePayload)
-
-    is.Nil(err)
-    is.Equal(http.StatusOK, res.StatusCode)
-    is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
-    is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
+	is.Nil(err)
+	is.Equal(http.StatusOK, res.StatusCode)
+	is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
+	is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
 }
 
 func TestGetCurrentCourseWhenFailedToFetchCurrentCourse(t *testing.T) {
@@ -79,8 +75,7 @@ func TestGetCurrentCourseWhenFailedToFetchCurrentCourse(t *testing.T) {
 	app := setupTestCourseController(mockCourseService)
 
 	mockUserId := uint64(123)
-
-	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&payload.Course{}, fmt.Errorf("failed to fetch current course"))
+	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(nil, fmt.Errorf("failed to fetch current course"))
 
 	req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
 	req.Header.Set("Authorization", "Bearer mockToken")
