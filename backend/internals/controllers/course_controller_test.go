@@ -130,7 +130,7 @@ func TestGetTotalStepsByCourseIdWhenFailedToFetchTotalSteps(t *testing.T) {
 
 	mockCourseId := uint(1)
 
-	mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId - 1).Return(&payload.TotalStepsByCourseIdPayload{}, fmt.Errorf("failed to fetch total steps"))
+	mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId).Return(&payload.TotalStepsByCourseIdPayload{}, fmt.Errorf("failed to fetch total steps"))
 
 	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/courses/%d/total-steps", mockCourseId), nil)
 	res, err := app.Test(req)
