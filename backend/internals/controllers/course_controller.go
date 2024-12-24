@@ -4,8 +4,6 @@ import (
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
 	"backend/internals/services"
-	"net/http"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -67,10 +65,11 @@ func (r *CourseController) GetCurrentCourse(c *fiber.Ctx) error {
 
 	course, err := r.courseSvc.GetCurrentCourse(uint(userID))
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(&response.GenericError{
+		return &response.GenericError{
 			Err:     err,
-			Message: "failed to fetch current course",
-		})
+			Code:    "COURSE_FETCH_FAILED",
+			Message: "Failed to fetch current course",
+		}
 	}
 
 	return response.Ok(c, course)
@@ -98,10 +97,11 @@ func (r *CourseController) GetTotalStepsByCourseId(c *fiber.Ctx) error {
 
 	totalSteps, err := r.courseSvc.GetTotalStepsByCourseId(param.CourseId)
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(&response.GenericError{
+		return &response.GenericError{
 			Err:     err,
+			Code:    "TOTAL_STEPS_FETCH_FAILED",
 			Message: "failed to fetch total steps",
-		})
+		}
 	}
 
 	return response.Ok(c, totalSteps)

@@ -3,7 +3,6 @@ package controllers
 import (
 	"backend/internals/entities/response"
 	"backend/internals/services"
-	"net/http"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -49,10 +48,11 @@ func (pc *ProgressController) GetCompletionPercentage(c *fiber.Ctx) error {
 
 	percentage, err := pc.progressService.GetCompletionPercentage(userId, uint(courseID))
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(&response.GenericError{
+		return &response.GenericError{
 			Err:     err,
+			Code:    "PROGRESS_FETCH_FAILED",
 			Message: "failed to get completion percentage",
-		})
+		}
 	}
 
 	// Return the percentage as a response
