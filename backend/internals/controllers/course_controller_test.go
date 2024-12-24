@@ -37,34 +37,36 @@ func setupTestCourseController(courseSvc services.CourseService) *fiber.App {
 }
 
 func TestGetCurrentCourseWhenSuccess(t *testing.T) {
-	is := assert.New(t)
+    is := assert.New(t)
 
-	mockCourseService := new(mockServices.CourseService)
+    mockCourseService := new(mockServices.CourseService)
 
-	app := setupTestCourseController(mockCourseService)
+    app := setupTestCourseController(mockCourseService)
 
-	mockUserId := uint64(123)
-	mockCourseName := "Test Course"
-	expectedCourse := payload.Course{
-		Id:   &mockUserId,
-		Name: &mockCourseName,
-	}
+    // Use uint, matching the controller's expectation
+    mockUserId := uint(123) // Changed from uint64 to uint
+    mockCourseName := "Test Course"
+    expectedCourse := payload.Course{
+        Id:   &mockUserId,
+        Name: &mockCourseName,
+    }
 
-	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
+    // Ensure the mock expects uint, not uint64
+    mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
-	req.Header.Set("Authorization", "Bearer mockToken")
+    req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
+    req.Header.Set("Authorization", "Bearer mockToken")
 
-	res, err := app.Test(req)
+    res, err := app.Test(req)
 
-	var responsePayload response.InfoResponse[payload.Course]
-	body, _ := io.ReadAll(res.Body)
-	json.Unmarshal(body, &responsePayload)
+    var responsePayload response.InfoResponse[payload.Course]
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &responsePayload)
 
-	is.Nil(err)
-	is.Equal(http.StatusOK, res.StatusCode)
-	is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
-	is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
+    is.Nil(err)
+    is.Equal(http.StatusOK, res.StatusCode)
+    is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
+    is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
 }
 
 func TestGetCurrentCourseWhenFailedToFetchCurrentCourse(t *testing.T) {
