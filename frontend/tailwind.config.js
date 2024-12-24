@@ -56,6 +56,9 @@ export default {
                     foreground: "hsl(var(--explore-foreground))",
                 },
             },
+            backgroundImage: {
+                droplet1: "url('/src/assets/droplet1.png')"
+            }
         },
         fontFamily: {
             sans: ['"Ubuntu"', '"Noto Sans Thai"', "sans-serif", "Source Code Pro"],
