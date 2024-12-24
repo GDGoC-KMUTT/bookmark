@@ -98,10 +98,10 @@ func (r *CourseController) GetTotalStepsByCourseId(c *fiber.Ctx) error {
 
 	totalSteps, err := r.courseSvc.GetTotalStepsByCourseId(param.CourseId)
 	if err != nil {
-		return &response.GenericError{
+		return c.Status(http.StatusInternalServerError).JSON(&response.GenericError{
 			Err:     err,
 			Message: "failed to fetch total steps",
-		}
+		})
 	}
 
 	return response.Ok(c, totalSteps)

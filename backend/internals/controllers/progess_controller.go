@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"backend/internals/entities/response"
 	"backend/internals/services"
-	"github.com/gofiber/fiber/v2"
+	"net/http"
 	"strconv"
-	"github.com/golang-jwt/jwt/v5"
 
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type ProgressController struct {
@@ -47,8 +49,12 @@ func (pc *ProgressController) GetCompletionPercentage(c *fiber.Ctx) error {
 
 	percentage, err := pc.progressService.GetCompletionPercentage(userId, uint(courseID))
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
+		// return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		// 	"error": err.Error(),
+		// })
+		return c.Status(http.StatusInternalServerError).JSON(&response.GenericError{
+			Err:     err,
+			Message: "failed to get completion percentage",
 		})
 	}
 
