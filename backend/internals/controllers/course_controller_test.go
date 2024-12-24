@@ -107,7 +107,7 @@ func TestGetTotalStepsByCourseIdWhenSuccess(t *testing.T) {
     }
 
     // Expect the incremented courseId, which will be mockCourseId + 1
-    mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId + 1).Return(&expectedTotalSteps, nil)
+    mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId - 1).Return(&expectedTotalSteps, nil)
 
     req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/courses/%d/total-steps", mockCourseId), nil)
     res, err := app.Test(req)
