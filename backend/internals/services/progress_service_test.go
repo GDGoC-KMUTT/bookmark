@@ -67,9 +67,15 @@ func (suite *ProgressTestSuite) TestGetCompletionPercentageNoStepsFound() {
 	mockUserID := uint(1)
 	mockCourseID := uint(10)
 
+	// Mock the course steps to be empty
 	mockCourseRepo.EXPECT().
 		GetAllCourseSteps(mockCourseID).
 		Return([]models.Step{}, nil)
+
+	// Mock the user's completed steps (can return empty or mock data)
+	mockUserRepo.EXPECT().
+		GetUserCompletedSteps(mockUserID).
+		Return([]models.UserActivity{}, nil)
 
 	underTest := services.NewProgressService(mockUserRepo, mockCourseRepo)
 
@@ -92,6 +98,7 @@ func (suite *ProgressTestSuite) TestGetCompletionPercentageFetchError() {
 	mockUserID := uint(1)
 	mockCourseID := uint(10)
 
+	// Mock failure in fetching course steps
 	mockCourseRepo.EXPECT().
 		GetAllCourseSteps(mockCourseID).
 		Return(nil, fmt.Errorf("failed to fetch course steps"))
