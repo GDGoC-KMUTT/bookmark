@@ -43,18 +43,15 @@ func TestGetCurrentCourseWhenSuccess(t *testing.T) {
 
     app := setupTestCourseController(mockCourseService)
 
-    // `userId` is `uint`, as expected in the controller
-    mockUserId := uint(123)  // `userId` as `uint`
-    mockCourseId := uint64(1) // `courseId` as `uint64`, as expected in the payload
+    mockUserId := uint(123)
+    mockCourseId := uint64(1)
     mockCourseName := "Test Course"
     
-    // The expected course response uses `uint64` for Id, as per the Course struct
     expectedCourse := payload.Course{
-        Id:   &mockCourseId,   // `courseId` is `uint64`
+        Id:   &mockCourseId,
         Name: &mockCourseName,
     }
 
-    // Mock expects `uint` for userId, as per the controller method signature
     mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
 
     req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
@@ -66,11 +63,9 @@ func TestGetCurrentCourseWhenSuccess(t *testing.T) {
     body, _ := io.ReadAll(res.Body)
     json.Unmarshal(body, &responsePayload)
 
-    // Assertions
     is.Nil(err)
     is.Equal(http.StatusOK, res.StatusCode)
 
-    // Assert that the response courseId (uint64) matches the expected courseId
     is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
     is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
 }
@@ -82,7 +77,7 @@ func TestGetCurrentCourseWhenFailedToFetchCurrentCourse(t *testing.T) {
 
 	app := setupTestCourseController(mockCourseService)
 
-	mockUserId := uint64(123)
+	mockUserId := uint(123)
 	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(nil, fmt.Errorf("failed to fetch current course"))
 
 	req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
