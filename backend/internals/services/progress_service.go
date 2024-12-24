@@ -22,7 +22,7 @@ func (s *progressService) GetCompletionPercentage(userID uint, courseID uint) (f
     // Fetch all course steps
     steps, err := s.courseRepo.GetAllCourseSteps(courseID)
     if err != nil {
-        return 0, fmt.Errorf("failed to fetch course steps: %w", err)
+        return 0, fmt.Errorf("failed to fetch course steps")
     }
 
     // Fetch user's completed steps
