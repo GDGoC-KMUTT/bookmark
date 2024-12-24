@@ -55,6 +55,8 @@ func (r *courseService) GetTotalStepsByCourseId(courseID uint) (*payload.TotalSt
 		return nil, err
 	}
 
+	courseID++
+
 	return &payload.TotalStepsByCourseIdPayload{
 		CourseId:   courseID,
 		TotalSteps: totalSteps,
