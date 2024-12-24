@@ -5,7 +5,6 @@ import (
 	"backend/internals/entities/response"
 	"backend/internals/services"
 	mockServices "backend/mocks/services"
-	"github.com/stretchr/testify/mock"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -31,80 +30,87 @@ func setupTestGemController(profileSvc services.ProfileService) *fiber.App {
 		return c.Next()
 	})
 
-	app.Get("/api/profile/totalgems", controller.GetUserGems)
+	app.Get("/profile/totalgems", controller.GetUserGems)
 
 	return app
 }
 
 func TestGetUserGemsWhenSuccess(t *testing.T) {
-	is := assert.New(t)
+    is := assert.New(t)
 
-	mockProfileService := new(mockServices.ProfileService)
+    mockProfileService := new(mockServices.ProfileService)
 
-	app := setupTestProfileController(mockProfileService)
+    app := setupTestGemController(mockProfileService)
 
-	expectedGems := payload.GemTotal{
-		Total: 100,
-	}
+    expectedGems := payload.GemTotal{
+        Total: 100,
+    }
 
-	mockProfileService.EXPECT().GetTotalGems(mock.Anything).Return(&expectedGems, nil)
+    mockProfileService.EXPECT().GetTotalGems().Return(&expectedGems, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)
-	res, err := app.Test(req)
+    req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)  // Correct URL path
+    req.Header.Set("Authorization", "Bearer mockToken")  // Add mock JWT token to the header
 
-	var responsePayload response.InfoResponse[payload.GemTotal]
-	body, _ := io.ReadAll(res.Body)
-	json.Unmarshal(body, &responsePayload)
+    res, err := app.Test(req)
 
-	is.Nil(err)
-	is.Equal(http.StatusOK, res.StatusCode)
-	is.Equal(expectedGems.Total, responsePayload.Data.Total)
+    var responsePayload response.InfoResponse[payload.GemTotal]
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &responsePayload)
+
+    is.Nil(err)
+    is.Equal(http.StatusOK, res.StatusCode)
+    is.Equal(expectedGems.Total, responsePayload.Data.Total)
 }
 
 func TestGetUserGemsWhenFailedToFetchTotalGems(t *testing.T) {
-	is := assert.New(t)
+    is := assert.New(t)
 
-	mockProfileService := new(mockServices.ProfileService)
+    mockProfileService := new(mockServices.ProfileService)
 
-	app := setupTestProfileController(mockProfileService)
+    app := setupTestGemController(mockProfileService)
 
-	mockProfileService.EXPECT().GetTotalGems(mock.Anything).Return(&payload.GemTotal{}, fmt.Errorf("failed to fetch total gems"))
+    mockProfileService.EXPECT().GetTotalGems().Return(nil, fmt.Errorf("failed to fetch total gems"))
 
-	req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)
-	res, err := app.Test(req)
+    req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)  // Correct URL path
+    req.Header.Set("Authorization", "Bearer mockToken")  // Add mock JWT token to the header
 
-	var errResponse response.GenericError
-	body, _ := io.ReadAll(res.Body)
-	json.Unmarshal(body, &errResponse)
+    res, err := app.Test(req)
 
-	is.Nil(err)
-	is.Equal(http.StatusInternalServerError, res.StatusCode)
-	is.Equal("failed to fetch total gems", errResponse.Message)
+    var errResponse response.GenericError
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &errResponse)
+
+    is.Nil(err)
+    is.Equal(http.StatusInternalServerError, res.StatusCode)
+    is.Equal("failed to fetch total gems", errResponse.Message)
 }
 
 func TestGetUserGemsWhenInvalidUserId(t *testing.T) {
-	is := assert.New(t)
+    is := assert.New(t)
 
-	mockProfileService := new(mockServices.ProfileService)
+    mockProfileService := new(mockServices.ProfileService)
 
-	app := setupTestProfileController(mockProfileService)
+    app := setupTestGemController(mockProfileService)
 
-	app.Use(func(c *fiber.Ctx) error {
-		token := &jwt.Token{}
-		claims := jwt.MapClaims{}
-		token.Claims = claims
-		c.Locals("user", token)
-		return c.Next()
-	})
+    // Use a mock token with no valid claims (simulating invalid user)
+    app.Use(func(c *fiber.Ctx) error {
+        token := &jwt.Token{}
+        claims := jwt.MapClaims{}
+        token.Claims = claims
+        c.Locals("user", token)
+        return c.Next()
+    })
 
-	req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)
-	res, err := app.Test(req)
+    req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)  // Correct URL path
+    req.Header.Set("Authorization", "Bearer mockToken")  // Add mock JWT token to the header
 
-	var errResponse response.GenericError
-	body, _ := io.ReadAll(res.Body)
-	json.Unmarshal(body, &errResponse)
+    res, err := app.Test(req)
 
-	is.Nil(err)
-	is.Equal(http.StatusBadRequest, res.StatusCode)
-	is.Equal("Invalid userId", errResponse.Message)
+    var errResponse response.GenericError
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &errResponse)
+
+    is.Nil(err)
+    is.Equal(http.StatusBadRequest, res.StatusCode)
+    is.Equal("Invalid userId", errResponse.Message)
 }
