@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+
 type CourseCardProps = {
     courseName: string
     fieldName: string

@@ -12,10 +12,8 @@ const Profile = () => {
         try {
             const profileData = await server.profile.profileUserInfo()
             if (profileData.data) {
-                console.log("Profile Data:", profileData.data)
                 setProfile(profileData.data)
             } else {
-                // console.log("Failed response:")
                 setError("Failed to fetch profile data.")
                 setProfile(null)
             }
@@ -30,8 +28,6 @@ const Profile = () => {
         try {
             const coursesData = await server.courses.getEnrollCourseByUserId()
             if (coursesData.data) {
-                console.log("Course Data:", coursesData.data)
-
                 setEnrolledCourses(coursesData.data)
             } else {
                 setError("Failed to fetch enrolled courses.")
@@ -68,7 +64,6 @@ const Profile = () => {
                         <h2 className="text-2xl sm:text-3xl font-medium">
                             {profile.firstname} {profile.lastname}
                         </h2>
-                        {/* Change color */}
                         <p className="text-gray-500 text-sm sm:text-base">{profile.email}</p>
                     </div>
                 </div>

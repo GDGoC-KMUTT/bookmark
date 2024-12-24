@@ -6,8 +6,6 @@ import (
 	"backend/internals/services"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gofiber/fiber/v2"
-	// "strconv"
-	"log"
 )
 
 type CourseController struct {
@@ -67,8 +65,6 @@ func (r *CourseController) GetEnrollCourseByUserId(c *fiber.Ctx) error {
     claims := user.Claims.(jwt.MapClaims)
     userId := claims["userId"].(float64)
 	
-	log.Println("userId: ", userId)
-
     // * query the enroll table using the userId
     enrollInfo, err := r.courseSvc.GetEnrollCourseByUserId(int(userId))
     if err != nil {
