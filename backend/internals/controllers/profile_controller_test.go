@@ -129,7 +129,7 @@ func (suite *ProfileControllerTestSuit) TestGetUserGemsWhenFailedToFetchTotalGem
 
 	// mockUserId := uint64(123)
 
-	mockProfileService.EXPECT().GetTotalGems(mock.Anything).Return(payload.GemTotal{}, fmt.Errorf("failed to fetch total gems"))
+	mockProfileService.EXPECT().GetTotalGems(mock.Anything).Return(&payload.GemTotal{}, fmt.Errorf("failed to fetch total gems"))
 
 	req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)
 	res, err := app.Test(req)

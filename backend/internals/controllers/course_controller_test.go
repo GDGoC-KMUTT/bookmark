@@ -69,7 +69,7 @@ func TestGetCurrentCourseWhenFailedToFetchCurrentCourse(t *testing.T) {
 
 	mockUserId := uint64(123)
 
-	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(payload.Course{}, fmt.Errorf("failed to fetch current course"))
+	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&payload.Course{}, fmt.Errorf("failed to fetch current course"))
 
 	req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
 	req.Header.Set("Authorization", "Bearer mockToken")
@@ -120,7 +120,7 @@ func TestGetTotalStepsByCourseIdWhenFailedToFetchTotalSteps(t *testing.T) {
 
 	mockCourseId := uint64(1)
 
-	mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId).Return(payload.TotalStepsByCourseIdPayload{}, fmt.Errorf("failed to fetch total steps"))
+	mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId).Return(&payload.TotalStepsByCourseIdPayload{}, fmt.Errorf("failed to fetch total steps"))
 
 	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/courses/%d/total-steps", mockCourseId), nil)
 	res, err := app.Test(req)
