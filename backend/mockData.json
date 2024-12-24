@@ -31,7 +31,7 @@
       "updated_at": "2024-01-15T08:00:00Z"
     }
   ],
-  "fields": [
+  "field_types": [
     {
       "id": 1,
       "name": "Microcontroller",
@@ -186,7 +186,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 2,
+      "id": 4,
       "module_id": 2,
       "title": "Function and other",
       "description": "Learn about Python functions and other interesting things",
@@ -198,7 +198,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 3,
+      "id": 5,
       "module_id": 2,
       "title": "Function and other (cont.)",
       "description": "Deep dive into advanced functions and functional programming concepts",
@@ -210,7 +210,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 4,
+      "id": 6,
       "module_id": 2,
       "title": "Function and other (cont. 2)",
       "description": "Explore Python decorators and higher-order functions",
@@ -222,7 +222,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 5,
+      "id": 7,
       "module_id": 3,
       "title": "Start to learn Iot",
       "description": "Learn about basic IoT",
@@ -234,7 +234,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 6,
+      "id": 8,
       "module_id": 3,
       "title": "Start to learn IoT (cont.)",
       "description": "Dive deeper into setting up and working with IoT devices and platforms",
@@ -246,7 +246,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 7,
+      "id": 9,
       "module_id": 3,
       "title": "Start to learn IoT (cont. 2)",
       "description": "Implement advanced IoT concepts and data analysis for IoT systems",
@@ -258,7 +258,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 8,
+      "id": 10,
       "module_id": 4,
       "title": "IoT Lab",
       "description": "Learn about IoT with real lab",
@@ -270,7 +270,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 9,
+      "id": 11,
       "module_id": 4,
       "title": "IoT Lab (cont.)",
       "description": "Learn advanced IoT applications in the lab and handle real-world challenges",
@@ -282,7 +282,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 10,
+      "id": 12,
       "module_id": 4,
       "title": "IoT Lab (cont. 2)",
       "description": "Learn to troubleshoot and scale IoT systems for real-world deployment",
@@ -294,7 +294,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 11,
+      "id": 13,
       "module_id": 5,
       "title": "Get start to learn basics of database design",
       "description": "Learn about how to design a database",
@@ -306,7 +306,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 12,
+      "id": 14,
       "module_id": 5,
       "title": "Normalization and Relationship Types",
       "description": "Learn about database normalization and the types of relationships in database design",
@@ -318,7 +318,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 13,
+      "id": 15,
       "module_id": 5,
       "title": "Advanced Database Constraints and Indexing",
       "description": "Learn about advanced database constraints and indexing techniques to improve data integrity and query performance",
@@ -330,7 +330,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 14,
+      "id": 16,
       "module_id": 6,
       "title": "How to create and migrate",
       "description": "Learn about how to create and migrate databases efficiently",
@@ -342,7 +342,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 15,
+      "id": 17,
       "module_id": 6,
       "title": "Version Control for Database Migrations",
       "description": "Learn how to manage database migrations using version control systems",
@@ -354,7 +354,7 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 16,
+      "id": 18,
       "module_id": 6,
       "title": "Rollback and Revert Migrations",
       "description": "Learn how to safely roll back and revert migrations to handle errors or unwanted changes",
@@ -505,7 +505,7 @@
       "user_id": 3,
       "step_evaluate_id": 1,
       "content": "Functions are used to reuse code and make it more readable. Parameters are used to pass data to the function, and return values allow it to output data.",
-      "check": true,
+      "pass": true,
       "comment": "Good explanation!",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
@@ -514,97 +514,97 @@
       "user_id": 2,
       "step_evaluate_id": 2,
       "content": "Functions help organize code by grouping related tasks. Parameters accept input data, and return values provide the output from the function.",
-      "check": true,
+      "pass": true,
       "comment": "Good job!",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
       "user_id": 3,
-      "step_evaluate_id": 1,
+      "step_evaluate_id": 3,
       "content": "I selected 'def' and 'lambda' as valid keywords.",
-      "check": true,
+      "pass": true,
       "comment": "Correct answer!",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
       "user_id": 2,
-      "step_evaluate_id": 2,
+      "step_evaluate_id": 4,
       "content": "I selected 'def' and 'function' because they both look like function keywords.",
-      "check": false,
+      "pass": false,
       "comment": "The correct choices are 'def' and 'lambda'. 'function' and 'func' are not valid keywords.",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
       "user_id": 3,
-      "step_evaluate_id": 1,
+      "step_evaluate_id": 5,
       "content": "Lambda functions are simple, one-line functions that don't need a name, while regular functions are more complex and can have multiple expressions.",
-      "check": true,
+      "pass": true,
       "comment": "Well explained!",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
       "user_id": 2,
-      "step_evaluate_id": 2,
+      "step_evaluate_id": 6,
       "content": "Lambda functions are anonymous and shorter, whereas normal functions can have multiple lines.",
-      "check": true,
+      "pass": true,
       "comment": "Good explanation!",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
       "user_id": 3,
-      "step_evaluate_id": 1,
+      "step_evaluate_id": 7,
       "content": "I selected the correct options: Sorting a list, applying transformation, and storing in a variable.",
-      "check": true,
+      "pass": true,
       "comment": "Correct!",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
       "user_id": 2,
-      "step_evaluate_id": 2,
+      "step_evaluate_id": 8,
       "content": "I selected 'Sorting a list' and 'Applying a transformation'. I didn't choose 'Storing in a variable'.",
-      "check": false,
+      "pass": false,
       "comment": "You missed 'Storing a function in a variable', which is a valid use case for lambda functions.",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
       "user_id": 3,
-      "step_evaluate_id": 1,
+      "step_evaluate_id": 9,
       "content": "Decorators allow you to add extra behavior to a function, such as logging, without modifying the original function itself.",
-      "check": true,
+      "pass": true,
       "comment": "Correct explanation!",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
       "user_id": 2,
-      "step_evaluate_id": 2,
+      "step_evaluate_id": 10,
       "content": "Decorators enhance functions by adding features like timing, logging, etc.",
-      "check": true,
+      "pass": true,
       "comment": "Well explained!",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
       "user_id": 3,
-      "step_evaluate_id": 1,
+      "step_evaluate_id": 11,
       "content": "I selected '1', '2', and '4' as correct answers.",
-      "check": true,
+      "pass": true,
       "comment": "Correct answer!",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
       "user_id": 2,
-      "step_evaluate_id": 2,
+      "step_evaluate_id": 12,
       "content": "I selected '1' and '3'. I was unsure about stacking decorators.",
-      "check": false,
+      "pass": false,
       "comment": "The correct choices are '1', '2', and '4'. Decorators can be stacked and must return a function.",
       "created_at": "2024-01-16T10:00:00Z",
       "updated_at": "2024-01-16T10:00:00Z"
