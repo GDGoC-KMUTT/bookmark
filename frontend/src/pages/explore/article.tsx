@@ -16,6 +16,7 @@ const ExploreArticle = () => {
     const handleKeywordChange = (event: ChangeEvent<HTMLInputElement>) => {
         setKeyword(event.target.value)
     }
+    const filteredArticles = articles?.filter((article) => article.title?.toLowerCase().includes(keyword.toLowerCase()))
 
     return (
         <div className="min-h-screen flex flex-col items-center w-[100vw] pb-20">
@@ -58,7 +59,7 @@ const ExploreArticle = () => {
                 </div> */}
             </div>
             <div className="flex flex-wrap  items-center ">
-                {articles?.map((article) => {
+                {filteredArticles?.map((article) => {
                     return <ArticleCard key={article.id} article={article} />
                 })}
             </div>

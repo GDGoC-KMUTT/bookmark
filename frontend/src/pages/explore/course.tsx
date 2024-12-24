@@ -32,6 +32,8 @@ const ExploreCourse = () => {
         console.log(`Filtering results for field: ${fieldId}`)
     }
 
+    const filteredCourses = courses?.filter((course) => course.name?.toLowerCase().includes(keyword.toLowerCase()))
+
     return (
         <div className="min-h-screen flex flex-col items-center w-[100vw] ">
             <div className="flex flex-col justify-center items-center  p-20 mt-12 bg-droplet1 bg-center bg-no-repeat">
@@ -72,7 +74,7 @@ const ExploreCourse = () => {
                 </div>
             </div>
             <div className="flex flex-wrap  items-center mb-20 ">
-                {courses?.map((course) => {
+                {filteredCourses?.map((course) => {
                     return <CourseCard key={course.id} course={course} />
                 })}
             </div>
