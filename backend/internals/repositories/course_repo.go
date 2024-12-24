@@ -21,12 +21,12 @@ func (r *courseRepository) FindCourseByFieldId(field_id *uint) ([]models.Course,
 
 	result := r.db.Find(&courses, "field_id = ?", field_id)
 	if result.Error != nil {
-		return nil, fieldType, result.Error
+		return nil, nil, result.Error
 	}
 
 	result = r.db.First(&fieldType, "id = ?", field_id)
 	if result.Error != nil {
-		return nil, fieldType, result.Error
+		return nil, nil, result.Error
 	}
 
 	return courses, fieldType, nil

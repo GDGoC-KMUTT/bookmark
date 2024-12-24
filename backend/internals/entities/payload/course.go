@@ -14,3 +14,5 @@ type CourseWithFieldType struct {
 	FieldImage *string `json:"field_image"`
 }
 
+
+

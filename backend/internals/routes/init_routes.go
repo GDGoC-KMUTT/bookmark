@@ -22,6 +22,7 @@ func SetupRoutes() {
 	// * Repositories
 	var userRepo = repositories.NewUserRepository(db.Gorm)
 	var courseRepo = repositories.NewCourseRepository(db.Gorm)
+	var fieldTypeRepo = repositories.NewFieldTypeRepository(db.Gorm)
 	var articleRepo = repositories.NewArticleRepository(db.Gorm)
 
 	// * third party
