@@ -75,7 +75,6 @@ func (r *ProfileController) GetUserGems(c *fiber.Ctx) error {
 	if err != nil {
 		return &response.GenericError{
 			Err:     err,
-			Code:    "TOTAL_GEMS_FETCH_FAILED",
 			Message: "failed to fetch total gems",
 		}
 	}

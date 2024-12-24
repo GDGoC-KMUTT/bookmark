@@ -50,7 +50,6 @@ func (pc *ProgressController) GetCompletionPercentage(c *fiber.Ctx) error {
 	if err != nil {
 		return &response.GenericError{
 			Err:     err,
-			Code:    "PROGRESS_FETCH_FAILED",
 			Message: "failed to get completion percentage",
 		}
 	}

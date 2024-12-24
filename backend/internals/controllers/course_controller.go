@@ -67,8 +67,7 @@ func (r *CourseController) GetCurrentCourse(c *fiber.Ctx) error {
 	if err != nil {
 		return &response.GenericError{
 			Err:     err,
-			Code:    "COURSE_FETCH_FAILED",
-			Message: "Failed to fetch current course",
+			Message: "failed to fetch current course",
 		}
 	}
 
@@ -99,7 +98,6 @@ func (r *CourseController) GetTotalStepsByCourseId(c *fiber.Ctx) error {
 	if err != nil {
 		return &response.GenericError{
 			Err:     err,
-			Code:    "TOTAL_STEPS_FETCH_FAILED",
 			Message: "failed to fetch total steps",
 		}
 	}
