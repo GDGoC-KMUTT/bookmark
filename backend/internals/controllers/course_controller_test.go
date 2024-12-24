@@ -66,7 +66,7 @@ func TestGetCurrentCourseWhenSuccess(t *testing.T) {
     is.Nil(err)
     is.Equal(http.StatusOK, res.StatusCode)
 
-    is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
+    is.Equal(expectedCourse.Id, responsePayload.Data.Id)
     is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
 }
 
@@ -101,7 +101,7 @@ func TestGetTotalStepsByCourseIdWhenSuccess(t *testing.T) {
 
 	app := setupTestCourseController(mockCourseService)
 
-	mockCourseId := uint64(1)
+	mockCourseId := uint(1)
 	expectedTotalSteps := payload.TotalStepsByCourseIdPayload{
 		TotalSteps: 10,
 	}
@@ -127,7 +127,7 @@ func TestGetTotalStepsByCourseIdWhenFailedToFetchTotalSteps(t *testing.T) {
 
 	app := setupTestCourseController(mockCourseService)
 
-	mockCourseId := uint64(1)
+	mockCourseId := uint(1)
 
 	mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId).Return(&payload.TotalStepsByCourseIdPayload{}, fmt.Errorf("failed to fetch total steps"))
 

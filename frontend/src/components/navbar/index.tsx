@@ -1,15 +1,14 @@
 import { Gem, BookMarked } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import { userProfileAtom, totalGemsAtom, currentCourse, progressAtom } from "@/stores/navbar";
 import { server } from "@/configs/server";
 import { Link, useNavigate } from "react-router-dom";
+import type { PayloadProfile } from "@/api/api";
 
 const Navbar = () => {
-    const [userProfile, setUserProfile] = useAtom(userProfileAtom);
-    const [totalGems, setTotalGems] = useAtom(totalGemsAtom);
-    const [course, setCurrentCourse] = useAtom(currentCourse);
-    const [progress, setProgress] = useAtom(progressAtom);
+    const [userProfile, setUserProfile] = useState<PayloadProfile | undefined>(undefined);
+    const [totalGems, setTotalGems] = useState<number | null>(null);
+    const [course, setCurrentCourse] = useState<string>('');
+    const [progress, setProgress] = useState<number | null>(null);
     const navigate = useNavigate();
 
     const handleClick = () => {
