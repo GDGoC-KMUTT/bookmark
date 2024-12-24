@@ -3,6 +3,7 @@ package services_test
 import (
 	"backend/internals/db/models"
 	"backend/internals/services"
+	"backend/internals/entities/payload"
 	mockRepositories "backend/mocks/repositories"
 	"fmt"
 	"github.com/stretchr/testify/assert"
@@ -83,18 +84,23 @@ func (suite *CourseTestSuite) TestGetTotalStepsByCourseIdSuccess() {
     mockCourseID := uint(10)
 
     // Mock the return value for GetTotalStepsByCourseId
-    mockCourseRepo.On("GetTotalStepsByCourseId", mockCourseID).Return(3, nil)  // Return 3 steps for course 10
+    expectedPayload := &payload.TotalStepsByCourseIdPayload{
+        CourseId: mockCourseID,
+        TotalSteps: 3,
+    }
+    mockCourseRepo.On("GetTotalStepsByCourseId", mockCourseID).Return(expectedPayload, nil)
 
     underTest := services.NewCourseService(mockCourseRepo)
 
     // Act
-    totalSteps, err := underTest.GetTotalStepsByCourseId(mockCourseID)
+    actualPayload, err := underTest.GetTotalStepsByCourseId(mockCourseID)
 
     // Assert
     is.NoError(err)
-    is.Equal(3, totalSteps)  // Assert that the total steps are 3
+    is.Equal(expectedPayload, actualPayload)  // Compare the entire struct instead of just the total steps
     mockCourseRepo.AssertExpectations(suite.T())  // Verify that the expectations were met
 }
+
 
 func (suite *CourseTestSuite) TestGetTotalStepsByCourseIdFetchError() {
 	is := assert.New(suite.T())
