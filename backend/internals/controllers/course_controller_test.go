@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,36 +29,46 @@ func setupTestCourseController(courseSvc services.CourseService) *fiber.App {
 }
 
 func TestGetCurrentCourseWhenSuccess(t *testing.T) {
-	is := assert.New(t)
+    is := assert.New(t)
 
-	mockCourseService := new(mockServices.CourseService)
+    mockCourseService := new(mockServices.CourseService)
 
-	app := setupTestCourseController(mockCourseService)
+    app := setupTestCourseController(mockCourseService)
 
-	mockUserId := uint64(123)
+    mockUserId := uint64(123)
 
-	mockCourseName := "Test Course"
-	expectedCourse := payload.Course{
-		Id:      &mockUserId,
-		Name:    &mockCourseName,
-		FieldId: nil,
-	}
+    mockCourseName := "Test Course"
+    expectedCourse := payload.Course{
+        Id:      &mockUserId,
+        Name:    &mockCourseName,
+        FieldId: nil,
+    }
 
-	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
+    mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
-	req.Header.Set("Authorization", "Bearer mockToken")
+    app.Use(func(c *fiber.Ctx) error {
+        token := &jwt.Token{
+            Claims: jwt.MapClaims{
+                "userId": mockUserId,
+            },
+        }
+        c.Locals("user", token)
+        return c.Next()
+    })
 
-	res, err := app.Test(req)
+    req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
+    req.Header.Set("Authorization", "Bearer mockToken")
 
-	var responsePayload response.InfoResponse[payload.Course]
-	body, _ := io.ReadAll(res.Body)
-	json.Unmarshal(body, &responsePayload)
+    res, err := app.Test(req)
 
-	is.Nil(err)
-	is.Equal(http.StatusOK, res.StatusCode)
-	is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
-	is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
+    var responsePayload response.InfoResponse[payload.Course]
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &responsePayload)
+
+    is.Nil(err)
+    is.Equal(http.StatusOK, res.StatusCode)
+    is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
+    is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
 }
 
 func TestGetCurrentCourseWhenFailedToFetchCurrentCourse(t *testing.T) {
