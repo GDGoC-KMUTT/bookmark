@@ -83,7 +83,7 @@ func (r *CourseController) GetCurrentCourse(c *fiber.Ctx) error {
 // @Param course_id path uint true "Course ID"
 // @Success 200 {object} response.InfoResponse[payload.TotalStepsByCourseIdPayload]
 // @Failure 400 {object} response.GenericError
-// @Router /courses/{course_id}/total-steps [get]
+// @Router /courses/{courseId}/total-steps [get]
 func (r *CourseController) GetTotalStepsByCourseId(c *fiber.Ctx) error {
 	param := new(payload.CourseIdParam)
 

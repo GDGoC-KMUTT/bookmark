@@ -3,8 +3,7 @@ package controllers
 import (
 	"backend/internals/entities/response"
 	"backend/internals/services"
-	"strconv"
-
+	"backend/internals/entities/payload"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -30,7 +29,7 @@ func NewProgressController(progressService services.ProgressService) *ProgressCo
 // @Success 200 {object} map[string]float64 "completion_percentage"
 // @Failure 400 {object} map[string]string "error"
 // @Failure 500 {object} map[string]string "error"
-// @Router /progress/{courseID}/percentage [get]
+// @Router /progress/{courseId}/percentage [get]
 func (pc *ProgressController) GetCompletionPercentage(c *fiber.Ctx) error {
 	// Extract user from JWT token using c.Locals
 	user := c.Locals("user").(*jwt.Token)
@@ -38,15 +37,15 @@ func (pc *ProgressController) GetCompletionPercentage(c *fiber.Ctx) error {
 	userId := uint(claims["userId"].(float64))
 
 	// Extract courseID from URL parameter
-	courseIDParam := c.Params("courseID")
-	courseID, err := strconv.ParseUint(courseIDParam, 10, 32)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid courseID",
-		})
+	courseIDParam := new(payload.CourseIdParam)
+	if err := c.ParamsParser(courseIDParam); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "invalid course_id parameter",
+		}
 	}
 
-	percentage, err := pc.progressService.GetCompletionPercentage(userId, uint(courseID))
+	percentage, err := pc.progressService.GetCompletionPercentage(userId, uint(courseIDParam.CourseId))
 	if err != nil {
 		return &response.GenericError{
 			Err:     err,
@@ -55,7 +54,5 @@ func (pc *ProgressController) GetCompletionPercentage(c *fiber.Ctx) error {
 	}
 
 	// Return the percentage as a response
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"completion_percentage": percentage,
-	})
+	return response.Ok(c, percentage)
 }

@@ -9,7 +9,6 @@ function App() {
     return (
         <ToastProvider>
             <BrowserRouter>
-                <Navbar />
                 <Routes>
                     <Route path="/" element={<AppLayout />} />
                     {router.map((item) =>

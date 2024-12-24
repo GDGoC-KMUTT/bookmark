@@ -4,7 +4,6 @@ import (
 	"backend/internals/entities/response"
 	"backend/internals/services"
 	"backend/internals/utils"
-	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -61,14 +60,7 @@ func (r *ProfileController) GetUserGems(c *fiber.Ctx) error {
 	// * login state
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-	userId, ok := claims["userId"].(float64)
-	if !ok {
-		return &response.GenericError{
-			Err:     fmt.Errorf("invalid user ID"),
-			Message: "Invalid user ID in JWT token",
-		}
-	}
-	fmt.Println("userId:", userId)
+	userId := claims["userId"].(float64)
 	
 	// * get total gems for user
 	totalGems, err := r.profileSvc.GetTotalGems(uint(userId))

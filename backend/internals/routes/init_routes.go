@@ -72,10 +72,10 @@ func SetupRoutes() {
 	course := api.Group("/courses", middleware.Jwt())
 	course.Get("/field/:field_id", courseController.GetCoursesByFieldId)
 	course.Get("/current", courseController.GetCurrentCourse)
-	course.Get("/:course_id/total-steps", courseController.GetTotalStepsByCourseId)
+	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
 
 	progress := api.Group("/progress", middleware.Jwt())
-	progress.Get("/:courseID/percentage", progressController.GetCompletionPercentage)
+	progress.Get("/:courseId/percentage", progressController.GetCompletionPercentage)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {
