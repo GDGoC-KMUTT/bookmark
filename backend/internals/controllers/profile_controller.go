@@ -5,6 +5,7 @@ import (
 	"backend/internals/services"
 	"backend/internals/utils"
 	"fmt"
+	"net/http"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -73,10 +74,10 @@ func (r *ProfileController) GetUserGems(c *fiber.Ctx) error {
 	// * get total gems for user
 	totalGems, err := r.profileSvc.GetTotalGems(uint(userId))
 	if err != nil {
-		return &response.GenericError{
+		return c.Status(http.StatusInternalServerError).JSON(&response.GenericError{
 			Err:     err,
 			Message: "failed to fetch total gems",
-		}
+		})
 	}
 
 	return response.Ok(c, totalGems)
