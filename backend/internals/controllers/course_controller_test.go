@@ -43,7 +43,7 @@ func TestGetCurrentCourseWhenSuccess(t *testing.T) {
 		FieldId: nil,
 	}
 
-	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(expectedCourse, nil)
+	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
 
 	req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
 	req.Header.Set("Authorization", "Bearer mockToken")
@@ -97,7 +97,7 @@ func TestGetTotalStepsByCourseIdWhenSuccess(t *testing.T) {
 		TotalSteps: 10,
 	}
 
-	mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId).Return(expectedTotalSteps, nil)
+	mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId).Return(&expectedTotalSteps, nil)
 
 	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/courses/%d/total-steps", mockCourseId), nil)
 	res, err := app.Test(req)

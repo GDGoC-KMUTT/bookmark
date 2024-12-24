@@ -106,7 +106,7 @@ func (suite *ProfileControllerTestSuit) TestGetUserGemsWhenSuccess() {
 		Total: 100,
 	}
 
-	mockProfileService.EXPECT().GetTotalGems(mock.Anything).Return(expectedGems, nil)
+	mockProfileService.EXPECT().GetTotalGems(mock.Anything).Return(&expectedGems, nil)
 
 	req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)
 	res, err := app.Test(req)
