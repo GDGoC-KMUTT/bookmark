@@ -31,7 +31,7 @@ func setupTestGemController(profileSvc services.ProfileService) *fiber.App {
 		return c.Next()
 	})
 
-	app.Get("/profile/totalgems", controller.GetUserGems)
+	app.Get("/api/profile/totalgems", controller.GetUserGems)
 
 	return app
 }
