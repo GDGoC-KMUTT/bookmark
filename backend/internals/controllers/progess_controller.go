@@ -49,9 +49,6 @@ func (pc *ProgressController) GetCompletionPercentage(c *fiber.Ctx) error {
 
 	percentage, err := pc.progressService.GetCompletionPercentage(userId, uint(courseID))
 	if err != nil {
-		// return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-		// 	"error": err.Error(),
-		// })
 		return c.Status(http.StatusInternalServerError).JSON(&response.GenericError{
 			Err:     err,
 			Message: "failed to get completion percentage",

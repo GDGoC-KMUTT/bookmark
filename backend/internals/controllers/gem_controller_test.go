@@ -84,38 +84,3 @@ func TestGetUserGemsWhenFailedToFetchTotalGems(t *testing.T) {
     is.Equal(http.StatusInternalServerError, res.StatusCode)
     is.Equal("failed to fetch total gems", errResponse.Message)
 }
-
-// func TestGetUserGemsWhenInvalidUserId(t *testing.T) {
-// 	is := assert.New(t)
-
-// 	mockProfileService := new(mockServices.ProfileService)
-
-// 	app := setupTestGemController(mockProfileService)
-
-// 	// Mock middleware to simulate JWT token
-// 	jwtToken := &jwt.Token{
-// 		Claims: jwt.MapClaims{
-// 			"userId": "invalid-id", // Simulate invalid ID type
-// 		},
-// 	}
-// 	app.Use(func(c *fiber.Ctx) error {
-// 		c.Locals("user", jwtToken)
-// 		return c.Next()
-// 	})
-
-// 	// Mock service call
-// 	mockProfileService.On("GetTotalGems", mock.Anything).Return(nil, fmt.Errorf("failed to fetch total gems"))
-
-// 	req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil)
-// 	res, err := app.Test(req)
-
-// 	var errResponse response.GenericError
-// 	body, _ := io.ReadAll(res.Body)
-// 	json.Unmarshal(body, &errResponse)
-
-// 	is.Nil(err)
-// 	is.Equal(http.StatusBadRequest, res.StatusCode) // Match actual status code
-// 	is.Equal("Invalid user ID in JWT token", errResponse.Message) // Match actual error message
-// }
-
-
