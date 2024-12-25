@@ -96,13 +96,8 @@ func safeCastToBool(v interface{}) (bool, error) {
 // Migration functions
 func MigrateUsers(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
-		id, err := safeCastToFloat64(d["id"])
-		if err != nil {
-			return fmt.Errorf("invalid id: %w", err)
-		}
 
 		user := &models.User{
-			Id:        toUint64Ptr(id),
 			Oid:       toStringPtr(d["oid"].(string)),
 			Firstname: toStringPtr(d["firstname"].(string)),
 			Lastname:  toStringPtr(d["lastname"].(string)),
@@ -120,13 +115,8 @@ func MigrateUsers(tx *gorm.DB, data []map[string]interface{}) error {
 
 func MigrateFieldTypes(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
-		id, err := safeCastToFloat64(d["id"])
-		if err != nil {
-			return fmt.Errorf("invalid id: %w", err)
-		}
 
 		field := &models.FieldType{
-			Id:        toUint64Ptr(id),
 			Name:      toStringPtr(d["name"].(string)),
 			ImageUrl:  nilableStringPtr(d["image_url"]),
 			CreatedAt: toTimePtr(d["created_at"].(string)),
@@ -141,13 +131,8 @@ func MigrateFieldTypes(tx *gorm.DB, data []map[string]interface{}) error {
 
 func MigrateModules(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
-		id, err := safeCastToFloat64(d["id"])
-		if err != nil {
-			return fmt.Errorf("invalid id: %w", err)
-		}
-
+		
 		module := &models.Module{
-			Id:          toUint64Ptr(id),
 			Title:       toStringPtr(d["title"].(string)),
 			Description: nilableStringPtr(d["description"]),
 			ImageUrl:    nilableStringPtr(d["image_url"]),
@@ -163,10 +148,6 @@ func MigrateModules(tx *gorm.DB, data []map[string]interface{}) error {
 
 func MigrateSteps(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
-		id, err := safeCastToFloat64(d["id"])
-		if err != nil {
-			return fmt.Errorf("invalid id: %w", err)
-		}
 
 		moduleId, err := safeCastToFloat64(d["module_id"])
 		if err != nil {
@@ -174,7 +155,6 @@ func MigrateSteps(tx *gorm.DB, data []map[string]interface{}) error {
 		}
 
 		step := &models.Step{
-			Id:          toUint64Ptr(id),
 			ModuleId:    toUint64Ptr(moduleId),
 			Title:       toStringPtr(d["title"].(string)),
 			Description: nilableStringPtr(d["description"]),
@@ -219,7 +199,6 @@ func MigrateStepEvaluates(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
 
 		evaluate := &models.StepEvaluate{
-			Id:          toUint64Ptr(d["id"].(float64)),
 			StepId:      toUint64Ptr(d["step_id"].(float64)),
 			Gem:         toIntPtr(d["gem"].(float64)),
 			Order:       toIntPtr(d["order"].(float64)),
@@ -246,7 +225,6 @@ func MigrateUserEvaluates(tx *gorm.DB, data []map[string]interface{}) error {
 		}
 
 		evaluate := &models.UserEvaluate{
-			Id:             toUint64Ptr(d["id"].(float64)),
 			UserId:         toUint64Ptr(d["user_id"].(float64)),
 			StepEvaluateId: toUint64Ptr(d["step_evaluate_id"].(float64)),
 			Content:        toStringPtr(d["content"].(string)),
@@ -265,10 +243,6 @@ func MigrateUserEvaluates(tx *gorm.DB, data []map[string]interface{}) error {
 
 func MigrateStepComments(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
-		id, err := safeCastToFloat64(d["id"])
-		if err != nil {
-			return fmt.Errorf("invalid id: %w", err)
-		}
 
 		stepId, err := safeCastToFloat64(d["step_id"])
 		if err != nil {
@@ -281,7 +255,6 @@ func MigrateStepComments(tx *gorm.DB, data []map[string]interface{}) error {
 		}
 
 		comment := &models.StepComment{
-			Id:        toUint64Ptr(id),
 			StepId:    toUint64Ptr(stepId),
 			UserId:    toUint64Ptr(userId),
 			Content:   toStringPtr(d["content"].(string)),
@@ -322,10 +295,6 @@ func MigrateStepCommentUpvotes(tx *gorm.DB, data []map[string]interface{}) error
 
 func MigrateUserPasses(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
-		id, err := safeCastToFloat64(d["id"])
-		if err != nil {
-			return fmt.Errorf("invalid id: %w", err)
-		}
 
 		userId, err := safeCastToFloat64(d["user_id"])
 		if err != nil {
@@ -333,7 +302,6 @@ func MigrateUserPasses(tx *gorm.DB, data []map[string]interface{}) error {
 		}
 
 		pass := &models.UserPass{
-			Id:        toUint64Ptr(id),
 			UserId:    toUint64Ptr(userId),
 			Type:      toStringPtr(d["type"].(string)),
 			StepId:    nilableUint64Ptr(d["step_id"]),
@@ -351,11 +319,6 @@ func MigrateUserPasses(tx *gorm.DB, data []map[string]interface{}) error {
 
 func MigrateEnrolls(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
-		id, err := safeCastToFloat64(d["id"])
-		if err != nil {
-			return fmt.Errorf("invalid id: %w", err)
-		}
-
 		userId, err := safeCastToFloat64(d["user_id"])
 		if err != nil {
 			return fmt.Errorf("invalid user_id: %w", err)
@@ -367,7 +330,6 @@ func MigrateEnrolls(tx *gorm.DB, data []map[string]interface{}) error {
 		}
 
 		enrol := &models.Enroll{
-			Id:        toUint64Ptr(id),
 			UserId:    toUint64Ptr(userId),
 			CourseId:  toUint64Ptr(courseId),
 			CreatedAt: toTimePtr(d["created_at"].(string)),
@@ -410,13 +372,8 @@ func MigrateCourseContents(tx *gorm.DB, data []map[string]interface{}) error {
 
 func MigrateArticles(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
-		id, err := safeCastToFloat64(d["id"])
-		if err != nil {
-			return fmt.Errorf("invalid id: %w", err)
-		}
 
 		article := &models.Article{
-			Id:        toUint64Ptr(id),
 			Title:     toStringPtr(d["title"].(string)),
 			Href:      toStringPtr(d["href"].(string)),
 			CreatedAt: toTimePtr(d["created_at"].(string)),
@@ -431,10 +388,6 @@ func MigrateArticles(tx *gorm.DB, data []map[string]interface{}) error {
 
 func MigrateCourses(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
-		id, err := safeCastToFloat64(d["id"])
-		if err != nil {
-			return fmt.Errorf("invalid id: %w", err)
-		}
 
 		fieldId, err := safeCastToFloat64(d["field_id"])
 		if err != nil {
@@ -442,7 +395,6 @@ func MigrateCourses(tx *gorm.DB, data []map[string]interface{}) error {
 		}
 
 		course := &models.Course{
-			Id:        toUint64Ptr(id),
 			Name:      toStringPtr(d["name"].(string)),
 			FieldId:   toUint64Ptr(fieldId),
 			CreatedAt: toTimePtr(d["created_at"].(string)),
