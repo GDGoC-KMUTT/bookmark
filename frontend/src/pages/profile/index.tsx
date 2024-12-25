@@ -48,7 +48,7 @@ const Profile = () => {
         return firsTwo.map((str) => str.substring(0, 1).toUpperCase())
     }
     return (
-        <div className="items-start p-10">
+        <div className="items-start sm:p-20 p-10 min-h-screen">
             <div className="flex flex-col items-start space-y-4">
                 <h1 className="text-3xl mt-10 mb-4 font-medium">Profile</h1>
                 <div className="flex flex-col sm:flex-row items-center  space-y-4 sm:space-x-6 sm:space-y-0">
@@ -65,7 +65,7 @@ const Profile = () => {
                 </div>
             </div>
 
-            <div className="mt-16">
+            <div className="mt-5 sm:mt-20">
                 <h1 className="text-2xl sm:text-3xl ml-5 font-medium">Enrolled Courses</h1>
                 <div className="mt-8 mb-10 gap-6 justify-center sm:justify-start">
                     {enrolledCourses.length === 0 ? (
