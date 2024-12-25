@@ -10,7 +10,7 @@ type CourseCardProps = {
 const CourseCard: React.FC<CourseCardProps> = ({ courseName, fieldName, imageUrl, courseId }) => {
     return (
         <Link to={`/courses/${courseId}`} className="block">
-            <div className="border p-5 pb-2 h-50 pr-10 rounded-sm flex flex-col space-y-2">
+            <div className="border p-5 pb-2 w-[290px] h-[200px] pr-10 rounded-sm flex flex-col space-y-2">
                 <div className="flex items-center space-x-2">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
