@@ -111,11 +111,9 @@ func (r *courseRepository) FindCourseByCourseId(courseId *uint64) (*models.Cours
 	result := r.db.Where("id = ?", courseId).First(&course)
 
 	if result.Error != nil {
-		if result.Error == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
 		return nil, result.Error
 	}
+
 	return &course, nil
 }
 
@@ -124,10 +122,8 @@ func (r *courseRepository) FindFieldByFieldId(fieldId uint64) (*models.FieldType
 	result := r.db.Where("id = ?", fieldId).First(&field)
 
 	if result.Error != nil {
-		if result.Error == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
 		return nil, result.Error
 	}
+
 	return &field, nil
 }
