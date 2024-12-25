@@ -10,7 +10,7 @@ type StepEvaluate struct {
 	Order       *int       `gorm:"index:idx_step_evaluate,unique; not null"`
 	Question    *string    `gorm:"type:TEXT; not null"`
 	Type        *string    `gorm:"type:VARCHAR(255) CHECK(type IN ('check', 'text', 'image')); not null"`
-	Instruction *string    `gorm:"type:TEXT; not null"`
+	Instruction *string    `gorm:"type:TEXT; null"`
 	CreatedAt   *time.Time `gorm:"not null"`
 	UpdatedAt   *time.Time `gorm:"not null"`
 }

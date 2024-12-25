@@ -217,6 +217,7 @@ func MigrateStepAuthors(tx *gorm.DB, data []map[string]interface{}) error {
 
 func MigrateStepEvaluates(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
+
 		evaluate := &models.StepEvaluate{
 			Id:          toUint64Ptr(d["id"].(float64)),
 			StepId:      toUint64Ptr(d["step_id"].(float64)),
@@ -224,7 +225,7 @@ func MigrateStepEvaluates(tx *gorm.DB, data []map[string]interface{}) error {
 			Order:       toIntPtr(d["order"].(float64)),
 			Type:        toStringPtr(d["type"].(string)),
 			Question:    toStringPtr(d["question"].(string)),
-			Instruction: toStringPtr(d["instruction"].(string)),
+			Instruction: nilableStringPtr(d["instruction"]),
 			CreatedAt:   toTimePtr(d["created_at"].(string)),
 			UpdatedAt:   toTimePtr(d["updated_at"].(string)),
 		}

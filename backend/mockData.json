@@ -374,7 +374,7 @@
       "gem": 2,
       "type": "text",
       "question": "Explain what a variable is in your own words.",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCompare the user’s response with your knowledge.\n\nIf the user response matches the explanation (even with slight variations in wording), return \"true\".\nIf the user response contains inaccuracies or misconceptions, return \"false\", followed by an explanation of the errors and corrections.\nWhether the result is \"true\" or \"false\", also provide a clear description of what a variable is, to reinforce understanding.",
+      "instruction": "1.This will provide answer for question about variable 2.please check",
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -385,7 +385,7 @@
       "gem": 3,
       "type": "text",
       "question": "What is the difference between `int`, `float`, and `str` types in Python? Provide examples for each.",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCompare the user’s response with your knowledge.\n\nIf the user correctly describes the types and provides accurate examples, return \"true\".\nIf the user makes errors in defining or giving examples, return \"false\", followed by an explanation of the mistakes and the correct information.",
+      "instruction": "1.This will provide the example of each variable type 2.please check",
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -396,7 +396,7 @@
       "gem": 2,
       "type": "check",
       "question": "Which of the following are valid Python data types?\n1. int\n2. str\n3. list\n4. float\n5. date\n6. boolean",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCheck if the user selects the correct options.\n\nReturn \"true\" if the correct options are selected.\nReturn \"false\" and provide feedback if the user selects invalid options.",
+      "instruction": null,
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -407,7 +407,7 @@
       "gem": 3,
       "type": "image",
       "question": "Please upload a screenshot of your Python code where you created variables of different types and printed their values.",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCheck if the uploaded image correctly shows the Python code where variables are created and printed.\n\nReturn \"true\" if the code in the image is correct.\nReturn \"false\" and provide feedback if the code contains errors or improvements can be made.",
+      "instruction": "1. Will attach image that show code to create variable of different types 2.Please check",
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -418,7 +418,7 @@
       "gem": 2,
       "type": "text",
       "question": "Explain the difference between `if`, `elif`, and `else` in Python control flow.",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCompare the user’s response with your knowledge.\n\nIf the user provides a correct explanation of the difference, return \"true\".\nIf the user provides an inaccurate explanation, return \"false\" with corrections and a clear description of how the control flow works.",
+      "instruction": "1. This will explain understanding about if elif and else in Python. 2.Correct me if i'm wrong",
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -429,7 +429,7 @@
       "gem": 3,
       "type": "check",
       "question": "Which of the following are valid loop types in Python?\n1. for\n2. while\n3. loop\n4. each",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCheck if the user selects the correct options.\n\nReturn \"true\" if the correct options are selected.\nReturn \"false\" and provide feedback if the user selects invalid options.",
+      "instruction": null,
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -440,7 +440,7 @@
       "gem": 2,
       "type": "text",
       "question": "What is the purpose of using functions in Python? Explain the concept of parameters and return values.",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCompare the user’s response with your knowledge.\n\nIf the user provides a correct explanation, return \"true\".\nIf the user provides an inaccurate explanation, return \"false\" with corrections and a clear description of the purpose and usage of functions, parameters, and return values.",
+      "instruction": "1. This will explain purpose of using function in Python 2.Please check whether correct or not",
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -451,7 +451,7 @@
       "gem": 3,
       "type": "check",
       "question": "Which of the following are valid Python keywords for defining a function?\n1. def\n2. function\n3. lambda\n4. func",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCheck if the user selects the correct options.\n\nReturn \"true\" if the correct options are selected.\nReturn \"false\" and provide feedback if the user selects invalid options.",
+      "instruction": null,
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -462,7 +462,7 @@
       "gem": 2,
       "type": "text",
       "question": "Explain how a lambda function differs from a regular function in Python.",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCompare the user’s response with your knowledge.\n\nIf the user provides a correct explanation, return \"true\".\nIf the user provides an inaccurate explanation, return \"false\" with corrections and a clear description of lambda functions and their usage.",
+      "instruction": "1. This will explain how lambda function differ from regular function in Python 2.Please check",
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -473,7 +473,7 @@
       "gem": 3,
       "type": "check",
       "question": "Which of the following are valid use cases for lambda functions in Python?\n1. Sorting a list\n2. Defining a function with multiple lines of code\n3. Applying a transformation to a sequence\n4. Storing a function in a variable",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCheck if the user selects the correct options.\n\nReturn \"true\" if the correct options are selected.\nReturn \"false\" and provide feedback if the user selects invalid options.",
+      "instruction": null,
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -484,7 +484,7 @@
       "gem": 2,
       "type": "text",
       "question": "What is the purpose of decorators in Python? Provide an example where a decorator extends the functionality of a function.",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCompare the user’s response with your knowledge.\n\nIf the user provides a correct explanation, return \"true\".\nIf the user provides an inaccurate explanation, return \"false\" with corrections and a clear description of the purpose and usage of decorators.",
+      "instruction": "1. This will explain purpose of decorator in Python 2.Please check",
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     },
@@ -495,7 +495,7 @@
       "gem": 3,
       "type": "check",
       "question": "Which of the following are true about decorators in Python?\n1. They can be used to modify the behavior of a function.\n2. They require a return statement.\n3. They cannot be used with lambda functions.\n4. They can be stacked on top of each other.",
-      "instruction": "Question:\n{question}\n\nUser answer:\n{user_answer}\n\nWhat I want you to help me:\nCheck if the user selects the correct options.\n\nReturn \"true\" if the correct options are selected.\nReturn \"false\" and provide feedback if the user selects invalid options.",
+      "instruction": null,
       "created_at": "2024-01-16T09:00:00Z",
       "updated_at": "2024-01-16T09:00:00Z"
     }
