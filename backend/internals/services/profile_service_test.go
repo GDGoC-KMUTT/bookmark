@@ -79,14 +79,12 @@ func (suite *ProfileTestSuit) TestGetTotalGemsWhenSuccess() {
 	mockStepID := uint64(201)
 	mockGems := int64(50)
 
-	// Mock module
 	mockModule := &models.Module{
 		Id:          utils.Ptr(mockModuleID),
 		Title:       utils.Ptr("Test Module"),
 		Description: utils.Ptr("This is a test module"),
 	}
 
-	// Mock step
 	mockStep := &models.Step{
 		Id:          utils.Ptr(mockStepID),
 		ModuleId:    utils.Ptr(mockModuleID),
@@ -96,31 +94,31 @@ func (suite *ProfileTestSuit) TestGetTotalGemsWhenSuccess() {
 		Gems:        utils.Ptr(mockGems),
 	}
 
-	// Mock user pass
-	// mockUserPass := &models.UserPass{
-	// 	Id:     utils.Ptr(uint64(1)),
-	// 	UserId: utils.Ptr(uint64(mockUserID)),
-	// 	StepId: utils.Ptr(mockStepID),
-	// 	Step:   mockStep,
-	// 	Type:   utils.Ptr("step"),
-	// }
+	mockUserPass := &models.UserPass{
+		Id:     utils.Ptr(uint64(1)),
+		UserId: utils.Ptr(uint64(mockUserID)),
+		StepId: utils.Ptr(mockStepID),
+		Step:   mockStep,
+		Type:   utils.Ptr("step"),
+	}
+
+	var totalGems uint64
+	if mockUserPass.Step.Gems != nil {
+		totalGems = uint64(*mockUserPass.Step.Gems)
+	}
 
 	mockUserRepo.EXPECT().
 		GetTotalGemsByUserID(mockUserID).
-		Return(uint64(*mockStep.Gems), nil)
+		Return(totalGems, nil)
 
-	// Test service
 	underTest := services.NewProfileService(mockUserRepo)
 
-	// Invoke service
 	result, err := underTest.GetTotalGems(mockUserID)
 
-	// Assert
 	is.NoError(err)
 	is.Equal(mockUserID, result.UserID)
-	is.Equal(uint64(*mockStep.Gems), result.Total)
+	is.Equal(totalGems, result.Total)
 }
-
 
 func (suite *ProfileTestSuit) TestGetTotalGemsWhenFailed() {
 	is := assert.New(suite.T())
