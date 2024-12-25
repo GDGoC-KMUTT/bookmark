@@ -502,6 +502,7 @@
   ],
   "user_evaluates": [
     {
+      "id": 1,
       "user_id": 3,
       "step_evaluate_id": 1,
       "content": "Functions are used to reuse code and make it more readable. Parameters are used to pass data to the function, and return values allow it to output data.",
@@ -511,6 +512,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 2,
       "user_id": 2,
       "step_evaluate_id": 2,
       "content": "Functions help organize code by grouping related tasks. Parameters accept input data, and return values provide the output from the function.",
@@ -520,6 +522,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 3,
       "user_id": 3,
       "step_evaluate_id": 3,
       "content": "I selected 'def' and 'lambda' as valid keywords.",
@@ -529,6 +532,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 4,
       "user_id": 2,
       "step_evaluate_id": 4,
       "content": "I selected 'def' and 'function' because they both look like function keywords.",
@@ -538,6 +542,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 5,
       "user_id": 3,
       "step_evaluate_id": 5,
       "content": "Lambda functions are simple, one-line functions that don't need a name, while regular functions are more complex and can have multiple expressions.",
@@ -547,6 +552,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 6,
       "user_id": 2,
       "step_evaluate_id": 6,
       "content": "Lambda functions are anonymous and shorter, whereas normal functions can have multiple lines.",
@@ -556,6 +562,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 7,
       "user_id": 3,
       "step_evaluate_id": 7,
       "content": "I selected the correct options: Sorting a list, applying transformation, and storing in a variable.",
@@ -565,6 +572,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 8,
       "user_id": 2,
       "step_evaluate_id": 8,
       "content": "I selected 'Sorting a list' and 'Applying a transformation'. I didn't choose 'Storing in a variable'.",
@@ -574,6 +582,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 9,
       "user_id": 3,
       "step_evaluate_id": 9,
       "content": "Decorators allow you to add extra behavior to a function, such as logging, without modifying the original function itself.",
@@ -583,6 +592,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 10,
       "user_id": 2,
       "step_evaluate_id": 10,
       "content": "Decorators enhance functions by adding features like timing, logging, etc.",
@@ -592,6 +602,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 11,
       "user_id": 3,
       "step_evaluate_id": 11,
       "content": "I selected '1', '2', and '4' as correct answers.",
@@ -601,6 +612,7 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
+      "id": 12,
       "user_id": 2,
       "step_evaluate_id": 12,
       "content": "I selected '1' and '3'. I was unsure about stacking decorators.",
