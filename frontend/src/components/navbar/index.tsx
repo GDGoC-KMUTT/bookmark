@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { server } from "@/configs/server";
 import { Link, useNavigate } from "react-router-dom";
 import type { PayloadProfile } from "@/api/api";
+import BookmarkLogo from "@/assets/logo2.png";
 
 const Navbar = () => {
     const [userProfile, setUserProfile] = useState<PayloadProfile | undefined>(undefined);
@@ -67,7 +68,7 @@ const Navbar = () => {
     return (
         <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between">
             <div className="flex items-center space-x-8">
-                <img src="src/assets/logo2.png" alt="bookmarkLogo" className="w-8 h-8" />
+                <img src={BookmarkLogo} alt="bookmarkLogo" className="w-8 h-8" />
                 <div className="flex space-x-8">
                 <Link to="/home" className="text-gray-500 font-medium hover:text-explore-foreground transition-colors">
                     Home
