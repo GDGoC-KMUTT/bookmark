@@ -37,13 +37,22 @@ const Navbar = () => {
                     setCurrentCourse(currentCourse.data.name)
 
                     const progressResponse = await server.progress.getCompletionPercentage(currentCourse.data.id as number)
-                    setProgress(progressResponse.data)
+                    setProgress(progressResponse.data ?? 0)
                     // console.log("Progress Data:", progressResponse);
                 } else {
                     setCurrentCourse("No active course")
                 }
             } catch (error) {
-                throw error
+                if (typeof error === "object" && error !== null && "response" in error && typeof (error as any).response?.status === "number") {
+                    const responseError = error as { response: { status: number } }
+                    if (responseError.response.status === 500) {
+                        // console.error("Internal server error occurred:", error);
+                        setCurrentCourse("No active course")
+                    }
+                } else {
+                    // console.error("Failed to fetch data:", error);
+                    setCurrentCourse("No active course")
+                }
             }
         }
 
