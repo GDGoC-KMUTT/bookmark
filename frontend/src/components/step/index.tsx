@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "../ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Badge } from "../ui/badge"
 import { Separator } from "../ui/separator"
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip"
 
 const peoplePassed = [
     {
@@ -110,10 +111,19 @@ export function Step() {
                                     if (index < 5) {
                                         return (
                                             <div className="relative -ml-3 first:ml-0">
-                                                <Avatar>
-                                                    <AvatarImage src={person.avatar} alt={person.name} />
-                                                    <AvatarFallback>{getFallBackName(person.name)}</AvatarFallback>
-                                                </Avatar>
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Avatar>
+                                                                <AvatarImage src={person.avatar} alt={person.name} />
+                                                                <AvatarFallback>{getFallBackName(person.name)}</AvatarFallback>
+                                                            </Avatar>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>{person.name}</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
                                             </div>
                                         )
                                     }

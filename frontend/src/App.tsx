@@ -10,24 +10,23 @@ function App() {
         <ToastProvider>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<AppLayout />}>
-                        {router.map((item) =>
-                            item.path == "/welcome" ? (
-                                <Route key={item.path} element={item.element} path={item.path} />
-                            ) : (
-                                <Route
-                                    key={item.path}
-                                    element={
-                                        <>
-                                            <Navbar />
-                                            {item.element}
-                                        </>
-                                    }
-                                    path={item.path}
-                                />
-                            )
-                        )}
-                    </Route>
+                    <Route path="/" element={<AppLayout />} />
+                    {router.map((item) =>
+                        item.path == "/welcome" ? (
+                            <Route key={item.path} element={item.element} path={item.path} />
+                        ) : (
+                            <Route
+                                key={item.path}
+                                element={
+                                    <>
+                                        <Navbar />
+                                        {item.element}
+                                    </>
+                                }
+                                path={item.path}
+                            />
+                        )
+                    )}
                 </Routes>
             </BrowserRouter>
             <Footer />
