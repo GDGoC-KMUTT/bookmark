@@ -89,21 +89,3 @@ const Profile = () => {
     )
 }
 export default Profile
-
-        // <div className="flex flex-col items-start p-10 pt-20">
-        //     <div className="flex flex-col">
-        //         <h1 className="text-3xl mt-10 mb-4 font-medium">Profile</h1>
-        //         <div className="flex flex-row">
-        //             <Avatar className="w-24 h-24 rounded-full object-cover shadow-md bg-slate-200 text-continueCourse text-xl font-bold">
-        //                 <AvatarImage src={profile.photoUrl} alt={`${profile.firstname} ${profile.lastname}`} />
-        //                 <AvatarFallback>{getFallBackName(`${profile.firstname} ${profile.lastname}`)}</AvatarFallback>
-        //             </Avatar>
-        //         </div>
-
-        //         <div className="flex flex-col self-center pl-5">
-        //             <h2 className="text-2xl sm:text-3xl font-medium">
-        //                 {profile.firstname} {profile.lastname}
-        //             </h2>
-        //             <p className="text-gray-500 text-sm sm:text-base">{profile.email}</p>
-        //         </div>
-        //     </div>
