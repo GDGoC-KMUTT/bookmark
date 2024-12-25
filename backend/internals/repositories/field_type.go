@@ -4,5 +4,5 @@ import "backend/internals/db/models"
 
 
 type FieldTypeRepository interface {
-	FindAllFieldType() ([]models.FieldType, error)
+	FindAllFieldTypes() ([]models.FieldType, error)
 }

@@ -16,7 +16,7 @@ func NewFieldTypeRepository(db *gorm.DB) FieldTypeRepository {
 	}
 }
 
-func (r *fieldTypeRepository) FindAllFieldType() ([]models.FieldType, error) {
+func (r *fieldTypeRepository) FindAllFieldTypes() ([]models.FieldType, error) {
 	var fieldTypes []models.FieldType
 
 	result := r.db.Find(&fieldTypes)

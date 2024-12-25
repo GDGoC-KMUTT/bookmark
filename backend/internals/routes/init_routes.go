@@ -32,8 +32,9 @@ func SetupRoutes() {
 	// * Services
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
-	var courseService = services.NewCourseService(courseRepo)
+	var courseService = services.NewCourseService(courseRepo, fieldTypeRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
+	var articleService = services.NewArticleService(articleRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
@@ -71,13 +72,13 @@ func SetupRoutes() {
 	profile := api.Group("/profile", middleware.Jwt())
 	profile.Get("/info", profileController.ProfileUserInfo)
 	profile.Get("/totalgems", profileController.GetUserGems)
-	
+
 	course := api.Group("/courses", middleware.Jwt())
 	course.Get("/field/:field_id", courseController.GetCoursesByFieldId)
 	course.Get("/field_types", courseController.GetAllFieldTypes)
 
 	article := api.Group("/article", middleware.Jwt())
-	article.Get("/", ArticleController.GetAllArticles)
+	article.Get("/", articleController.GetAllArticles)
 	course.Get("/current", courseController.GetCurrentCourse)
 	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
 

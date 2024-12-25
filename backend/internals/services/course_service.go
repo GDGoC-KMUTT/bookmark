@@ -26,11 +26,11 @@ func (r *courseService) GetCourseByFieldId(fieldId *uint) ([]payload.CourseWithF
 
 	for _, course := range courses {
 		result = append(result, payload.CourseWithFieldType{
-			Id:         course.Id,
-			Name:       course.Name,
-			FieldId:    fieldType.Id,
-			FieldName:  fieldType.Name,
-			FieldImage: fieldType.ImageUrl,
+			Id:            course.Id,
+			Name:          course.Name,
+			FieldId:       fieldType.Id,
+			FieldName:     fieldType.Name,
+			FieldImageUrl: fieldType.ImageUrl,
 		})
 	}
 
@@ -38,7 +38,7 @@ func (r *courseService) GetCourseByFieldId(fieldId *uint) ([]payload.CourseWithF
 }
 
 func (r *courseService) GetAllFieldTypes() ([]payload.FieldType, error) {
-	fieldTypes, tx := r.fieldTypeRepo.FindAllFieldType()
+	fieldTypes, tx := r.fieldTypeRepo.FindAllFieldTypes()
 	if tx != nil {
 		return nil, tx
 	}

@@ -3,18 +3,16 @@ package payload
 type Course struct {
 	Id      *uint64 `json:"id"`
 	Name    *string `json:"name"`
-	FieldId *int64  `json:"field_id"`
+	FieldId *uint64  `json:"fieldId"`
 }
 
 type CourseWithFieldType struct {
-	Id         *uint64 `json:"id"`
-	Name       *string `json:"name"`
-	FieldId    *uint64 `json:"field_id"`
-	FieldName  *string `json:"field_name"`
-	FieldImage *string `json:"field_image"`
+	Id            *uint64 `json:"id"`
+	Name          *string `json:"name"`
+	FieldId       *uint64 `json:"fieldId"`
+	FieldName     *string `json:"fieldName"`
+	FieldImageUrl *string `json:"fieldImageUrl"`
 }
-
-
 
 type TotalStepsByCourseIdPayload struct {
     CourseId   uint `json:"courseId"`
