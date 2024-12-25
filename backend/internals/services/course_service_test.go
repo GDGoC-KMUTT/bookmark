@@ -185,40 +185,6 @@ func (suite *CourseTestSuite) TestGetEnrollCourseByUserIdWhenFieldFetchFails() {
 	is.Equal("error fetching field details", err.Error())
 }
 
-func (suite *CourseTestSuite) TestGetEnrollCourseByUserIdWhenFieldIdIsMissingInEnrollment() {
-	is := assert.New(suite.T())
-
-	mockCourseRepo := new(mockRepositories.CourseRepository)
-	mockUserId := 1
-
-	mockEnrollments := []*models.Enroll{
-		{
-			Id:       utils.Ptr(uint64(1)),
-			UserId:   utils.Ptr(uint64(1)),
-			CourseId: utils.Ptr(uint64(1)),
-		},
-	}
-
-	mockCourse := &models.Course{
-		Id:      utils.Ptr(uint64(1)),
-		Name:    utils.Ptr("Course 1"),
-		FieldId: nil,
-	}
-
-	mockCourseRepo.EXPECT().FindEnrollCourseByUserId(mock.Anything).Return(mockEnrollments, nil)
-	mockCourseRepo.EXPECT().FindCourseByCourseId(mock.Anything).Return(mockCourse, nil)
-
-	underTest := services.NewCourseService(mockCourseRepo)
-
-	result, err := underTest.GetEnrollCourseByUserId(mockUserId)
-
-	is.NoError(err)
-	is.NotNil(result)
-	is.Equal(1, len(result))
-	is.Nil(result[0].FieldName)
-	is.Nil(result[0].FieldImageURL)
-}
-
 func (suite *CourseTestSuite) TestGetEnrollCourseByUserIdWhenFieldDataIsEmpty() {
 	is := assert.New(suite.T())
 

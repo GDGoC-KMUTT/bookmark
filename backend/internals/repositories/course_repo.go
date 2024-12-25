@@ -117,7 +117,7 @@ func (r *courseRepository) FindCourseByCourseId(courseId *uint64) (*models.Cours
 	return &course, nil
 }
 
-func (r *courseRepository) FindFieldByFieldId(fieldId uint64) (*models.FieldType, error) {
+func (r *courseRepository) FindFieldByFieldId(fieldId *uint64) (*models.FieldType, error) {
 	var field models.FieldType
 	result := r.db.Where("id = ?", fieldId).First(&field)
 

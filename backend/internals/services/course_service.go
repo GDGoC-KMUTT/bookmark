@@ -80,24 +80,18 @@ func (r *courseService) GetEnrollCourseByUserId(userId int) ([]*payload.Enrollwi
 			return nil, tx
 		}
 
-		var fieldId *int64
-		if course.FieldId != nil {
-			fieldId = new(int64)
-			*fieldId = int64(*course.FieldId)
+		if course.FieldId == nil {
+			return nil, tx
 		}
 
-		var fieldImageURL *string
-		var fieldName *string
-		if fieldId != nil {
-			field, tx := r.courseRepo.FindFieldByFieldId(uint64(*fieldId))
-			if tx != nil {
-				fmt.Printf("error fetching field details, Error: %v\n", tx)
-				return nil, tx
-			}
-			if field != nil {
-				fieldImageURL = field.ImageUrl
-				fieldName = field.Name
-			}
+		field, tx := r.courseRepo.FindFieldByFieldId(course.FieldId)
+		if tx != nil {
+			fmt.Printf("error fetching field details, Error: %v\n", tx)
+			return nil, tx
+		}
+
+		if field == nil {
+			return nil, tx
 		}
 
 		result = append(result, &payload.EnrollwithCourse{
@@ -107,10 +101,10 @@ func (r *courseService) GetEnrollCourseByUserId(userId int) ([]*payload.Enrollwi
 			CourseName: &payload.Course{
 				Id:   course.Id,
 				Name: course.Name,
-				FieldId: fieldId,
+				FieldId: course.FieldId,
 			},
-			FieldImageURL: fieldImageURL,
-			FieldName:     fieldName,
+			FieldImageURL: field.ImageUrl,
+			FieldName:     field.Name,
 		})
 	}
 
