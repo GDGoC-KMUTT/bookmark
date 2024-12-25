@@ -118,22 +118,30 @@ func (r *CourseController) GetTotalStepsByCourseId(c *fiber.Ctx) error {
 func (r *CourseController) GetEnrollCourseByUserId(c *fiber.Ctx) error {
     // * login state
     user := c.Locals("user").(*jwt.Token)
-	if user == nil {
+    if user == nil {
         return c.Status(fiber.StatusUnauthorized).JSON(&response.GenericError{
             Err:     fmt.Errorf("unauthorized access"),
             Message: "User is not authenticated",
         })
-	}
+    }
+    
     claims := user.Claims.(jwt.MapClaims)
     userId := claims["userId"].(float64)
-	
+    
     // * query the enroll table using the userId
     enrollInfo, err := r.courseSvc.GetEnrollCourseByUserId(int(userId))
     if err != nil {
-        return &response.GenericError{
+        fmt.Printf("Failed to fetch enrollments for user %v: %v\n", userId, err)
+        return c.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
             Err:     err,
-            Message: err.Error(),
-        }
+            Message: "Failed to fetch enrollments",
+        })
+    }
+
+    if len(enrollInfo) == 0 {
+        return c.Status(fiber.StatusOK).JSON(&response.InfoResponse[[]*payload.EnrollwithCourse]{
+            Data: enrollInfo,
+        })
     }
 
     return response.Ok(c, enrollInfo)

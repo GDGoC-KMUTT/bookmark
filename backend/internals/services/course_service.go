@@ -3,6 +3,7 @@ package services
 import (
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
+	"fmt"
 )
 
 type courseService struct {
@@ -64,18 +65,18 @@ func (r *courseService) GetTotalStepsByCourseId(courseID uint) (*payload.TotalSt
 func (r *courseService) GetEnrollCourseByUserId(userId int) ([]*payload.EnrollwithCourse, error) {
 	enrollments, tx := r.courseRepo.FindEnrollCourseByUserId(userId)
 	if tx != nil {
-		// log.Println("Error fetching enrollments for userId:", userId, "Error:", tx)
+		fmt.Printf("Error fetching enrollments for userId: %d, Error: %v\n", userId, tx)
 		return nil, tx
 	}
 	if enrollments == nil {
-        return []*payload.EnrollwithCourse{}, nil
-    }
+		return []*payload.EnrollwithCourse{}, nil
+	}
 
 	var result []*payload.EnrollwithCourse
 	for _, enroll := range enrollments {
 		course, tx := r.courseRepo.FindCourseByCourseId(enroll.CourseId)
 		if tx != nil {
-			// log.Println("Error fetching course details for courseId:", enroll.CourseId)
+			fmt.Printf("error fetching course details, Error: %v\n", tx)
 			return nil, tx
 		}
 
@@ -90,13 +91,13 @@ func (r *courseService) GetEnrollCourseByUserId(userId int) ([]*payload.Enrollwi
 		if fieldId != nil {
 			field, tx := r.courseRepo.FindFieldByFieldId(uint64(*fieldId))
 			if tx != nil {
-				// log.Println("Error fetching field details for fieldId:", *fieldId)
+				fmt.Printf("error fetching field details, Error: %v\n", tx)
 				return nil, tx
 			}
 			if field != nil {
-                fieldImageURL = field.ImageUrl
-                fieldName = field.Name
-            }
+				fieldImageURL = field.ImageUrl
+				fieldName = field.Name
+			}
 		}
 
 		result = append(result, &payload.EnrollwithCourse{

@@ -3,11 +3,13 @@ package services_test
 import (
 	"backend/internals/db/models"
 	"backend/internals/services"
+	"backend/internals/utils"
 	"backend/internals/entities/payload"
 	mockRepositories "backend/mocks/repositories"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/mock"
 	"testing"
 )
 
@@ -106,6 +108,174 @@ func (suite *CourseTestSuite) TestGetTotalStepsByCourseIdFetchError() {
 	is.Error(err)
 	is.Equal("failed to fetch total steps", err.Error())
 	is.Nil(payload)
+}
+
+func (suite *CourseTestSuite) TestGetEnrollCourseByUserIdWhenNoEnrollments() {
+	is := assert.New(suite.T())
+
+	mockCourseRepo := new(mockRepositories.CourseRepository)
+	mockUserId := 1
+
+	mockCourseRepo.EXPECT().FindEnrollCourseByUserId(mock.Anything).Return(nil, nil)
+
+	underTest := services.NewCourseService(mockCourseRepo)
+
+	result, err := underTest.GetEnrollCourseByUserId(mockUserId)
+
+	is.NoError(err)
+	is.Equal([]*payload.EnrollwithCourse{}, result)
+}
+
+func (suite *CourseTestSuite) TestGetEnrollCourseByUserIdWhenCourseFetchFails() {
+	is := assert.New(suite.T())
+
+	mockCourseRepo := new(mockRepositories.CourseRepository)
+	mockUserId := 1
+
+	mockEnrollments := []*models.Enroll{
+		{
+			Id:       utils.Ptr(uint64(1)),
+			UserId:   utils.Ptr(uint64(1)),
+			CourseId: utils.Ptr(uint64(1)),
+		},
+	}
+
+	mockCourseRepo.EXPECT().FindEnrollCourseByUserId(mock.Anything).Return(mockEnrollments, nil)
+	mockCourseRepo.EXPECT().FindCourseByCourseId(mock.Anything).Return(nil, fmt.Errorf("error fetching course details"))
+
+	underTest := services.NewCourseService(mockCourseRepo)
+
+	result, err := underTest.GetEnrollCourseByUserId(mockUserId)
+
+	is.Error(err)
+	is.Nil(result)
+	is.Equal("error fetching course details", err.Error())
+}
+
+func (suite *CourseTestSuite) TestGetEnrollCourseByUserIdWhenFieldFetchFails() {
+	is := assert.New(suite.T())
+
+	mockCourseRepo := new(mockRepositories.CourseRepository)
+	mockUserId := 1
+
+	mockEnrollments := []*models.Enroll{
+		{
+			Id:       utils.Ptr(uint64(1)),
+			UserId:   utils.Ptr(uint64(1)),
+			CourseId: utils.Ptr(uint64(1)),
+		},
+	}
+
+	mockCourse := &models.Course{
+		Id:      utils.Ptr(uint64(1)),
+		Name:    utils.Ptr("Course 1"),
+		FieldId: utils.Ptr(uint64(1)),
+	}
+
+	mockCourseRepo.EXPECT().FindEnrollCourseByUserId(mock.Anything).Return(mockEnrollments, nil)
+	mockCourseRepo.EXPECT().FindCourseByCourseId(mock.Anything).Return(mockCourse, nil)
+	mockCourseRepo.EXPECT().FindFieldByFieldId(mock.Anything).Return(nil, fmt.Errorf("error fetching field details"))
+
+	underTest := services.NewCourseService(mockCourseRepo)
+
+	result, err := underTest.GetEnrollCourseByUserId(mockUserId)
+
+	is.Error(err)
+	is.Nil(result)
+	is.Equal("error fetching field details", err.Error())
+}
+
+func (suite *CourseTestSuite) TestGetEnrollCourseByUserIdWhenFieldIdIsMissingInEnrollment() {
+	is := assert.New(suite.T())
+
+	mockCourseRepo := new(mockRepositories.CourseRepository)
+	mockUserId := 1
+
+	mockEnrollments := []*models.Enroll{
+		{
+			Id:       utils.Ptr(uint64(1)),
+			UserId:   utils.Ptr(uint64(1)),
+			CourseId: utils.Ptr(uint64(1)),
+		},
+	}
+
+	mockCourse := &models.Course{
+		Id:      utils.Ptr(uint64(1)),
+		Name:    utils.Ptr("Course 1"),
+		FieldId: nil,
+	}
+
+	mockCourseRepo.EXPECT().FindEnrollCourseByUserId(mock.Anything).Return(mockEnrollments, nil)
+	mockCourseRepo.EXPECT().FindCourseByCourseId(mock.Anything).Return(mockCourse, nil)
+
+	underTest := services.NewCourseService(mockCourseRepo)
+
+	result, err := underTest.GetEnrollCourseByUserId(mockUserId)
+
+	is.NoError(err)
+	is.NotNil(result)
+	is.Equal(1, len(result))
+	is.Nil(result[0].FieldName)
+	is.Nil(result[0].FieldImageURL)
+}
+
+func (suite *CourseTestSuite) TestGetEnrollCourseByUserIdWhenFieldDataIsEmpty() {
+	is := assert.New(suite.T())
+
+	mockCourseRepo := new(mockRepositories.CourseRepository)
+	mockUserId := 1
+
+	mockEnrollments := []*models.Enroll{
+		{
+			Id:       utils.Ptr(uint64(1)),
+			UserId:   utils.Ptr(uint64(1)),
+			CourseId: utils.Ptr(uint64(1)),
+		},
+	}
+
+	mockCourse := &models.Course{
+		Id:      utils.Ptr(uint64(1)),
+		Name:    utils.Ptr("Course 1"),
+		FieldId: utils.Ptr(uint64(1)),
+	}
+
+	mockField := &models.FieldType{
+		Id:       utils.Ptr(uint64(1)),
+		Name:     utils.Ptr(""),
+		ImageUrl: utils.Ptr(""),
+	}
+
+	mockCourseRepo.EXPECT().FindEnrollCourseByUserId(mock.Anything).Return(mockEnrollments, nil)
+	mockCourseRepo.EXPECT().FindCourseByCourseId(mock.Anything).Return(mockCourse, nil)
+	mockCourseRepo.EXPECT().FindFieldByFieldId(mock.Anything).Return(mockField, nil)
+
+	underTest := services.NewCourseService(mockCourseRepo)
+
+	result, err := underTest.GetEnrollCourseByUserId(mockUserId)
+
+	is.NoError(err)
+	is.NotNil(result)
+	is.Equal(1, len(result))
+	is.Equal("", *result[0].FieldName)
+	is.Equal("", *result[0].FieldImageURL)
+}
+
+
+func (suite *CourseTestSuite) TestGetEnrollCourseByUserIdWhenEnrollmentsFail() {
+    is := assert.New(suite.T())
+
+    mockCourseRepo := new(mockRepositories.CourseRepository)
+    mockUserId := 1
+
+    mockCourseRepo.EXPECT().FindEnrollCourseByUserId(mock.Anything).Return(nil, fmt.Errorf("enrollment repository error"))
+
+    underTest := services.NewCourseService(mockCourseRepo)
+
+    result, err := underTest.GetEnrollCourseByUserId(mockUserId)
+
+    is.Error(err)
+    is.Nil(result)
+    is.Equal("enrollment repository error", err.Error())
 }
 
 func TestCourseService(t *testing.T) {
