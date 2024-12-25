@@ -31,13 +31,14 @@ const Navbar = () => {
                 }
 
                 const currentCourse = await server.courses.getCurrentCourse();
+                // console.log("Current course", currentCourse);
                 if (currentCourse.data && currentCourse.data.name) {
                     // console.log("Current course", currentCourse.data);
                     setCurrentCourse(currentCourse.data.name); 
 
                     const progressResponse = await server.progress.getCompletionPercentage(currentCourse.data.id as number);
-                    setProgress(progressResponse.completion_percentage);
-                    // console.log("Progress Data:", progressResponse.completion_percentage);
+                    setProgress(progressResponse.data);
+                    // console.log("Progress Data:", progressResponse);
                 } else {
                     setCurrentCourse('No active course');
                 }
@@ -47,12 +48,12 @@ const Navbar = () => {
         };
 
         fetchData();
-    }, [setUserProfile, setTotalGems]);
+    }, [setUserProfile, setTotalGems, setCurrentCourse, setProgress]);
 
     return (
         <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between">
             <div className="flex items-center space-x-8">
-                <img src="src/assets/logo2.png" alt="Logo" className="w-8 h-8" />
+                <img src="src/assets/logo2.png" alt="bookmarkLogo" className="w-8 h-8" />
                 <div className="flex space-x-8">
                 <Link to="/home" className="text-gray-500 font-medium hover:text-explore-foreground transition-colors">
                     Home

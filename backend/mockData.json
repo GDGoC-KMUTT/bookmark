@@ -1,167 +1,902 @@
 {
-    "users": [
-        {
-            "id": 1,
-            "oid": "5ab23c4d-1234-5678-90ab-cdef12345678",
-            "firstname": "John",
-            "lastname": "Smith",
-            "email": "john.smith@example.com",
-            "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrufL5XMgdQN8yrEq-kW62Ixhu60NtaPLRSA&s",
-            "created_at": "2024-01-15T08:00:00Z",
-            "updated_at": "2024-01-15T08:00:00Z"
-        },
-        {
-            "id": 2,
-            "oid": "6bc34d5e-2345-6789-01bc-defg23456789",
-            "firstname": "Jane",
-            "lastname": "Doe",
-            "email": "jane.doe@example.com",
-            "photo_url": "https://example.com/photos/jane.jpg",
-            "created_at": "2024-01-15T08:00:00Z",
-            "updated_at": "2024-01-15T08:00:00Z"
-        }
-    ],
-    "fields": [
-        {
-            "id": 1,
-            "name": "Computer Science",
-            "image_url": "https://example.com/fields/cs.jpg",
-            "created_at": "2024-01-15T08:00:00Z",
-            "updated_at": "2024-01-15T08:00:00Z"
-        },
-        {
-            "id": 2,
-            "name": "Data Science",
-            "image_url": "https://example.com/fields/ds.jpg",
-            "created_at": "2024-01-15T08:00:00Z",
-            "updated_at": "2024-01-15T08:00:00Z"
-        }
-    ],
-    "modules": [
-        {
-            "id": 1,
-            "title": "Python Basics",
-            "description": "Introduction to Python programming",
-            "image_url": "https://example.com/modules/python-basics.jpg",
-            "created_at": "2024-01-15T10:00:00Z",
-            "updated_at": "2024-01-15T10:00:00Z"
-        }
-    ],
-    "courses": [
-        {
-            "id": 1,
-            "name": "Programming Fundamentals",
-            "field_id": 1,
-            "created_at": "2024-01-15T09:00:00Z",
-            "updated_at": "2024-01-15T09:00:00Z"
-        }
-    ],
-    "steps": [
-        {
-            "id": 1,
-            "module_id": 1,
-            "title": "Variables and Types",
-            "description": "Learn about Python variables and data types",
-            "gems": 10,
-            "content": "# Introduction to Variables\nIn Python, variables are...",
-            "outcome": "After this lesson, you will be able to:\n- Create variables\n- Understand data types",
-            "check": true,
-            "created_at": "2024-01-15T11:00:00Z",
-            "updated_at": "2024-01-15T11:00:00Z"
-        }
-    ],
-    "step_evaluates": [
-        {
-            "id": 1,
-            "step_id": 1,
-            "order": 1,
-            "type": "text",
-            "prompt": "Explain what a variable is in your own words.",
-            "created_at": "2024-01-16T09:00:00Z",
-            "updated_at": "2024-01-16T09:00:00Z"
-        }
-    ],
-    "user_evaluates": [
-        {
-            "user_id": 2,
-            "step_evaluate_id": 1,
-            "content": "A variable is like a container that holds data",
-            "check": true,
-            "comment": "Good explanation!",
-            "created_at": "2024-01-16T10:00:00Z",
-            "updated_at": "2024-01-16T10:00:00Z"
-        }
-    ],
-    "step_authors": [
-        {
-            "step_id": 1,
-            "user_id": 1
-        }
-    ],
-    "step_comments": [
-        {
-            "id": 1,
-            "step_id": 1,
-            "user_id": 2,
-            "content": "Great explanation of variables!",
-            "created_at": "2024-01-16T11:00:00Z",
-            "updated_at": "2024-01-16T11:00:00Z"
-        }
-    ],
-    "step_comment_upvotes": [
-        {
-            "step_comment_id": 1,
-            "user_id": 1,
-            "created_at": "2024-01-16T12:00:00Z",
-            "updated_at": "2024-01-16T12:00:00Z"
-        }
-    ],
-    "enrols": [
-        {
-            "id": 1,
-            "user_id": 1,
-            "course_id": 1,
-            "created_at": "2024-01-15T13:00:00Z",
-            "updated_at": "2024-01-15T13:00:00Z"
-        },
-        {
-            "id": 2,
-            "user_id": 1,
-            "course_id": 1,
-            "created_at": "2024-08-16T10:00:00Z",
-            "updated_at": "2024-08-16T10:00:00Z"
-        }
-    ],
-    "course_contents": [
-        {
-            "course_id": 1,
-            "order": 1,
-            "type": "module",
-            "text": "Getting Started with Python",
-            "module_id": 1,
-            "created_at": "2024-01-15T15:00:00Z",
-            "updated_at": "2024-01-15T15:00:00Z"
-        }
-    ],
-    "user_passes": [
-        {
-            "id": 1,
-            "user_id": 2,
-            "type": "step",
-            "step_id": 1,
-            "course_id": null,
-            "module_id": null,
-            "created_at": "2024-01-17T09:00:00Z",
-            "updated_at": "2024-01-17T09:00:00Z"
-        }
-    ],
-    "articles": [
-        {
-            "id": 1,
-            "title": "Getting Started with Programming",
-            "href": "/articles/getting-started",
-            "created_at": "2024-01-15T16:00:00Z",
-            "updated_at": "2024-01-15T16:00:00Z"
-        }
-    ]
+  "users": [
+    {
+      "oid": "5ab23c4d-1234-5678-90ab-cdef12345678",
+      "firstname": "John",
+      "lastname": "Smith",
+      "email": "john.smith@example.com",
+      "photo_url": "https://images.pexels.com/photos/819497/pexels-photo-819497.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2a",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "oid": "6bc34d5e-2345-6789-01bc-defg23456789",
+      "firstname": "Jane",
+      "lastname": "Doe",
+      "email": "jane.doe@example.com",
+      "photo_url": "https://images.pexels.com/photos/8517921/pexels-photo-8517921.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "oid": "fb13e733-3b61-4b6c-8802-486d2a99f56d",
+      "firstname": "Jame",
+      "lastname": "Smith",
+      "email": "jame.smith@example.com",
+      "photo_url": "https://images.pexels.com/photos/39866/entrepreneur-startup-start-up-man-39866.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    }
+  ],
+  "field_types": [
+    {
+      "name": "Microcontroller",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/microcontroller.png",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "name": "Internet of Things",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/internetofthings.png",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "name": "Smart Home",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/application.png",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "name": "Web Development",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/web.png",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "name": "Database",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/database.png",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "name": "Infrastructure",
+      "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/infrastructure.png",
+      "created_at": "2024-01-15T08:00:00Z",
+      "updated_at": "2024-01-15T08:00:00Z"
+    }
+  ],
+  "modules": [
+    {
+      "title": "Python Basics",
+      "description": "Introduction to Python programming",
+      "image_url": "https://miro.medium.com/v2/resize:fit:1040/1*AvTKrai2EGkiXqv4F4G_6w.png",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "title": "Python Intermediate",
+      "description": "Start to learn Python at an intermediate level.",
+      "image_url": "https://static-assets.codecademy.com/assets/course-landing-page/meta/4x3/learn-intermediate-python-3.jpg",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "title": "Get Start with Iot",
+      "description": "Introduction to Internet of Things",
+      "image_url": "https://assets-blog.syniverse.com/2023/06/28111839/computer-g9fafa31ff_1280-1024x766.jpg",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "title": "Practice with various Iot labs",
+      "description": "Learner will learn with many interesting labs.",
+      "image_url": "https://svitla.com/wp-content/uploads/2024/07/2327-iot.jpg",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "title": "How to design database",
+      "description": "Introduction to design database",
+      "image_url": "https://cdn.corporatefinanceinstitute.com/assets/database-1024x703.jpeg",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "title": "How to create database",
+      "description": "Introduction to create and migrate database",
+      "image_url": "https://www.mssqltips.com/wp-content/images-tips/7304_sql-create-database.004.png",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  ],
+  "courses": [
+    {
+      "name": "Programming Fundamentals",
+      "field_id": 3,
+      "created_at": "2024-01-15T09:00:00Z",
+      "updated_at": "2024-01-15T09:00:00Z"
+    },
+    {
+      "name": "Basic Internet of Things",
+      "field_id": 2,
+      "created_at": "2024-01-15T09:00:00Z",
+      "updated_at": "2024-01-15T09:00:00Z"
+    },
+    {
+      "name": "How to design and create database",
+      "field_id": 5,
+      "created_at": "2024-01-15T09:00:00Z",
+      "updated_at": "2024-01-15T09:00:00Z"
+    }
+  ],
+  "steps": [
+    {
+      "module_id": 1,
+      "title": "Variables and Types",
+      "description": "Learn about Python variables and data types",
+      "content": "# Introduction to Variables\nIn Python, variables are used to store values that can be referenced and manipulated in your program. A variable is like a container that holds data, and each variable has a name (identifier) and a value. Python supports different types of data, such as numbers, strings, lists, and more.\n\n## Common Variable Types\n- `int`: Integer numbers (e.g., 5, -3, 100)\n- `float`: Decimal numbers (e.g., 3.14, -0.001, 2.0)\n- `str`: Strings of characters (e.g., 'Hello', 'Python')\n- `bool`: Boolean values (e.g., `True`, `False`)\n- `list`: Ordered collection of items (e.g., `[1, 2, 3]`)\n- `dict`: Key-value pairs (e.g., `{'name': 'John', 'age': 30}`)\n\n## Assigning Values to Variables\nYou can assign a value to a variable using the `=` operator:\n```python\nname = \"Alice\"\nage = 25\n\"```\nThe value of `name` is the string 'Alice', and the value of `age` is the integer 25.",
+      "outcome": "# After this lesson, you will be able to:\n- Create variables and assign values to them\n- Understand and use basic data types in Python\n- Identify the most common data types in Python and their use cases",
+      "check": "# Exercise: Create Variables\n- Create variables of different types (e.g., `int`, `str`, `float`, `list`) and print their values.\n- Try assigning different values to the same variable and observe how Python handles it.",
+      "error": "# Common Errors\n- SyntaxError: Missing or misplaced parentheses when defining variables.\n- TypeError: Assigning incompatible types (e.g., trying to assign a string to an integer variable).\n- NameError: Trying to use a variable before it is defined.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 1,
+      "title": "Working with Operators and Expressions",
+      "description": "Learn about operators in Python and how to perform basic arithmetic and logical operations.",
+      "content": "# Introduction to Operators\nOperators are symbols used to perform operations on variables and values. In Python, we have various types of operators:\n\n## Arithmetic Operators\n- `+` (addition)\n- `-` (subtraction)\n- `*` (multiplication)\n- `/` (division)\n- `//` (floor division)\n- `%` (modulus)\n- `**` (exponentiation)\n\n## Comparison Operators\n- `==` (equal to)\n- `!=` (not equal to)\n- `>` (greater than)\n- `<` (less than)\n- `>=` (greater than or equal to)\n- `<=` (less than or equal to)\n\n## Logical Operators\n- `and`\n- `or`\n- `not`",
+      "outcome": "# After this lesson, you will be able to:\n- Use arithmetic operators to perform calculations\n- Compare values using comparison operators\n- Use logical operators to make decisions",
+      "check": "# Exercise: Use operators\n- Try performing arithmetic operations in the Python console.\n- Write some comparison expressions.\n- Combine multiple logical operators in a condition.",
+      "error": "# Common Errors\n- Incorrect use of operators, like mixing comparison and assignment operators (`=` vs `==`).\n- Division by zero errors. Handle it with a try-except block.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 1,
+      "title": "Control Flow and Decision Making",
+      "description": "Learn about control flow in Python to make decisions using if-else statements and loops.",
+      "content": "# Introduction to Control Flow\nControl flow allows your program to make decisions based on conditions and repeat actions through loops.\n\n## Conditional Statements\n- `if`, `elif`, and `else` are used to control the flow based on conditions.\n```python\nx = 10\nif x > 5:\n    print(\"x is greater than 5\")\nelse:\n    print(\"x is 5 or less\")\n```\n\n## Loops\n- `for` loop: Iterates over a sequence (e.g., list, string).\n```python\nfor i in range(5):\n    print(i)\n```\n- `while` loop: Repeats as long as a condition is true.\n```python\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1\n```",
+      "outcome": "# After this lesson, you will be able to:\n- Write conditional statements to make decisions in your program\n- Use `for` and `while` loops to repeat actions",
+      "check": "# Exercise: Control Flow\n- Write a program that asks for a user's age and prints if they are eligible to vote.\n- Use a loop to print numbers from 1 to 10.",
+      "error": "# Common Errors\n- Forgetting to use proper indentation in if-else or loop statements.\n- Infinite loops in `while` loops when the condition never becomes false.\n- Using the wrong condition in `if` statements leading to unexpected behavior.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 2,
+      "title": "Function and other",
+      "description": "Learn about Python functions and other interesting things",
+      "content": "# Introduction to Functions\nIn Python, a function is a block of reusable code that performs a specific task. Functions help in organizing your code into manageable sections and avoid repetition.\n\n## Syntax to Define a Function\nFunctions are defined using the `def` keyword:\n```python\ndef greet():\n    print('Hello, World!')\n```\nCalling the function:\n```python\ngreet()\n```\n\n## Parameters and Return Values\nFunctions can accept parameters (arguments) and return values. For example:\n```python\ndef add(a, b):\n    return a + b\n```",
+      "outcome": "# After this lesson, you will be able to:\n- Create functions based on your needs\n- Understand how to pass parameters to functions\n- Write functions that return values",
+      "check": "# Exercise: Create Python Functions\n- Write functions with parameters and return values.\n- Implement functions with default arguments and variable-length arguments.",
+      "error": "# Common Errors\n- **SyntaxError**: A mistake in function declaration (e.g., missing parentheses).\n- **TypeError**: When incorrect data types are passed to a function.\n- **NameError**: When calling a function before defining it.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 2,
+      "title": "Function and other (cont.)",
+      "description": "Deep dive into advanced functions and functional programming concepts",
+      "content": "# Lambda Functions\nIn Python, lambda functions are anonymous functions defined using the `lambda` keyword. They can accept multiple arguments, but can only contain one expression.\n\n## Syntax of Lambda Function\n```python\nadd = lambda x, y: x + y\nprint(add(5, 3))  # Output: 8\n```\nLambda functions are often used for short-term tasks like sorting or filtering.\n\n## Map, Filter, and Reduce\nPython's `map()`, `filter()`, and `reduce()` functions provide powerful tools for working with functional programming concepts.\n\n- **Map** applies a function to all items in an iterable.\n- **Filter** filters the elements based on a function.\n- **Reduce** accumulates the result of a function over the iterable.",
+      "outcome": "# After this lesson, you will be able to:\n- Use lambda functions in Python\n- Apply functional programming tools like map, filter, and reduce\n- Create more concise code using functional programming concepts",
+      "check": "# Exercise: Lambda Functions\n- Create and use lambda functions in Python.\n- Use `map()`, `filter()`, and `reduce()` to manipulate data.",
+      "error": "# Common Errors\n- **SyntaxError**: Incorrect syntax in lambda function or lambda expression.\n- **TypeError**: Passing incompatible data types to map, filter, or reduce.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 2,
+      "title": "Function and other (cont. 2)",
+      "description": "Explore Python decorators and higher-order functions",
+      "content": "# Decorators\nA decorator is a function that takes another function as an argument and extends its behavior without explicitly modifying it.\n\n## Syntax of a Decorator\n```python\ndef decorator(func):\n    def wrapper():\n        print('Before the function call')\n        func()\n        print('After the function call')\n    return wrapper\n\n@decorator\ndef greet():\n    print('Hello, World!')\n```\nDecorators are commonly used for logging, measuring execution time, or access control.\n\n## Higher-Order Functions\nA higher-order function is a function that takes one or more functions as arguments, returns a function, or both.\nExample: `map()`, `filter()`, and `reduce()` are higher-order functions.",
+      "outcome": "# After this lesson, you will be able to:\n- Understand and create decorators in Python\n- Use higher-order functions to handle functions as arguments and return values\n- Write cleaner and more efficient code using decorators and higher-order functions",
+      "check": "# Exercise: Decorators and Higher-Order Functions\n- Implement a decorator that logs function calls.\n- Write a higher-order function that performs a specific task using other functions.",
+      "error": "# Common Errors\n- **TypeError**: Passing arguments that the decorator function is not expecting.\n- **RecursionError**: Infinite recursion caused by a decorator that calls the function repeatedly.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 3,
+      "title": "Start to learn Iot",
+      "description": "Learn about basic IoT",
+      "content": "# Introduction to IoT\nThe Internet of Things (IoT) refers to the interconnection of everyday devices to the internet, allowing them to send and receive data. IoT involves sensors, actuators, and communication networks to create smart systems that can be monitored and controlled remotely.\n\n## Key Components of IoT\n1. **Sensors**: Devices that collect data from the environment.\n2. **Actuators**: Devices that perform actions based on the data.\n3. **Communication Networks**: Protocols like Wi-Fi, Bluetooth, and Zigbee for data transfer.\n\n## Example Use Cases\n- **Smart Home**: Devices like thermostats and light bulbs that can be controlled remotely.\n- **Healthcare**: Wearables that monitor heart rate or activity levels and send data to health professionals.",
+      "outcome": "# After this lesson, you will be able to:\n- Understand the fundamental components of IoT\n- Identify IoT use cases in everyday life\n- Set up basic IoT devices",
+      "check": "# Exercise: Basic IoT Setup\n- Set up a simple IoT device (e.g., a temperature sensor or smart light). Connect it to a local network and control it remotely.",
+      "error": "# Common IoT Errors\n- Connection Issues: IoT devices may fail to connect to networks due to incorrect configurations.\n- Data Accuracy: Sensors might give inaccurate readings due to faulty connections or environmental factors.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 3,
+      "title": "Start to learn IoT (cont.)",
+      "description": "Dive deeper into setting up and working with IoT devices and platforms",
+      "content": "# IoT Protocols and Communication\nIoT devices rely on various communication protocols to exchange data. The choice of protocol depends on the device's requirements such as range, speed, and power consumption.\n\n## Common IoT Protocols\n1. **MQTT**: A lightweight messaging protocol used in IoT applications for small sensors and mobile devices.\n2. **CoAP**: A protocol designed for low-power devices and constrained networks.\n3. **HTTP/HTTPS**: Common web protocols that are used in IoT for devices with more computational power.\n\n## Setting Up IoT Devices with MQTT\nLearn how to set up a simple MQTT broker and use it to send messages between IoT devices.",
+      "outcome": "# After this lesson, you will be able to:\n- Understand common IoT communication protocols (MQTT, CoAP, HTTP)\n- Set up and use MQTT for IoT communication\n- Choose the right protocol for your IoT project",
+      "check": "# Exercise: IoT Communication Setup\n- Set up an MQTT broker using a Raspberry Pi and send messages between two IoT devices.",
+      "error": "# Common Communication Errors\n- **Connection Timeout**: MQTT broker may not connect if the network settings are incorrect.\n- **Message Loss**: If QoS levels are not set correctly, some messages may not be delivered.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 3,
+      "title": "Start to learn IoT (cont. 2)",
+      "description": "Implement advanced IoT concepts and data analysis for IoT systems",
+      "content": "# IoT Data and Cloud Integration\nIoT devices generate vast amounts of data that can be stored, analyzed, and used to make decisions. Cloud platforms are often used for storing and processing this data.\n\n## IoT Data Flow\n1. **Data Collection**: Sensors gather data from the environment.\n2. **Data Transmission**: Data is sent to a central server or cloud platform.\n3. **Data Processing**: Data is analyzed to derive insights (e.g., detecting patterns or anomalies).\n\n## Cloud Platforms for IoT\nLearn how to use cloud services like AWS IoT or Google Cloud IoT to manage and process data from multiple devices.",
+      "outcome": "# After this lesson, you will be able to:\n- Understand IoT data flow and cloud integration\n- Set up cloud-based IoT platforms\n- Analyze data from IoT devices to make informed decisions",
+      "check": "# Exercise: IoT Data Integration\n- Set up a cloud platform (e.g., AWS IoT) to collect and process data from multiple IoT devices.",
+      "error": "# Common Cloud Errors\n- **Data Sync Issues**: IoT devices may fail to synchronize with cloud services due to network issues.\n- **Data Overload**: If too many devices are sending data simultaneously, the cloud service might struggle to process it efficiently.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 4,
+      "title": "IoT Lab",
+      "description": "Learn about IoT with real lab",
+      "content": "# Practice with IoT Lab\nIn this lab, you will implement real-world IoT systems. You will work with sensors and actuators, and learn how to gather and analyze data from IoT devices. This step will help you develop hands-on experience in managing IoT systems.\n\n## Lab Setup\n1. Set up a Raspberry Pi or Arduino board.\n2. Connect sensors (e.g., temperature, humidity) and actuators (e.g., motors, lights).\n3. Program the devices to send and receive data over a network.\n\n## Example Lab Project\nCreate a smart temperature monitoring system that automatically adjusts a fan based on the temperature reading.",
+      "outcome": "# After this lesson, you will be able to:\n- Set up and configure IoT devices in a lab environment\n- Implement basic IoT communication protocols\n- Analyze data received from IoT devices",
+      "check": "# Exercise: Run IoT Lab Successfully\n- Complete the hands-on lab to set up IoT devices and ensure they work as expected. Test their connectivity and data communication.",
+      "error": "# Common IoT Lab Errors\n- Connection failure: Ensure devices are correctly connected to the network.\n- Sensor malfunction: Calibrate sensors before use to avoid incorrect data.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 4,
+      "title": "IoT Lab (cont.)",
+      "description": "Learn advanced IoT applications in the lab and handle real-world challenges",
+      "content": "# Advanced IoT Applications\nIn this step, you will expand on basic IoT concepts and work with more advanced applications. You will use cloud services to store and analyze data from IoT devices. Additionally, you will learn how to optimize IoT systems for better performance.\n\n## Cloud Integration\n1. Set up an IoT cloud platform (e.g., AWS IoT or Google Cloud IoT).\n2. Connect IoT devices to the cloud for real-time data processing.\n3. Implement a dashboard for monitoring IoT devices remotely.\n\n## Optimizing IoT Systems\nLearn how to optimize power consumption and communication protocols to enhance the performance of IoT devices.",
+      "outcome": "# After this lesson, you will be able to:\n- Connect IoT devices to cloud platforms for real-time monitoring\n- Analyze and visualize IoT data using cloud-based tools\n- Optimize the performance of IoT devices for real-world applications",
+      "check": "# Exercise: Cloud Integration and Optimization\n- Set up an IoT cloud platform, connect devices, and create a dashboard to visualize data. Optimize your system for energy efficiency.",
+      "error": "# Common IoT Lab Errors\n- **Data Lag**: Cloud platforms may introduce delays if data is not transmitted efficiently.\n- **Power Consumption**: Devices might consume more power than expected if not properly optimized.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 4,
+      "title": "IoT Lab (cont. 2)",
+      "description": "Learn to troubleshoot and scale IoT systems for real-world deployment",
+      "content": "# Troubleshooting and Scaling IoT Systems\nIn this step, you will troubleshoot common issues in IoT systems and learn strategies to scale IoT solutions for real-world deployment.\n\n## Troubleshooting IoT Devices\n1. Identify common issues such as network connectivity, power failures, and sensor errors.\n2. Implement solutions to diagnose and fix problems in IoT systems.\n\n## Scaling IoT Systems\nLearn how to scale IoT solutions for large deployments, such as smart cities or industrial applications. This includes managing thousands of devices and handling large amounts of data.\n",
+      "outcome": "# After this lesson, you will be able to:\n- Troubleshoot and fix issues in IoT devices\n- Scale IoT systems to handle large deployments and data volumes\n- Implement strategies for maintaining large-scale IoT systems",
+      "check": "# Exercise: Troubleshooting and Scaling\n- Troubleshoot a simulated IoT system with connectivity and sensor issues. Implement solutions to ensure proper functionality. Design a scaling strategy for large IoT deployments.",
+      "error": "# Common IoT Lab Errors\n- **Network Connectivity**: Ensure IoT devices are within range and have proper network configurations.\n- **Scaling Issues**: Consider load balancing and data storage strategies when scaling IoT systems to avoid bottlenecks.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 5,
+      "title": "Get start to learn basics of database design",
+      "description": "Learn about how to design a database",
+      "content": "# Introduction to Database Design\nDatabase design is the process of creating a structure that defines the relationships between data elements. A good database design ensures that the data is organized, efficient, and can be easily queried.\n\n## Steps in Database Design\n1. **Requirements Gathering**: Understand what data needs to be stored and how it will be used.\n2. **Conceptual Design**: Create an Entity-Relationship Diagram (ERD) to define data relationships.\n3. **Logical Design**: Organize the data into tables and define keys.\n4. **Physical Design**: Implement the database structure in a specific database system (e.g., MySQL, PostgreSQL).",
+      "outcome": "# After this lesson, you will be able to:\n- Design a simple database schema\n- Understand data relationships and how to represent them in a database\n- Use tools like ERDs for designing databases",
+      "check": "# Exercise: Design a Database\n- Create an ERD for a simple application, like a student management system. Define tables, relationships, and keys.",
+      "error": "# Common Database Design Errors\n- Missing relationships: Ensure all entities have appropriate relationships defined.\n- Redundant data: Avoid storing the same data in multiple places (normalization).\n- Inconsistent data types: Ensure all columns use the appropriate data types.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 5,
+      "title": "Normalization and Relationship Types",
+      "description": "Learn about database normalization and the types of relationships in database design",
+      "content": "# Database Normalization\nNormalization is the process of organizing data to reduce redundancy and improve efficiency. It involves dividing large tables into smaller, related tables and defining relationships between them.\n\n## Types of Normal Forms\n1. **First Normal Form (1NF)**: Eliminate duplicate columns and ensure that each column contains atomic values.\n2. **Second Normal Form (2NF)**: Remove partial dependencies; each non-key column must be fully dependent on the primary key.\n3. **Third Normal Form (3NF)**: Eliminate transitive dependencies.\n\n## Relationship Types\n1. **One-to-One**: Each record in one table is related to a single record in another table.\n2. **One-to-Many**: A record in one table can be related to multiple records in another table.\n3. **Many-to-Many**: Multiple records in one table can be related to multiple records in another table.",
+      "outcome": "# After this lesson, you will be able to:\n- Apply normalization techniques to database design\n- Identify and implement different relationship types in your database schema",
+      "check": "# Exercise: Normalize a Database\n- Normalize a sample database schema by applying 1NF, 2NF, and 3NF. Define relationship types between tables.",
+      "error": "# Common Database Design Errors\n- **Normalization Mistakes**: Avoid over-normalization, which may lead to complex queries.\n- **Incorrect Relationships**: Ensure that foreign keys correctly represent the relationship between tables.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 5,
+      "title": "Advanced Database Constraints and Indexing",
+      "description": "Learn about advanced database constraints and indexing techniques to improve data integrity and query performance",
+      "content": "# Advanced Constraints\nConstraints are used to enforce rules on the data in a database to ensure accuracy and consistency.\n\n## Types of Constraints\n1. **Primary Key**: Uniquely identifies each record in a table.\n2. **Foreign Key**: Ensures referential integrity by linking a record in one table to a record in another.\n3. **Unique**: Ensures that all values in a column are unique.\n4. **Check**: Ensures that all values in a column satisfy a condition.\n5. **Not Null**: Ensures that a column cannot have NULL values.\n\n## Indexing for Performance\nIndexing speeds up data retrieval by providing a quick lookup for values in a table.\n1. **Single-Column Index**: Index based on a single column.\n2. **Composite Index**: Index based on multiple columns.\n3. **Full-Text Index**: Index that allows efficient searching of text-based columns.",
+      "outcome": "# After this lesson, you will be able to:\n- Apply advanced constraints to enforce data integrity\n- Use indexing techniques to improve query performance",
+      "check": "# Exercise: Implement Constraints and Indexes\n- Apply various constraints to a database schema and create indexes to optimize queries.",
+      "error": "# Common Database Design Errors\n- **Constraint Violations**: Ensure data meets the conditions set by constraints.\n- **Inefficient Indexing**: Avoid over-indexing, which can slow down write operations.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 6,
+      "title": "How to create and migrate",
+      "description": "Learn about how to create and migrate databases efficiently",
+      "content": "# Introduction to Database Creation and Migration\nDatabase creation involves setting up the database schema, while migration refers to making changes to the schema over time, such as adding tables, altering columns, or removing unnecessary fields.\n\n## Creating a Database\nYou can create a database using SQL commands:\n```sql\nCREATE DATABASE my_database;\n```\nOnce the database is created, you can add tables and other structures.\n\n## Migrating a Database\nDatabase migrations involve altering an existing schema using migration tools or scripts to ensure the database is up-to-date with the current application structure.",
+      "outcome": "# After this lesson, you will be able to:\n- Create and migrate a database schema\n- Understand how to use migration tools (e.g., Flyway, Liquibase, or Django migrations)",
+      "check": "# Exercise: Create and Migrate a Database\n- Create a simple database and migrate changes to its schema. Use tools like Flyway or SQL scripts to perform the migration.",
+      "error": "# Common Database Creation and Migration Errors\n- SQL syntax errors: Ensure correct SQL commands and syntax are used.\n- Migration conflicts: Handle conflicts when migrating different schema changes in parallel.\n- Data loss: Backup data before performing destructive migrations.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 6,
+      "title": "Version Control for Database Migrations",
+      "description": "Learn how to manage database migrations using version control systems",
+      "content": "# Version Control for Migrations\nVersion control helps in managing changes to the database schema over time. By using tools like Git, developers can keep track of changes to migration scripts and ensure that everyone is working with the latest schema.\n\n## Best Practices for Version Control\n1. **Create a Migration Script for Every Change**: Each change to the database schema should be accompanied by a corresponding migration script.\n2. **Use Git for Tracking Migration Files**: Commit migration scripts to a version control system like Git to allow for collaboration and rollback of changes.\n3. **Review and Test Migration Scripts**: Always review and test migration scripts in a development environment before applying them to production.",
+      "outcome": "# After this lesson, you will be able to:\n- Use version control systems to manage migration scripts\n- Collaborate with teams effectively on database changes\n- Rollback changes using migration tools and version control",
+      "check": "# Exercise: Version Control for Migrations\n- Set up a Git repository for migration scripts. Commit changes as you create and modify migration files. Test the ability to roll back a migration using version control.",
+      "error": "# Common Version Control for Migrations Errors\n- **Conflicting Changes**: Multiple developers may create migration scripts that conflict with each other. Always coordinate schema changes.\n- **Untracked Migrations**: Ensure that all migrations are committed to the version control system and not ignored or left untracked.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "module_id": 6,
+      "title": "Rollback and Revert Migrations",
+      "description": "Learn how to safely roll back and revert migrations to handle errors or unwanted changes",
+      "content": "# Rollback and Revert Migrations\nRolling back migrations is essential when something goes wrong, and you need to undo changes to the database schema. This ensures data integrity and prevents corruption in the application.\n\n## Rollback Techniques\n1. **Manual Rollback**: Writing SQL commands to reverse schema changes manually (e.g., `DROP TABLE`, `ALTER COLUMN`).\n2. **Automated Rollback**: Using migration tools like Flyway or Liquibase, which can automatically undo changes.\n\n## Best Practices for Rollbacks\n1. **Test Rollbacks**: Before applying migrations in production, ensure that rollbacks work as expected in a staging environment.\n2. **Backup Data**: Always backup the database before performing migrations, especially if rolling back changes.",
+      "outcome": "# After this lesson, you will be able to:\n- Safely roll back and revert database migrations\n- Use migration tools to undo schema changes and restore database integrity",
+      "check": "# Exercise: Rollback a Migration\n- Perform a rollback operation using both manual SQL commands and an automated tool like Flyway. Ensure the rollback restores the database to its previous state.",
+      "error": "# Common Rollback Errors\n- **Incomplete Rollback**: Ensure all changes are fully reverted. Missing steps may leave the database in an inconsistent state.\n- **Data Loss**: Verify data integrity before and after rollback to ensure no critical data is lost.",
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    }
+  ],
+  "step_evaluates": [
+    {
+      "step_id": 1,
+      "order": 1,
+      "gem": 2,
+      "type": "text",
+      "question": "Explain what a variable is in your own words.",
+      "instruction": "1.This will provide answer for question about variable 2.please check",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 1,
+      "order": 2,
+      "gem": 3,
+      "type": "text",
+      "question": "What is the difference between `int`, `float`, and `str` types in Python? Provide examples for each.",
+      "instruction": "1.This will provide the example of each variable type 2.please check",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 2,
+      "order": 1,
+      "gem": 2,
+      "type": "check",
+      "question": "Which of the following are valid Python data types?\n1. int\n2. str\n3. list\n4. float\n5. date\n6. boolean",
+      "instruction": null,
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 2,
+      "order": 2,
+      "gem": 3,
+      "type": "image",
+      "question": "Please upload a screenshot of your Python code where you created variables of different types and printed their values.",
+      "instruction": "1. Will attach image that show code to create variable of different types 2.Please check",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 3,
+      "order": 1,
+      "gem": 2,
+      "type": "text",
+      "question": "Explain the difference between `if`, `elif`, and `else` in Python control flow.",
+      "instruction": "1. This will explain understanding about if elif and else in Python. 2.Correct me if i'm wrong",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 3,
+      "order": 2,
+      "gem": 3,
+      "type": "check",
+      "question": "Which of the following are valid loop types in Python?\n1. for\n2. while\n3. loop\n4. each",
+      "instruction": null,
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 2,
+      "order": 1,
+      "gem": 2,
+      "type": "text",
+      "question": "What is the purpose of using functions in Python? Explain the concept of parameters and return values.",
+      "instruction": "1. This will explain purpose of using function in Python 2.Please check whether correct or not",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 2,
+      "order": 2,
+      "gem": 3,
+      "type": "check",
+      "question": "Which of the following are valid Python keywords for defining a function?\n1. def\n2. function\n3. lambda\n4. func",
+      "instruction": null,
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 3,
+      "order": 1,
+      "gem": 2,
+      "type": "text",
+      "question": "Explain how a lambda function differs from a regular function in Python.",
+      "instruction": "1. This will explain how lambda function differ from regular function in Python 2.Please check",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 3,
+      "order": 2,
+      "gem": 3,
+      "type": "check",
+      "question": "Which of the following are valid use cases for lambda functions in Python?\n1. Sorting a list\n2. Defining a function with multiple lines of code\n3. Applying a transformation to a sequence\n4. Storing a function in a variable",
+      "instruction": null,
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 4,
+      "order": 1,
+      "gem": 2,
+      "type": "text",
+      "question": "What is the purpose of decorators in Python? Provide an example where a decorator extends the functionality of a function.",
+      "instruction": "1. This will explain purpose of decorator in Python 2.Please check",
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    },
+    {
+      "step_id": 4,
+      "order": 2,
+      "gem": 3,
+      "type": "check",
+      "question": "Which of the following are true about decorators in Python?\n1. They can be used to modify the behavior of a function.\n2. They require a return statement.\n3. They cannot be used with lambda functions.\n4. They can be stacked on top of each other.",
+      "instruction": null,
+      "created_at": "2024-01-16T09:00:00Z",
+      "updated_at": "2024-01-16T09:00:00Z"
+    }
+  ],
+  "user_evaluates": [
+    {
+      "user_id": 3,
+      "step_evaluate_id": 1,
+      "content": "Functions are used to reuse code and make it more readable. Parameters are used to pass data to the function, and return values allow it to output data.",
+      "pass": true,
+      "comment": "Good explanation!",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_evaluate_id": 2,
+      "content": "Functions help organize code by grouping related tasks. Parameters accept input data, and return values provide the output from the function.",
+      "pass": true,
+      "comment": "Good job!",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_evaluate_id": 3,
+      "content": "I selected 'def' and 'lambda' as valid keywords.",
+      "pass": true,
+      "comment": "Correct answer!",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_evaluate_id": 4,
+      "content": "I selected 'def' and 'function' because they both look like function keywords.",
+      "pass": false,
+      "comment": "The correct choices are 'def' and 'lambda'. 'function' and 'func' are not valid keywords.",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_evaluate_id": 5,
+      "content": "Lambda functions are simple, one-line functions that don't need a name, while regular functions are more complex and can have multiple expressions.",
+      "pass": true,
+      "comment": "Well explained!",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_evaluate_id": 6,
+      "content": "Lambda functions are anonymous and shorter, whereas normal functions can have multiple lines.",
+      "pass": true,
+      "comment": "Good explanation!",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_evaluate_id": 7,
+      "content": "I selected the correct options: Sorting a list, applying transformation, and storing in a variable.",
+      "pass": true,
+      "comment": "Correct!",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_evaluate_id": 8,
+      "content": "I selected 'Sorting a list' and 'Applying a transformation'. I didn't choose 'Storing in a variable'.",
+      "pass": false,
+      "comment": "You missed 'Storing a function in a variable', which is a valid use case for lambda functions.",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_evaluate_id": 9,
+      "content": "Decorators allow you to add extra behavior to a function, such as logging, without modifying the original function itself.",
+      "pass": true,
+      "comment": "Correct explanation!",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_evaluate_id": 10,
+      "content": "Decorators enhance functions by adding features like timing, logging, etc.",
+      "pass": true,
+      "comment": "Well explained!",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_evaluate_id": 11,
+      "content": "I selected '1', '2', and '4' as correct answers.",
+      "pass": true,
+      "comment": "Correct answer!",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_evaluate_id": 12,
+      "content": "I selected '1' and '3'. I was unsure about stacking decorators.",
+      "pass": false,
+      "comment": "The correct choices are '1', '2', and '4'. Decorators can be stacked and must return a function.",
+      "created_at": "2024-01-16T10:00:00Z",
+      "updated_at": "2024-01-16T10:00:00Z"
+    }
+  ],
+  "step_authors": [
+    {
+      "step_id": 1,
+      "user_id": 1
+    },
+    {
+      "step_id": 1,
+      "user_id": 2
+    },
+    {
+      "step_id": 2,
+      "user_id": 1
+    },
+    {
+      "step_id": 2,
+      "user_id": 3
+    },
+    {
+      "step_id": 3,
+      "user_id": 1
+    },
+    {
+      "step_id": 3,
+      "user_id": 3
+    },
+    {
+      "step_id": 4,
+      "user_id": 2
+    },
+    {
+      "step_id": 5,
+      "user_id": 1
+    },
+    {
+      "step_id": 6,
+      "user_id": 3
+    }
+  ],
+  "step_comments": [
+    {
+      "step_id": 1,
+      "user_id": 2,
+      "content": "Great explanation of variables!",
+      "created_at": "2024-01-16T11:00:00Z",
+      "updated_at": "2024-01-16T11:00:00Z"
+    },
+    {
+      "step_id": 3,
+      "user_id": 1,
+      "content": "Great explanation of Iot basic!",
+      "created_at": "2024-01-16T11:00:00Z",
+      "updated_at": "2024-01-16T11:00:00Z"
+    },
+    {
+      "step_id": 5,
+      "user_id": 3,
+      "content": "Should improve the quality of this step.",
+      "created_at": "2024-01-16T11:00:00Z",
+      "updated_at": "2024-01-16T11:00:00Z"
+    }
+  ],
+  "step_comment_upvotes": [
+    {
+      "step_comment_id": 1,
+      "user_id": 1,
+      "created_at": "2024-01-16T12:00:00Z",
+      "updated_at": "2024-01-16T12:00:00Z"
+    },
+    {
+      "step_comment_id": 2,
+      "user_id": 3,
+      "created_at": "2024-01-16T12:00:00Z",
+      "updated_at": "2024-01-16T12:00:00Z"
+    },
+    {
+      "step_comment_id": 3,
+      "user_id": 1,
+      "created_at": "2024-01-16T12:00:00Z",
+      "updated_at": "2024-01-16T12:00:00Z"
+    },
+    {
+      "step_comment_id": 3,
+      "user_id": 3,
+      "created_at": "2024-01-16T12:00:00Z",
+      "updated_at": "2024-01-16T12:00:00Z"
+    }
+  ],
+  "enrols": [
+    {
+      "user_id": 3,
+      "course_id": 1,
+      "created_at": "2024-01-15T13:00:00Z",
+      "updated_at": "2024-01-15T13:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "course_id": 2,
+      "created_at": "2024-01-15T13:00:00Z",
+      "updated_at": "2024-01-15T13:00:00Z"
+    },
+    {
+      "user_id": 1,
+      "course_id": 3,
+      "created_at": "2024-01-15T13:00:00Z",
+      "updated_at": "2024-01-15T13:00:00Z"
+    }
+  ],
+  "course_contents": [
+    {
+      "course_id": 1,
+      "order": 1,
+      "type": "module",
+      "text": null,
+      "module_id": 1,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 1,
+      "order": 2,
+      "type": "text",
+      "text": "หลังจากที่เราเรียน Python ขั้น basic ไปแล้ว ก็ถึงเวลาที่เราจะอัปเลเวลไปเรียนขั้น intermediate กัน!!",
+      "module_id": null,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 1,
+      "order": 3,
+      "type": "module",
+      "text": null,
+      "module_id": 2,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 2,
+      "order": 1,
+      "type": "module",
+      "text": null,
+      "module_id": 3,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 2,
+      "order": 2,
+      "type": "module",
+      "text": null,
+      "module_id": 4,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 3,
+      "order": 1,
+      "type": "module",
+      "text": null,
+      "module_id": 5,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    },
+    {
+      "course_id": 3,
+      "order": 2,
+      "type": "module",
+      "text": null,
+      "module_id": 6,
+      "created_at": "2024-01-15T15:00:00Z",
+      "updated_at": "2024-01-15T15:00:00Z"
+    }
+  ],
+  "user_passes": [
+    {
+      "user_id": 3,
+      "type": "step",
+      "step_id": 1,
+      "course_id": 1,
+      "module_id": 1,
+      "created_at": "2024-01-17T09:00:00Z",
+      "updated_at": "2024-01-17T09:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "type": "step",
+      "step_id": 2,
+      "course_id": 1,
+      "module_id": 2,
+      "created_at": "2024-01-17T09:00:00Z",
+      "updated_at": "2024-01-17T09:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "type": "step",
+      "step_id": 3,
+      "course_id": 2,
+      "module_id": 1,
+      "created_at": "2024-01-17T09:00:00Z",
+      "updated_at": "2024-01-17T09:00:00Z"
+    }
+  ],
+  "articles": [
+    {
+      "title": "Getting Started with Programming",
+      "href": "/articles/getting-started",
+      "created_at": "2024-01-15T16:00:00Z",
+      "updated_at": "2024-01-15T16:00:00Z"
+    },
+    {
+      "title": "Understanding serial port: COM port in Windows and TTY device in UNIX",
+      "href": "/articles/getting-started",
+      "created_at": "2024-01-15T16:00:00Z",
+      "updated_at": "2024-01-15T16:00:00Z"
+    },
+    {
+      "title": "Baud Rate คืออะไร ใช้ประโยชน์อะไรบ้างในการเชื่อมต่อแบบ serial",
+      "href": "/articles/getting-started",
+      "created_at": "2024-01-15T16:00:00Z",
+      "updated_at": "2024-01-15T16:00:00Z"
+    },
+    {
+      "title": "วิธีการใช้งาน SSH เบื้องต้น และแนะนำ SSH client แบบต่างๆ",
+      "href": "/articles/getting-started",
+      "created_at": "2024-01-15T16:00:00Z",
+      "updated_at": "2024-01-15T16:00:00Z"
+    }
+  ],
+  "user_activity": [
+    {
+      "user_id": 1,
+      "step_id": 1,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "user_id": 1,
+      "step_id": 2,
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-15T10:30:00Z"
+    },
+    {
+      "user_id": 1,
+      "step_id": 3,
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "user_id": 1,
+      "step_id": 4,
+      "created_at": "2024-01-15T11:30:00Z",
+      "updated_at": "2024-01-15T11:30:00Z"
+    },
+    {
+      "user_id": 1,
+      "step_id": 5,
+      "created_at": "2024-01-15T12:00:00Z",
+      "updated_at": "2024-01-15T12:00:00Z"
+    },
+    {
+      "user_id": 1,
+      "step_id": 6,
+      "created_at": "2024-01-15T12:30:00Z",
+      "updated_at": "2024-01-15T12:30:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_id": 1,
+      "created_at": "2024-01-15T10:05:00Z",
+      "updated_at": "2024-01-15T10:05:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_id": 2,
+      "created_at": "2024-01-15T10:35:00Z",
+      "updated_at": "2024-01-15T10:35:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_id": 3,
+      "created_at": "2024-01-15T11:05:00Z",
+      "updated_at": "2024-01-15T11:05:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_id": 4,
+      "created_at": "2024-01-15T11:35:00Z",
+      "updated_at": "2024-01-15T11:35:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_id": 5,
+      "created_at": "2024-01-15T12:05:00Z",
+      "updated_at": "2024-01-15T12:05:00Z"
+    },
+    {
+      "user_id": 2,
+      "step_id": 6,
+      "created_at": "2024-01-15T12:35:00Z",
+      "updated_at": "2024-01-15T12:35:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_id": 1,
+      "created_at": "2024-01-15T10:10:00Z",
+      "updated_at": "2024-01-15T10:10:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_id": 2,
+      "created_at": "2024-01-15T10:40:00Z",
+      "updated_at": "2024-01-15T10:40:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_id": 3,
+      "created_at": "2024-01-15T11:10:00Z",
+      "updated_at": "2024-01-15T11:10:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_id": 4,
+      "created_at": "2024-01-15T11:40:00Z",
+      "updated_at": "2024-01-15T11:40:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_id": 5,
+      "created_at": "2024-01-15T12:10:00Z",
+      "updated_at": "2024-01-15T12:10:00Z"
+    },
+    {
+      "user_id": 3,
+      "step_id": 6,
+      "created_at": "2024-01-15T12:40:00Z",
+      "updated_at": "2024-01-15T12:40:00Z"
+    }
+  ]
 }
