@@ -118,7 +118,7 @@ func MigrateUsers(tx *gorm.DB, data []map[string]interface{}) error {
 	return nil
 }
 
-func MigrateFields(tx *gorm.DB, data []map[string]interface{}) error {
+func MigrateFieldTypes(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
 		id, err := safeCastToFloat64(d["id"])
 		if err != nil {
@@ -173,17 +173,11 @@ func MigrateSteps(tx *gorm.DB, data []map[string]interface{}) error {
 			return fmt.Errorf("invalid module_id: %w", err)
 		}
 
-		gems, err := safeCastToFloat64(d["gems"])
-		if err != nil {
-			return fmt.Errorf("invalid gems: %w", err)
-		}
-
 		step := &models.Step{
 			Id:          toUint64Ptr(id),
 			ModuleId:    toUint64Ptr(moduleId),
 			Title:       toStringPtr(d["title"].(string)),
 			Description: nilableStringPtr(d["description"]),
-			Gems:        toInt64Ptr(gems),
 			Content:     nilableStringPtr(d["content"]),
 			Outcome:     nilableStringPtr(d["outcome"]),
 			Check:       nilableStringPtr(d["check"]),
@@ -223,13 +217,15 @@ func MigrateStepAuthors(tx *gorm.DB, data []map[string]interface{}) error {
 
 func MigrateStepEvaluates(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
+
 		evaluate := &models.StepEvaluate{
 			Id:          toUint64Ptr(d["id"].(float64)),
 			StepId:      toUint64Ptr(d["step_id"].(float64)),
+			Gem:         toIntPtr(d["gem"].(float64)),
 			Order:       toIntPtr(d["order"].(float64)),
 			Type:        toStringPtr(d["type"].(string)),
-			Question:    toStringPtr(d["prompt"].(string)), // Changed from question to prompt
-			Instruction: toStringPtr(""),                   // Default empty instruction since it's missing
+			Question:    toStringPtr(d["question"].(string)),
+			Instruction: nilableStringPtr(d["instruction"]),
 			CreatedAt:   toTimePtr(d["created_at"].(string)),
 			UpdatedAt:   toTimePtr(d["updated_at"].(string)),
 		}
@@ -250,6 +246,7 @@ func MigrateUserEvaluates(tx *gorm.DB, data []map[string]interface{}) error {
 		}
 
 		evaluate := &models.UserEvaluate{
+			Id:             toUint64Ptr(d["id"].(float64)),
 			UserId:         toUint64Ptr(d["user_id"].(float64)),
 			StepEvaluateId: toUint64Ptr(d["step_evaluate_id"].(float64)),
 			Content:        toStringPtr(d["content"].(string)),
@@ -352,7 +349,7 @@ func MigrateUserPasses(tx *gorm.DB, data []map[string]interface{}) error {
 	return nil
 }
 
-func MigrateEnrols(tx *gorm.DB, data []map[string]interface{}) error {
+func MigrateEnrolls(tx *gorm.DB, data []map[string]interface{}) error {
 	for _, d := range data {
 		id, err := safeCastToFloat64(d["id"])
 		if err != nil {
@@ -453,6 +450,31 @@ func MigrateCourses(tx *gorm.DB, data []map[string]interface{}) error {
 		}
 		if err := tx.Create(course).Error; err != nil {
 			return fmt.Errorf("failed to create course: %w", err)
+		}
+	}
+	return nil
+}
+
+func MigrateUserActivity(tx *gorm.DB, data []map[string]interface{}) error {
+	for _, d := range data {
+		userId, err := safeCastToFloat64(d["user_id"])
+		if err != nil {
+			return fmt.Errorf("invalid userId: %w", err)
+		}
+
+		stepId, err := safeCastToFloat64(d["step_id"])
+		if err != nil {
+			return fmt.Errorf("invalid step_id: %w", err)
+		}
+
+		userActivity := &models.UserActivity{
+			UserId:    toUint64Ptr(userId),
+			StepId:    toUint64Ptr(stepId),
+			CreatedAt: toTimePtr(d["created_at"].(string)),
+			UpdatedAt: toTimePtr(d["updated_at"].(string)),
+		}
+		if err := tx.Create(userActivity).Error; err != nil {
+			return fmt.Errorf("failed to create user activity: %w", err)
 		}
 	}
 	return nil

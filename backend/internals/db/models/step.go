@@ -8,7 +8,6 @@ type Step struct {
 	Module      *Module    `gorm:"foreignKey:ModuleId"`
 	Title       *string    `gorm:"type:VARCHAR(255); not null"`
 	Description *string    `gorm:"type:TEXT; null"`
-	Gems        *int64     `gorm:"not null"`
 	Content     *string    `gorm:"type:TEXT; null"` // Markdown
 	Outcome     *string    `gorm:"type:TEXT; null"` // Markdown
 	Check       *string    `gorm:"type:TEXT; null"` // Markdown
