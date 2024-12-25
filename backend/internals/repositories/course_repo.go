@@ -15,16 +15,16 @@ func NewCourseRepository(db *gorm.DB) CourseRepository {
 	}
 }
 
-func (r *courseRepository) FindCourseByFieldId(field_id *uint) ([]models.Course, *models.FieldType, error) {
+func (r *courseRepository) FindCourseByFieldId(fieldId uint) ([]models.Course, *models.FieldType, error) {
 	var courses []models.Course
 	var fieldType *models.FieldType
 
-	result := r.db.Find(&courses, "field_id = ?", field_id)
+	result := r.db.Find(&courses, "field_id = ?", fieldId)
 	if result.Error != nil {
 		return nil, nil, result.Error
 	}
 
-	result = r.db.First(&fieldType, "id = ?", field_id)
+	result = r.db.First(&fieldType, "id = ?", fieldId)
 	if result.Error != nil {
 		return nil, nil, result.Error
 	}
@@ -40,7 +40,7 @@ func (r *courseRepository) GetCurrentCourse(userID uint) (*models.Course, error)
 	}
 
 	var step models.Step
-	result = r.db.First(&step, "id = ?", userActivity.StepId) 
+	result = r.db.First(&step, "id = ?", userActivity.StepId)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -67,26 +67,26 @@ func (r *courseRepository) GetCurrentCourse(userID uint) (*models.Course, error)
 }
 
 func (r *courseRepository) GetAllCourseSteps(courseID uint) ([]models.Step, error) {
-    var courseContent models.CourseContent
-    result := r.db.First(&courseContent, "course_id = ?", courseID)
-    if result.Error != nil {
+	var courseContent models.CourseContent
+	result := r.db.First(&courseContent, "course_id = ?", courseID)
+	if result.Error != nil {
 		return []models.Step{}, result.Error
-    }
+	}
 
-    var steps []models.Step
-    result = r.db.Where("module_id = ?", courseContent.ModuleId).Find(&steps)
-    if result.Error != nil {
-        return []models.Step{}, result.Error
-    }
+	var steps []models.Step
+	result = r.db.Where("module_id = ?", courseContent.ModuleId).Find(&steps)
+	if result.Error != nil {
+		return []models.Step{}, result.Error
+	}
 
-    return steps, nil
+	return steps, nil
 }
 
 func (r *courseRepository) GetTotalStepsByCourseId(courseID uint) (int, error) {
-    steps, err := r.GetAllCourseSteps(courseID + 1)
-    if err != nil {
-        return 0, err
-    }
+	steps, err := r.GetAllCourseSteps(courseID + 1)
+	if err != nil {
+		return 0, err
+	}
 
-    return len(steps), nil
+	return len(steps), nil
 }

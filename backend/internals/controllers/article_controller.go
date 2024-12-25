@@ -30,7 +30,7 @@ func (r *ArticleController) GetAllArticles(c *fiber.Ctx) error {
 
 	articles, err := r.articleSvc.GetAllArticles()
 	if err != nil {
-		return &response.GenericError{Err: err, Message: "failed to get articles"}
+		return &response.GenericError{Err: err, Message: "failed to get all articles"}
 	}
 
 	return response.Ok(c, articles)

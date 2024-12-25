@@ -127,7 +127,7 @@ func (suite *CourseTestSuite) TestGetCourseByFieldIdWhenSuccess() {
 	// Mock data
 	mockCourseId := utils.Ptr(uint64(1))
 	mockCourseName := utils.Ptr("testname")
-	mockCourseFieldId := utils.Ptr(uint(1))
+	mockCourseFieldId := uint(1)
 	mockFieldId := utils.Ptr(uint64(1))
 	mockFieldName := utils.Ptr("testname")
 	mockFieldImageUrl := utils.Ptr("testimageurl")
@@ -144,7 +144,7 @@ func (suite *CourseTestSuite) TestGetCourseByFieldIdWhenSuccess() {
 
 	// Test
 	underTest := services.NewCourseService(mockCourseRepo, mockFieldTypeRepo)
-	courses, err := underTest.GetCourseByFieldId(mockCourseFieldId)
+	courses, err := underTest.GetCoursesByFieldId(mockCourseFieldId)
 	is.Equal(courses[0].Id, mockCourseId)
 	is.Equal(courses[0].Name, mockCourseName)
 	is.Equal(courses[0].FieldId, mockFieldId)
@@ -159,12 +159,12 @@ func (suite *CourseTestSuite) TestGetCourseByFieldIdWhenFailed() {
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 	mockFieldTypeRepo := new(mockRepositories.FieldTypeRepository)
 
-	mockFieldId := utils.Ptr(uint(1))
+	mockFieldId := uint(1)
 
 	mockCourseRepo.On("FindCourseByFieldId", mockFieldId).Return(nil, nil, fmt.Errorf("courses not found"))
 	underTest := services.NewCourseService(mockCourseRepo, mockFieldTypeRepo)
 
-	courses, err := underTest.GetCourseByFieldId(mockFieldId)
+	courses, err := underTest.GetCoursesByFieldId(mockFieldId)
 
 	is.Nil(courses)
 	is.NotNil(err)

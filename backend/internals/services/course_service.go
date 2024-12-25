@@ -17,7 +17,7 @@ func NewCourseService(courseRepo repositories.CourseRepository, fieldTypeRepo re
 	}
 }
 
-func (r *courseService) GetCourseByFieldId(fieldId *uint) ([]payload.CourseWithFieldType, error) {
+func (r *courseService) GetCoursesByFieldId(fieldId uint) ([]payload.CourseWithFieldType, error) {
 	courses, fieldType, tx := r.courseRepo.FindCourseByFieldId(fieldId)
 	if tx != nil {
 		return nil, tx

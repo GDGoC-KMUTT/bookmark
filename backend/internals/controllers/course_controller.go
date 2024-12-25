@@ -4,6 +4,7 @@ import (
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
 	"backend/internals/services"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -21,29 +22,33 @@ func NewCourseController(courseSvc services.CourseService) CourseController {
 // GetCoursesByFieldId
 // @ID getCoursesByFieldId
 // @Tags course
-// @Summary Get all courses for a specific field_id
+// @Summary Get all courses for a specific fieldId
 // @Accept json
 // @Produce json
-// @Param field_id path uint true "Field ID"
+// @Param fieldId path uint true "Field ID"
 // @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
 // @Failure 400 {object} response.GenericError
-// @Router /course/field/{field_id} [get]
+// @Router /courses/field/{fieldId} [get]
 func (r *CourseController) GetCoursesByFieldId(c *fiber.Ctx) error {
 	param := new(payload.FieldIdParam)
 
 	if err := c.ParamsParser(param); err != nil {
 		return &response.GenericError{
 			Err:     err,
-			Message: "invalid field_id parameter",
+			Message: "invalid fieldId parameter",
 		}
 	}
 
-	courses, err := r.courseSvc.GetCourseByFieldId(param.FieldId)
+	courses, err := r.courseSvc.GetCoursesByFieldId(uint(param.FieldId))
 	if err != nil {
 		return &response.GenericError{
 			Err:     err,
-			Message: "failed to get courses",
+			Message: "failed to get course by fieldId",
 		}
+		// return c.Status(http.StatusInternalServerError).JSON(response.GenericError{
+		// 	Err:     err,
+		// 	Message: "failed to get course by fieldId",
+		// })
 	}
 
 	return response.Ok(c, courses)
@@ -57,7 +62,7 @@ func (r *CourseController) GetCoursesByFieldId(c *fiber.Ctx) error {
 // @Produce json
 // @Success 200 {object} response.InfoResponse[[]payload.FieldType]
 // @Failure 400 {object} response.GenericError
-// @Router /course/field_types [get]
+// @Router /courses/field_types [get]
 func (r *CourseController) GetAllFieldTypes(c *fiber.Ctx) error {
 	fieldTypes, err := r.courseSvc.GetAllFieldTypes()
 	if err != nil {
@@ -68,6 +73,7 @@ func (r *CourseController) GetAllFieldTypes(c *fiber.Ctx) error {
 	}
 	return response.Ok(c, fieldTypes)
 }
+
 // GetCurrentCourse
 // @ID getCurrentCourse
 // @Tags courses

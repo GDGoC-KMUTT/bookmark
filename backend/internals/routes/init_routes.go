@@ -74,13 +74,13 @@ func SetupRoutes() {
 	profile.Get("/totalgems", profileController.GetUserGems)
 
 	course := api.Group("/courses", middleware.Jwt())
-	course.Get("/field/:field_id", courseController.GetCoursesByFieldId)
-	course.Get("/field_types", courseController.GetAllFieldTypes)
+	course.Get("/field/:fieldId", courseController.GetCoursesByFieldId)
+	course.Get("/field-types", courseController.GetAllFieldTypes)
+	course.Get("/current", courseController.GetCurrentCourse)
+	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
 
 	article := api.Group("/article", middleware.Jwt())
 	article.Get("/", articleController.GetAllArticles)
-	course.Get("/current", courseController.GetCurrentCourse)
-	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
 
 	progress := api.Group("/progress", middleware.Jwt())
 	progress.Get("/:courseId/percentage", progressController.GetCompletionPercentage)
