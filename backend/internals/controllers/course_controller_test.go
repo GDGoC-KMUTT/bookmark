@@ -3,6 +3,7 @@ package controllers
 import (
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
+	"backend/internals/routes/handler"
 	"backend/internals/services"
 	"backend/internals/utils"
 	mockServices "backend/mocks/services"
@@ -24,7 +25,10 @@ type CourseControllerTestSuit struct {
 }
 
 func setupTestCourseController(courseSvc services.CourseService) *fiber.App {
-	app := fiber.New()
+	fiberConfig := fiber.Config{
+		ErrorHandler: handler.ErrorHandler,
+	}
+	app := fiber.New(fiberConfig)
 
 	controller := NewCourseController(courseSvc)
 
@@ -193,29 +197,6 @@ func (suite *CourseControllerTestSuit) TestGetCourseByFieldIdWhenSuccess() {
 
 }
 
-// func (suite *CourseControllerTestSuit) TestGetCourseByFieldIdWhenFailedToFetchCourseByFieldId() {
-// 	is := assert.New(suite.T())
-
-// 	mockCourseService := new(mockServices.CourseService)
-
-// 	app := setupTestCourseController(mockCourseService)
-
-// 	mockFieldId := uint(1)
-// 	mockCourseService.EXPECT().GetCoursesByFieldId(mockFieldId).Return(nil, fmt.Errorf("failed to get course by fieldId"))
-
-// 	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/courses/field/%d", mockFieldId), nil)
-// 	res, err := app.Test(req)
-
-// 	var errResponse response.GenericError
-// 	body, _ := io.ReadAll(res.Body)
-// 	json.Unmarshal(body, &errResponse)
-
-// 	is.Nil(err)
-// 	is.Equal(http.StatusInternalServerError, res.StatusCode)
-// 	is.Equal("failed to get course by fieldId", errResponse.Message)
-
-// }
-
 func (suite *CourseControllerTestSuit) TestGetCourseByFieldIdWhenFailedToFetchCourseByFieldId() {
 	is := assert.New(suite.T())
 
@@ -229,9 +210,6 @@ func (suite *CourseControllerTestSuit) TestGetCourseByFieldIdWhenFailedToFetchCo
 	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/courses/field/%d", mockFieldId), nil)
 	res, err := app.Test(req)
 
-	// Read the response body and log it for debugging
-	// fmt.Println("Response Body:", string(body)) // This will help to see the actual response body
-
 	var errResponse response.GenericError
 	body, _ := io.ReadAll(res.Body)
 	json.Unmarshal(body, &errResponse)
@@ -240,7 +218,7 @@ func (suite *CourseControllerTestSuit) TestGetCourseByFieldIdWhenFailedToFetchCo
 
 	is.Nil(err)
 	is.Equal(http.StatusInternalServerError, res.StatusCode)
-	is.Equal("failed to get course by fieldId", errResponse.Message) // Ensure the error message matches
+	is.Equal("failed to get course by fieldId", errResponse.Message)
 }
 func (suite *CourseControllerTestSuit) TestGetAllFieldTypesWhenSuccess() {
 	is := assert.New(suite.T())
