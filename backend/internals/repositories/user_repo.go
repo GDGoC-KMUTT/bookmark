@@ -42,9 +42,9 @@ func (r *userRepository) DeleteUser(id uint) error {
 func (r *userRepository) GetTotalGemsByUserID(userID uint) (uint64, error) {
 	var totalGems uint64
 	err := r.db.Table("user_passes").
-		Joins("INNER JOIN steps ON user_passes.step_id = steps.id").
+		Joins("INNER JOIN step_evaluates ON user_passes.step_id = step_evaluates.step_id").
 		Where("user_passes.user_id = ?", userID).
-		Select("COALESCE(SUM(steps.gems), 0) AS total_gems"). // Convert NULL to 0
+		Select("COALESCE(SUM(step_evaluates.gem), 0) AS total_gems"). // Handle NULL values with COALESCE
 		Scan(&totalGems).Error
 	if err != nil {
 		return 0, err

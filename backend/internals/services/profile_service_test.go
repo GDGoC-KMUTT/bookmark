@@ -91,20 +91,18 @@ func (suite *ProfileTestSuit) TestGetTotalGemsWhenSuccess() {
 		Module:      mockModule,
 		Title:       utils.Ptr("Test Step"),
 		Description: utils.Ptr("This is a test step"),
-		Gems:        utils.Ptr(mockGems),
 	}
 
-	mockUserPass := &models.UserPass{
+	mockStepEvaluate := &models.StepEvaluate{
 		Id:     utils.Ptr(uint64(1)),
-		UserId: utils.Ptr(uint64(mockUserID)),
 		StepId: utils.Ptr(mockStepID),
 		Step:   mockStep,
-		Type:   utils.Ptr("step"),
+		Gem:    utils.Ptr(int(mockGems)),
 	}
 
 	var totalGems uint64
-	if mockUserPass.Step.Gems != nil {
-		totalGems = uint64(*mockUserPass.Step.Gems)
+	if mockStepEvaluate.Gem != nil {
+		totalGems = uint64(*mockStepEvaluate.Gem)
 	}
 
 	mockUserRepo.EXPECT().
