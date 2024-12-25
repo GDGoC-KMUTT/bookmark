@@ -32,14 +32,15 @@ func SetupRoutes() {
 	// * Services
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
-	var courseService = services.NewCourseService(courseRepo, fieldTypeRepo)
-	var articleService = services.NewArticleService(articleRepo)
+	var courseService = services.NewCourseService(courseRepo)
+	var progressService = services.NewProgressService(userRepo, courseRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
 	var profileController = controllers.NewProfileController(profileService)
 	var courseController = controllers.NewCourseController(courseService)
-	var ArticleController = controllers.NewArticleController(articleService)
+	var articleController = controllers.NewArticleController(articleService)
+	var progressController = controllers.NewProgressController(progressService)
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
@@ -69,13 +70,19 @@ func SetupRoutes() {
 
 	profile := api.Group("/profile", middleware.Jwt())
 	profile.Get("/info", profileController.ProfileUserInfo)
-
-	course := api.Group("/course", middleware.Jwt())
+	profile.Get("/totalgems", profileController.GetUserGems)
+	
+	course := api.Group("/courses", middleware.Jwt())
 	course.Get("/field/:field_id", courseController.GetCoursesByFieldId)
 	course.Get("/field_types", courseController.GetAllFieldTypes)
 
 	article := api.Group("/article", middleware.Jwt())
 	article.Get("/", ArticleController.GetAllArticles)
+	course.Get("/current", courseController.GetCurrentCourse)
+	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
+
+	progress := api.Group("/progress", middleware.Jwt())
+	progress.Get("/:courseId/percentage", progressController.GetCompletionPercentage)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {

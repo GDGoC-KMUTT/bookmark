@@ -16,3 +16,11 @@ type CourseWithFieldType struct {
 
 
 
+type TotalStepsByCourseIdPayload struct {
+    CourseId   uint `json:"courseId"`
+    TotalSteps int  `json:"total_steps"`
+}
+
+type CourseIdParam struct {
+    CourseId uint `json:"courseId" param:"courseId"`
+}

@@ -54,3 +54,28 @@ func (r *courseService) GetAllFieldTypes() ([]payload.FieldType, error) {
 	return result, nil
 
 }
+func (r *courseService) GetCurrentCourse(userID uint) (*payload.Course, error) {
+	course, err := r.courseRepo.GetCurrentCourse(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	courseDetails := &payload.Course{
+		Id:   course.Id,
+		Name: course.Name,
+	}
+
+	return courseDetails, nil
+}
+
+func (r *courseService) GetTotalStepsByCourseId(courseID uint) (*payload.TotalStepsByCourseIdPayload, error) {
+	totalSteps, err := r.courseRepo.GetTotalStepsByCourseId(courseID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &payload.TotalStepsByCourseIdPayload{
+		CourseId:   courseID,
+		TotalSteps: totalSteps,
+	}, nil
+}

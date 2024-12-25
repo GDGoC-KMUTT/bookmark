@@ -31,3 +31,16 @@ func (r *profileService) GetUserInfo(userId *string) (*payload.Profile, error) {
 
 	return result, nil
 }
+
+func (s *profileService) GetTotalGems(userID uint) (*payload.GemTotal, error) {
+	totalGems, err := s.userRepo.GetTotalGemsByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	result := &payload.GemTotal{
+		UserID: userID,
+		Total:  totalGems,
+	}
+	return result, nil
+}
