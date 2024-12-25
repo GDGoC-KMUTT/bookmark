@@ -10,7 +10,7 @@ type CourseCardProps = {
 const CourseCard: React.FC<CourseCardProps> = ({ courseName, fieldName, imageUrl, courseId }) => {
     return (
         <Link to={`/courses/${courseId}`} className="block">
-            <div className="border p-5 pb-2 w-[290px] h-[200px] pr-10 rounded-sm flex flex-col space-y-2">
+            <div className="border p-5 pb-2 w-[350px] h-[200px] pr-10 rounded-sm flex flex-col space-y-2">
                 <div className="flex items-center space-x-2">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -18,7 +18,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courseName, fieldName, imageUrl
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="w-4 h-4 text-gray-500"
+                        className="w-5 h-5 text-gray-500"
                     >
                         <path
                             strokeLinecap="round"
@@ -28,9 +28,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ courseName, fieldName, imageUrl
                     </svg>
                     <p className="text-gray-500">{fieldName}</p>
                 </div>
-                <p className="font-medium pb-5 text-black break-words">{courseName}</p>
+                <p className="font-medium pb-3 text-black break-words">{courseName}</p>
                 <div className="flex-grow flex items-end justify-start">
-                    <img src={imageUrl} className="w-12 h-12 object-contain" />
+                    <img src={imageUrl} className="w-16 h-16 object-contain" />
                 </div>
             </div>
         </Link>
