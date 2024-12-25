@@ -1,31 +1,48 @@
 import { Gem, BookMarked } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import { userProfileAtom, totalGemsAtom } from "@/stores/navbar";
 import { server } from "@/configs/server";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import type { PayloadProfile } from "@/api/api";
 
 const Navbar = () => {
-    const [userProfile, setUserProfile] = useAtom(userProfileAtom);
-    const [totalGems, setTotalGems] = useAtom(totalGemsAtom);
-    const [error, setError] = useState<string | null>(null)
+    const [userProfile, setUserProfile] = useState<PayloadProfile | undefined>(undefined);
+    const [totalGems, setTotalGems] = useState<number | null>(null);
+    const [course, setCurrentCourse] = useState<string>('');
+    const [progress, setProgress] = useState<number | null>(null);
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+      navigate('/profile');
+    };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const profile = await server.profile.profileUserInfo();
                 setUserProfile(profile.data);
-                // console.log("Profile Data:", response.data)
+                // console.log("Profile Data:", profile.data)
 
                 const gemsResponse = await server.gems.getUserGems();
                 if (gemsResponse.data) {
                     // console.log("Gems Data:", gemsResponse.data);
                     setTotalGems(gemsResponse.data.total as number);  // Set total gems atom
                 } else {
-                    setError("Gems data is unavailable.");
+                    setTotalGems(0);
+                }
+
+                const currentCourse = await server.courses.getCurrentCourse();
+                if (currentCourse.data && currentCourse.data.name) {
+                    // console.log("Current course", currentCourse.data);
+                    setCurrentCourse(currentCourse.data.name); 
+
+                    const progressResponse = await server.progress.getCompletionPercentage(currentCourse.data.id as number);
+                    setProgress(progressResponse.completion_percentage);
+                    // console.log("Progress Data:", progressResponse.completion_percentage);
+                } else {
+                    setCurrentCourse('No active course');
                 }
             } catch (error) {
-                setError("Failed to fetch profile data or gem count.")
+                throw error;
             }
         };
 
@@ -53,11 +70,13 @@ const Navbar = () => {
                         <BookMarked className="text-foreground" size={20} />
                     </div>
                     <div className="items-center justify-center space-y-1">
-                        <div className="font text-sm">Connect ESP w...</div>
+                        <div className="font text-sm">
+                            {course.length > 11 ? `${course.slice(0, 11)}...` : course}
+                        </div>
                         <div className="relative w-24 h-1 bg-border rounded-full">
                             <div
                                 className="absolute h-1 bg-progressBar rounded-full"
-                                style={{ width: "60%" }} // Replace with dynamic width later
+                                style={{ width: `${progress}%` }} // Replace with dynamic width later
                             ></div>
                         </div>
                     </div>
@@ -69,7 +88,7 @@ const Navbar = () => {
                 </div>
 
                 {/* user profile image */}
-                <div className="w-8 h-8 bg-border rounded-full">
+                <div className="w-8 h-8 bg-border rounded-full" onClick={handleClick}>
                     {userProfile?.photoUrl && (
                         <img
                             src={userProfile.photoUrl}

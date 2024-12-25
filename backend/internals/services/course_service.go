@@ -3,7 +3,6 @@ package services
 import (
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
-	"log"
 )
 
 type courseService struct {
@@ -36,20 +35,47 @@ func (r *courseService) GetCourseByFieldId(fieldId *uint) ([]payload.CourseWithF
 	return result, nil
 }
 
+func (r *courseService) GetCurrentCourse(userID uint) (*payload.Course, error) {
+	course, err := r.courseRepo.GetCurrentCourse(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	courseDetails := &payload.Course{
+		Id:   course.Id,
+		Name: course.Name,
+	}
+
+	return courseDetails, nil
+}
+
+func (r *courseService) GetTotalStepsByCourseId(courseID uint) (*payload.TotalStepsByCourseIdPayload, error) {
+	totalSteps, err := r.courseRepo.GetTotalStepsByCourseId(courseID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &payload.TotalStepsByCourseIdPayload{
+		CourseId:   courseID,
+		TotalSteps: totalSteps,
+	}, nil
+}
+
 func (r *courseService) GetEnrollCourseByUserId(userId int) ([]*payload.EnrollwithCourse, error) {
 	enrollments, tx := r.courseRepo.FindEnrollCourseByUserId(userId)
 	if tx != nil {
+		// log.Println("Error fetching enrollments for userId:", userId, "Error:", tx)
 		return nil, tx
 	}
 	if enrollments == nil {
-        return nil, nil
+        return []*payload.EnrollwithCourse{}, nil
     }
 
 	var result []*payload.EnrollwithCourse
 	for _, enroll := range enrollments {
 		course, tx := r.courseRepo.FindCourseByCourseId(enroll.CourseId)
 		if tx != nil {
-			log.Println("Error fetching course details for courseId:", enroll.CourseId)
+			// log.Println("Error fetching course details for courseId:", enroll.CourseId)
 			return nil, tx
 		}
 
@@ -64,11 +90,13 @@ func (r *courseService) GetEnrollCourseByUserId(userId int) ([]*payload.Enrollwi
 		if fieldId != nil {
 			field, tx := r.courseRepo.FindFieldByFieldId(uint64(*fieldId))
 			if tx != nil {
-				log.Println("Error fetching field details for fieldId:", *fieldId)
+				// log.Println("Error fetching field details for fieldId:", *fieldId)
 				return nil, tx
 			}
-			fieldImageURL = field.ImageUrl
-			fieldName = field.Name
+			if field != nil {
+                fieldImageURL = field.ImageUrl
+                fieldName = field.Name
+            }
 		}
 
 		result = append(result, &payload.EnrollwithCourse{

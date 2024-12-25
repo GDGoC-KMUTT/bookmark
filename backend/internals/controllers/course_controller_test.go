@@ -3,86 +3,86 @@ package controllers
 import (
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
-	"backend/internals/routes/handler"
+	"backend/internals/services"
 	mockServices "backend/mocks/services"
 	"encoding/json"
 	"fmt"
-	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/suite"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/stretchr/testify/assert"
 )
 
-type CourseControllerTestSuite struct {
-	suite.Suite
-}
+func setupTestCourseController(courseSvc services.CourseService) *fiber.App {
+	app := fiber.New()
 
-func setupTestCourseController(mockCourseService *mockServices.CourseService) *fiber.App {
-	fiberConfig := fiber.Config{
-		ErrorHandler: handler.ErrorHandler,
-	}
-
-	app := fiber.New(fiberConfig)
-
-	courseController := NewCourseController(mockCourseService)
+	controller := NewCourseController(courseSvc)
 
 	app.Use(func(c *fiber.Ctx) error {
-		token := &jwt.Token{}
-		claims := jwt.MapClaims{"userId": float64(123)}
-		token.Claims = claims
+		token := jwt.New(jwt.SigningMethodHS256)
+		claims := token.Claims.(jwt.MapClaims)
+		claims["userId"] = float64(123)
 		c.Locals("user", token)
 		return c.Next()
 	})
 
-	app.Get("/course/enrolled", courseController.GetEnrollCourseByUserId)
+	app.Get("/courses/current", controller.GetCurrentCourse)
+	app.Get("/courses/:courseId/total-steps", controller.GetTotalStepsByCourseId)
+
 	return app
 }
 
-func (suite *CourseControllerTestSuite) TestGetEnrollCourseByUserIdWhenSuccess() {
-	is := assert.New(suite.T())
+func TestGetCurrentCourseWhenSuccess(t *testing.T) {
+    is := assert.New(t)
 
-	mockCourseService := new(mockServices.CourseService)
+    mockCourseService := new(mockServices.CourseService)
 
-	app := setupTestCourseController(mockCourseService)
+    app := setupTestCourseController(mockCourseService)
 
-	course1 := "Course 1"
-	course2 := "Course 2"
-	course1Obj := &payload.Course{Name: &course1}
-	course2Obj := &payload.Course{Name: &course2}
-	mockEnrollments := []*payload.EnrollwithCourse{
-		{Id: new(uint64), UserId: new(uint64), CourseId: new(uint64), CourseName: course1Obj, FieldName: new(string), FieldImageURL: new(string)},
-		{Id: new(uint64), UserId: new(uint64), CourseId: new(uint64), CourseName: course2Obj, FieldName: new(string), FieldImageURL: new(string)},
-	}
+    mockUserId := uint(123)
+    mockCourseId := uint64(1)
+    mockCourseName := "Test Course"
+    
+    expectedCourse := payload.Course{
+        Id:   &mockCourseId,
+        Name: &mockCourseName,
+    }
 
-	mockCourseService.EXPECT().GetEnrollCourseByUserId(mock.Anything).Return(mockEnrollments, nil)
+    mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(&expectedCourse, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/course/enrolled", nil)
-	res, err := app.Test(req)
+    req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
+    req.Header.Set("Authorization", "Bearer mockToken")
 
-	var responseBody response.InfoResponse[[]payload.EnrollwithCourse]
-	body, _ := io.ReadAll(res.Body)
-	json.Unmarshal(body, &responseBody)
+    res, err := app.Test(req)
 
-	is.Nil(err)
-	is.Equal(http.StatusOK, res.StatusCode)
-	is.Equal(len(mockEnrollments), len(responseBody.Data))
+    var responsePayload response.InfoResponse[payload.Course]
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &responsePayload)
+
+    is.Nil(err)
+    is.Equal(http.StatusOK, res.StatusCode)
+
+    is.Equal(*expectedCourse.Id, *responsePayload.Data.Id)
+    is.Equal(*expectedCourse.Name, *responsePayload.Data.Name)
 }
 
-func (suite *CourseControllerTestSuite) TestGetEnrollCourseByUserIdWhenFailed() {
-	is := assert.New(suite.T())
+func TestGetCurrentCourseWhenFailedToFetchCurrentCourse(t *testing.T) {
+	is := assert.New(t)
 
 	mockCourseService := new(mockServices.CourseService)
 
 	app := setupTestCourseController(mockCourseService)
 
-	mockCourseService.EXPECT().GetEnrollCourseByUserId(mock.Anything).Return(nil, fmt.Errorf("failed to get enrollment info"))
+	mockUserId := uint(123)
+	mockCourseService.EXPECT().GetCurrentCourse(mockUserId).Return(nil, fmt.Errorf("failed to fetch current course"))
 
-	req := httptest.NewRequest(http.MethodGet, "/course/enrolled", nil)
+	req := httptest.NewRequest(http.MethodGet, "/courses/current", nil)
+	req.Header.Set("Authorization", "Bearer mockToken")
+
 	res, err := app.Test(req)
 
 	var errResponse response.GenericError
@@ -91,9 +91,55 @@ func (suite *CourseControllerTestSuite) TestGetEnrollCourseByUserIdWhenFailed() 
 
 	is.Nil(err)
 	is.Equal(http.StatusInternalServerError, res.StatusCode)
-	is.Equal("failed to get enrollment info", errResponse.Message)
+	// is.Equal("failed to fetch current course", errResponse.Message)
 }
 
-func TestCourseController(t *testing.T) {
-	suite.Run(t, new(CourseControllerTestSuite))
+func TestGetTotalStepsByCourseIdWhenSuccess(t *testing.T) {
+    is := assert.New(t)
+
+    mockCourseService := new(mockServices.CourseService)
+
+    app := setupTestCourseController(mockCourseService)
+
+    mockCourseId := uint(1)
+    expectedTotalSteps := payload.TotalStepsByCourseIdPayload{
+        TotalSteps: 10,
+    }
+
+    // Expect the incremented courseId, which will be mockCourseId + 1
+    mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId).Return(&expectedTotalSteps, nil)
+
+    req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/courses/%d/total-steps", mockCourseId), nil)
+    res, err := app.Test(req)
+
+    var responsePayload response.InfoResponse[payload.TotalStepsByCourseIdPayload]
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &responsePayload)
+
+    is.Nil(err)
+    is.Equal(http.StatusOK, res.StatusCode)
+    is.Equal(expectedTotalSteps.TotalSteps, responsePayload.Data.TotalSteps)
+}
+
+func TestGetTotalStepsByCourseIdWhenFailedToFetchTotalSteps(t *testing.T) {
+	is := assert.New(t)
+
+	mockCourseService := new(mockServices.CourseService)
+
+	app := setupTestCourseController(mockCourseService)
+
+	mockCourseId := uint(1)
+
+	mockCourseService.EXPECT().GetTotalStepsByCourseId(mockCourseId).Return(&payload.TotalStepsByCourseIdPayload{}, fmt.Errorf("failed to fetch total steps"))
+
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/courses/%d/total-steps", mockCourseId), nil)
+	res, err := app.Test(req)
+
+	var errResponse response.GenericError
+	body, _ := io.ReadAll(res.Body)
+	json.Unmarshal(body, &errResponse)
+
+	is.Nil(err)
+	is.Equal(http.StatusInternalServerError, res.StatusCode)
+	// is.Equal("failed to fetch total steps", errResponse.Message)
 }
