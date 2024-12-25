@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { server } from "@/configs/server";
 import { Link, useNavigate } from "react-router-dom";
 import type { PayloadProfile } from "@/api/api";
+import BookmarkLogo from "@/assets/logo2.png";
 
 const Navbar = () => {
     const [userProfile, setUserProfile] = useState<PayloadProfile | undefined>(undefined);
@@ -37,13 +38,27 @@ const Navbar = () => {
                     setCurrentCourse(currentCourse.data.name); 
 
                     const progressResponse = await server.progress.getCompletionPercentage(currentCourse.data.id as number);
-                    setProgress(progressResponse.data);
+                    setProgress(progressResponse.data ?? 0);
                     // console.log("Progress Data:", progressResponse);
                 } else {
                     setCurrentCourse('No active course');
                 }
             } catch (error) {
-                throw error;
+                if (
+                    typeof error === 'object' &&
+                    error !== null &&
+                    'response' in error &&
+                    typeof (error as any).response?.status === 'number'
+                ) {
+                    const responseError = error as { response: { status: number } };
+                    if (responseError.response.status === 500) {
+                        // console.error("Internal server error occurred:", error);
+                        setCurrentCourse('No active course');
+                    }
+                } else {
+                    // console.error("Failed to fetch data:", error);
+                    setCurrentCourse('No active course');
+                }
             }
         };
 
@@ -53,7 +68,7 @@ const Navbar = () => {
     return (
         <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between">
             <div className="flex items-center space-x-8">
-                <img src="src/assets/logo2.png" alt="bookmarkLogo" className="w-8 h-8" />
+                <img src={BookmarkLogo} alt="bookmarkLogo" className="w-8 h-8" />
                 <div className="flex space-x-8">
                 <Link to="/home" className="text-gray-500 font-medium hover:text-explore-foreground transition-colors">
                     Home
