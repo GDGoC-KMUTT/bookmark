@@ -52,11 +52,11 @@ const Navbar = () => {
                 ) {
                     const responseError = error as { response: { status: number } };
                     if (responseError.response.status === 500) {
-                        console.error("Internal server error occurred:", error);
+                        // console.error("Internal server error occurred:", error);
                         setCurrentCourse('No active course');
                     }
                 } else {
-                    console.error("Failed to fetch data:", error);
+                    // console.error("Failed to fetch data:", error);
                     setCurrentCourse('No active course');
                 }
             }
