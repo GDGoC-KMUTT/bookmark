@@ -23,12 +23,15 @@ const Profile = () => {
                 const coursesResponse = await server.courses.getEnrollCourseByUserId()
                 if (coursesResponse.data) {
                     setEnrolledCourses(coursesResponse.data)
+                    if (coursesResponse.data.length === 0) {
+                        console.log("No courses found for this user")
+                    }
                 } else {
                     setEnrolledCourses([])
                 }
             } catch (error) {
                 console.error("Error during data fetching: ", error)
-                setError("An error occurred while fetching data.")
+                setError("An error occurred while fetching data")
             }
         }
 
@@ -65,8 +68,8 @@ const Profile = () => {
                 </div>
             </div>
 
-            <div className="mt-5 sm:mt-20">
-                <h1 className="text-2xl sm:text-3xl ml-5 font-medium">Enrolled Courses</h1>
+            <div className="mt-10 sm:mt-20">
+                <h1 className="text-3xl font-medium">Enrolled Courses</h1>
                 <div className="mt-8 mb-10 gap-6 justify-center sm:justify-start">
                     {enrolledCourses.length === 0 ? (
                         <p className="ml-10">No courses enrolled yet.</p>
