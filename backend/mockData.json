@@ -1,7 +1,6 @@
 {
   "users": [
     {
-      "id": 1,
       "oid": "5ab23c4d-1234-5678-90ab-cdef12345678",
       "firstname": "John",
       "lastname": "Smith",
@@ -11,7 +10,6 @@
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
-      "id": 2,
       "oid": "6bc34d5e-2345-6789-01bc-defg23456789",
       "firstname": "Jane",
       "lastname": "Doe",
@@ -21,7 +19,6 @@
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
-      "id": 3,
       "oid": "fb13e733-3b61-4b6c-8802-486d2a99f56d",
       "firstname": "Jame",
       "lastname": "Smith",
@@ -33,42 +30,36 @@
   ],
   "field_types": [
     {
-      "id": 1,
       "name": "Microcontroller",
       "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/microcontroller.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
-      "id": 2,
       "name": "Internet of Things",
       "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/internetofthings.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
-      "id": 3,
       "name": "Smart Home",
       "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/application.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
-      "id": 4,
       "name": "Web Development",
       "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/web.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
-      "id": 5,
       "name": "Database",
       "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/database.png",
       "created_at": "2024-01-15T08:00:00Z",
       "updated_at": "2024-01-15T08:00:00Z"
     },
     {
-      "id": 6,
       "name": "Infrastructure",
       "image_url": "https://static.bookmark.scnd.app/asset/fieldicon/infrastructure.png",
       "created_at": "2024-01-15T08:00:00Z",
@@ -77,7 +68,6 @@
   ],
   "modules": [
     {
-      "id": 1,
       "title": "Python Basics",
       "description": "Introduction to Python programming",
       "image_url": "https://miro.medium.com/v2/resize:fit:1040/1*AvTKrai2EGkiXqv4F4G_6w.png",
@@ -85,7 +75,6 @@
       "updated_at": "2024-01-15T10:00:00Z"
     },
     {
-      "id": 2,
       "title": "Python Intermediate",
       "description": "Start to learn Python at an intermediate level.",
       "image_url": "https://static-assets.codecademy.com/assets/course-landing-page/meta/4x3/learn-intermediate-python-3.jpg",
@@ -93,7 +82,6 @@
       "updated_at": "2024-01-15T10:00:00Z"
     },
     {
-      "id": 3,
       "title": "Get Start with Iot",
       "description": "Introduction to Internet of Things",
       "image_url": "https://assets-blog.syniverse.com/2023/06/28111839/computer-g9fafa31ff_1280-1024x766.jpg",
@@ -101,7 +89,6 @@
       "updated_at": "2024-01-15T10:00:00Z"
     },
     {
-      "id": 4,
       "title": "Practice with various Iot labs",
       "description": "Learner will learn with many interesting labs.",
       "image_url": "https://svitla.com/wp-content/uploads/2024/07/2327-iot.jpg",
@@ -109,7 +96,6 @@
       "updated_at": "2024-01-15T10:00:00Z"
     },
     {
-      "id": 5,
       "title": "How to design database",
       "description": "Introduction to design database",
       "image_url": "https://cdn.corporatefinanceinstitute.com/assets/database-1024x703.jpeg",
@@ -117,7 +103,6 @@
       "updated_at": "2024-01-15T10:00:00Z"
     },
     {
-      "id": 6,
       "title": "How to create database",
       "description": "Introduction to create and migrate database",
       "image_url": "https://www.mssqltips.com/wp-content/images-tips/7304_sql-create-database.004.png",
@@ -127,21 +112,18 @@
   ],
   "courses": [
     {
-      "id": 1,
       "name": "Programming Fundamentals",
       "field_id": 3,
       "created_at": "2024-01-15T09:00:00Z",
       "updated_at": "2024-01-15T09:00:00Z"
     },
     {
-      "id": 2,
       "name": "Basic Internet of Things",
       "field_id": 2,
       "created_at": "2024-01-15T09:00:00Z",
       "updated_at": "2024-01-15T09:00:00Z"
     },
     {
-      "id": 3,
       "name": "How to design and create database",
       "field_id": 5,
       "created_at": "2024-01-15T09:00:00Z",
@@ -150,7 +132,6 @@
   ],
   "steps": [
     {
-      "id": 1,
       "module_id": 1,
       "title": "Variables and Types",
       "description": "Learn about Python variables and data types",
@@ -162,7 +143,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 2,
       "module_id": 1,
       "title": "Working with Operators and Expressions",
       "description": "Learn about operators in Python and how to perform basic arithmetic and logical operations.",
@@ -174,7 +154,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 3,
       "module_id": 1,
       "title": "Control Flow and Decision Making",
       "description": "Learn about control flow in Python to make decisions using if-else statements and loops.",
@@ -186,7 +165,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 4,
       "module_id": 2,
       "title": "Function and other",
       "description": "Learn about Python functions and other interesting things",
@@ -198,7 +176,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 5,
       "module_id": 2,
       "title": "Function and other (cont.)",
       "description": "Deep dive into advanced functions and functional programming concepts",
@@ -210,7 +187,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 6,
       "module_id": 2,
       "title": "Function and other (cont. 2)",
       "description": "Explore Python decorators and higher-order functions",
@@ -222,7 +198,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 7,
       "module_id": 3,
       "title": "Start to learn Iot",
       "description": "Learn about basic IoT",
@@ -234,7 +209,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 8,
       "module_id": 3,
       "title": "Start to learn IoT (cont.)",
       "description": "Dive deeper into setting up and working with IoT devices and platforms",
@@ -246,7 +220,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 9,
       "module_id": 3,
       "title": "Start to learn IoT (cont. 2)",
       "description": "Implement advanced IoT concepts and data analysis for IoT systems",
@@ -258,7 +231,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 10,
       "module_id": 4,
       "title": "IoT Lab",
       "description": "Learn about IoT with real lab",
@@ -270,7 +242,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 11,
       "module_id": 4,
       "title": "IoT Lab (cont.)",
       "description": "Learn advanced IoT applications in the lab and handle real-world challenges",
@@ -282,7 +253,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 12,
       "module_id": 4,
       "title": "IoT Lab (cont. 2)",
       "description": "Learn to troubleshoot and scale IoT systems for real-world deployment",
@@ -294,7 +264,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 13,
       "module_id": 5,
       "title": "Get start to learn basics of database design",
       "description": "Learn about how to design a database",
@@ -306,7 +275,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 14,
       "module_id": 5,
       "title": "Normalization and Relationship Types",
       "description": "Learn about database normalization and the types of relationships in database design",
@@ -318,7 +286,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 15,
       "module_id": 5,
       "title": "Advanced Database Constraints and Indexing",
       "description": "Learn about advanced database constraints and indexing techniques to improve data integrity and query performance",
@@ -330,7 +297,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 16,
       "module_id": 6,
       "title": "How to create and migrate",
       "description": "Learn about how to create and migrate databases efficiently",
@@ -342,7 +308,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 17,
       "module_id": 6,
       "title": "Version Control for Database Migrations",
       "description": "Learn how to manage database migrations using version control systems",
@@ -354,7 +319,6 @@
       "updated_at": "2024-01-15T11:00:00Z"
     },
     {
-      "id": 18,
       "module_id": 6,
       "title": "Rollback and Revert Migrations",
       "description": "Learn how to safely roll back and revert migrations to handle errors or unwanted changes",
@@ -368,7 +332,6 @@
   ],
   "step_evaluates": [
     {
-      "id": 1,
       "step_id": 1,
       "order": 1,
       "gem": 2,
@@ -379,7 +342,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 2,
       "step_id": 1,
       "order": 2,
       "gem": 3,
@@ -390,7 +352,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 3,
       "step_id": 2,
       "order": 1,
       "gem": 2,
@@ -401,7 +362,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 4,
       "step_id": 2,
       "order": 2,
       "gem": 3,
@@ -412,7 +372,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 5,
       "step_id": 3,
       "order": 1,
       "gem": 2,
@@ -423,7 +382,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 6,
       "step_id": 3,
       "order": 2,
       "gem": 3,
@@ -434,7 +392,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 7,
       "step_id": 2,
       "order": 1,
       "gem": 2,
@@ -445,7 +402,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 8,
       "step_id": 2,
       "order": 2,
       "gem": 3,
@@ -456,7 +412,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 9,
       "step_id": 3,
       "order": 1,
       "gem": 2,
@@ -467,7 +422,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 10,
       "step_id": 3,
       "order": 2,
       "gem": 3,
@@ -478,7 +432,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 11,
       "step_id": 4,
       "order": 1,
       "gem": 2,
@@ -489,7 +442,6 @@
       "updated_at": "2024-01-16T09:00:00Z"
     },
     {
-      "id": 12,
       "step_id": 4,
       "order": 2,
       "gem": 3,
@@ -502,7 +454,6 @@
   ],
   "user_evaluates": [
     {
-      "id": 1,
       "user_id": 3,
       "step_evaluate_id": 1,
       "content": "Functions are used to reuse code and make it more readable. Parameters are used to pass data to the function, and return values allow it to output data.",
@@ -512,7 +463,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 2,
       "user_id": 2,
       "step_evaluate_id": 2,
       "content": "Functions help organize code by grouping related tasks. Parameters accept input data, and return values provide the output from the function.",
@@ -522,7 +472,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 3,
       "user_id": 3,
       "step_evaluate_id": 3,
       "content": "I selected 'def' and 'lambda' as valid keywords.",
@@ -532,7 +481,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 4,
       "user_id": 2,
       "step_evaluate_id": 4,
       "content": "I selected 'def' and 'function' because they both look like function keywords.",
@@ -542,7 +490,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 5,
       "user_id": 3,
       "step_evaluate_id": 5,
       "content": "Lambda functions are simple, one-line functions that don't need a name, while regular functions are more complex and can have multiple expressions.",
@@ -552,7 +499,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 6,
       "user_id": 2,
       "step_evaluate_id": 6,
       "content": "Lambda functions are anonymous and shorter, whereas normal functions can have multiple lines.",
@@ -562,7 +508,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 7,
       "user_id": 3,
       "step_evaluate_id": 7,
       "content": "I selected the correct options: Sorting a list, applying transformation, and storing in a variable.",
@@ -572,7 +517,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 8,
       "user_id": 2,
       "step_evaluate_id": 8,
       "content": "I selected 'Sorting a list' and 'Applying a transformation'. I didn't choose 'Storing in a variable'.",
@@ -582,7 +526,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 9,
       "user_id": 3,
       "step_evaluate_id": 9,
       "content": "Decorators allow you to add extra behavior to a function, such as logging, without modifying the original function itself.",
@@ -592,7 +535,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 10,
       "user_id": 2,
       "step_evaluate_id": 10,
       "content": "Decorators enhance functions by adding features like timing, logging, etc.",
@@ -602,7 +544,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 11,
       "user_id": 3,
       "step_evaluate_id": 11,
       "content": "I selected '1', '2', and '4' as correct answers.",
@@ -612,7 +553,6 @@
       "updated_at": "2024-01-16T10:00:00Z"
     },
     {
-      "id": 12,
       "user_id": 2,
       "step_evaluate_id": 12,
       "content": "I selected '1' and '3'. I was unsure about stacking decorators.",
@@ -662,7 +602,6 @@
   ],
   "step_comments": [
     {
-      "id": 1,
       "step_id": 1,
       "user_id": 2,
       "content": "Great explanation of variables!",
@@ -670,7 +609,6 @@
       "updated_at": "2024-01-16T11:00:00Z"
     },
     {
-      "id": 2,
       "step_id": 3,
       "user_id": 1,
       "content": "Great explanation of Iot basic!",
@@ -678,7 +616,6 @@
       "updated_at": "2024-01-16T11:00:00Z"
     },
     {
-      "id": 3,
       "step_id": 5,
       "user_id": 3,
       "content": "Should improve the quality of this step.",
@@ -714,21 +651,18 @@
   ],
   "enrols": [
     {
-      "id": 1,
       "user_id": 3,
       "course_id": 1,
       "created_at": "2024-01-15T13:00:00Z",
       "updated_at": "2024-01-15T13:00:00Z"
     },
     {
-      "id": 2,
       "user_id": 2,
       "course_id": 2,
       "created_at": "2024-01-15T13:00:00Z",
       "updated_at": "2024-01-15T13:00:00Z"
     },
     {
-      "id": 3,
       "user_id": 1,
       "course_id": 3,
       "created_at": "2024-01-15T13:00:00Z",
@@ -802,7 +736,6 @@
   ],
   "user_passes": [
     {
-      "id": 1,
       "user_id": 3,
       "type": "step",
       "step_id": 1,
@@ -812,7 +745,6 @@
       "updated_at": "2024-01-17T09:00:00Z"
     },
     {
-      "id": 2,
       "user_id": 2,
       "type": "step",
       "step_id": 2,
@@ -822,7 +754,6 @@
       "updated_at": "2024-01-17T09:00:00Z"
     },
     {
-      "id": 3,
       "user_id": 2,
       "type": "step",
       "step_id": 3,
@@ -834,28 +765,24 @@
   ],
   "articles": [
     {
-      "id": 1,
       "title": "Getting Started with Programming",
       "href": "/articles/getting-started",
       "created_at": "2024-01-15T16:00:00Z",
       "updated_at": "2024-01-15T16:00:00Z"
     },
     {
-      "id": 2,
       "title": "Understanding serial port: COM port in Windows and TTY device in UNIX",
       "href": "/articles/getting-started",
       "created_at": "2024-01-15T16:00:00Z",
       "updated_at": "2024-01-15T16:00:00Z"
     },
     {
-      "id": 3,
       "title": "Baud Rate คืออะไร ใช้ประโยชน์อะไรบ้างในการเชื่อมต่อแบบ serial",
       "href": "/articles/getting-started",
       "created_at": "2024-01-15T16:00:00Z",
       "updated_at": "2024-01-15T16:00:00Z"
     },
     {
-      "id": 4,
       "title": "วิธีการใช้งาน SSH เบื้องต้น และแนะนำ SSH client แบบต่างๆ",
       "href": "/articles/getting-started",
       "created_at": "2024-01-15T16:00:00Z",

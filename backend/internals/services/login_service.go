@@ -63,7 +63,6 @@ func (r *loginService) GetOrCreateUserFromClaims(userInfo *oidc.UserInfo) (*mode
 	// * if user not exist, create new user
 	if user.Id == nil {
 		user = &models.User{
-			Id:        nil,
 			Oid:       oidcClaims.Id,
 			Firstname: oidcClaims.FirstName,
 			Lastname:  oidcClaims.Lastname,
