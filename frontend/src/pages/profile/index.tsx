@@ -75,10 +75,10 @@ const Profile = () => {
                     {enrolledCourses.map((course) => (
                         <CourseCard
                             key={course.id}
-                            courseName={course.course_name?.name ?? ""}
-                            fieldName={course.field_name ?? ""}
-                            imageUrl={course.field_image_url?? ""}
-                            courseId={course.course_id ?? 0}
+                            courseName={course.courseName?.name ?? ""}
+                            fieldName={course.fieldName ?? ""}
+                            imageUrl={course.fieldImageUrl?? ""}
+                            courseId={course.courseId ?? 0}
                         />
                     ))}
                 </div>
