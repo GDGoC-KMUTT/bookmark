@@ -172,7 +172,7 @@ func MigrateSteps(tx *gorm.DB, data []map[string]interface{}) error {
 		if err != nil {
 			return fmt.Errorf("invalid module_id: %w", err)
 		}
-		
+
 		step := &models.Step{
 			Id:          toUint64Ptr(id),
 			ModuleId:    toUint64Ptr(moduleId),
@@ -245,6 +245,7 @@ func MigrateUserEvaluates(tx *gorm.DB, data []map[string]interface{}) error {
 		}
 
 		evaluate := &models.UserEvaluate{
+			Id:             toUint64Ptr(d["id"].(float64)),
 			UserId:         toUint64Ptr(d["user_id"].(float64)),
 			StepEvaluateId: toUint64Ptr(d["step_evaluate_id"].(float64)),
 			Content:        toStringPtr(d["content"].(string)),
