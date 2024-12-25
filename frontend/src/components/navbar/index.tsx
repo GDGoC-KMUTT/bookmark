@@ -48,7 +48,7 @@ const Navbar = () => {
         };
 
         fetchData();
-    }, [setUserProfile, setTotalGems]);
+    }, [setUserProfile, setTotalGems, setCurrentCourse, setProgress]);
 
     return (
         <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between">
