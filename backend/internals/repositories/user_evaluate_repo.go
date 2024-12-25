@@ -15,12 +15,12 @@ func NewUserEvaluateRepo(db *gorm.DB) UserEvaluateRepository {
 	}
 }
 
-func (r *userEvaluateRepo) GetUserEvalByUserId(userId *uint64) ([]*models.UserEvaluate, error) {
-	userEvals := make([]*models.UserEvaluate, 0)
+func (r *userEvaluateRepo) GetUserEvalByStepEvalId(stepEvalId *uint64, userId *float64) (*models.UserEvaluate, error) {
+	userEval := new(models.UserEvaluate)
 
-	result := r.db.Find(&userEvals, "user_id = ?", userId)
+	result := r.db.Find(&userEval, "step_evaluate_id = ? AND user_id = ?", stepEvalId, userId)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return userEvals, nil
+	return userEval, nil
 }

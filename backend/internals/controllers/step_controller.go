@@ -8,15 +8,16 @@ import (
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type StepController struct {
-	courseSvc services.CourseService
+	stepSvc services.StepService
 }
 
-func NewStepController(courseSvc services.CourseService) StepController {
+func NewStepController(stepSvc services.StepService) StepController {
 	return StepController{
-		courseSvc: courseSvc,
+		stepSvc: stepSvc,
 	}
 }
 
@@ -51,7 +52,7 @@ func (r *StepController) GetStepInfo(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param stepId path uint true "Step ID"
-// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
+// @Success 200 {object} response.InfoResponse[payload.GetGemsResponse]
 // @Failure 400 {object} response.GenericError
 // @Router /step/gem/{stepId} [get]
 func (r *StepController) GetGemEachStep(c *fiber.Ctx) error {
@@ -64,7 +65,24 @@ func (r *StepController) GetGemEachStep(c *fiber.Ctx) error {
 		}
 	}
 
-	res := new(payload.StepIdParam)
+	// * login state
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["userId"].(float64)
+
+	totalGems, currentGems, err := r.stepSvc.GetGems(param.StepId, &userId)
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to getGems",
+		}
+	}
+
+	res := &payload.GetGemsResponse{
+		TotalGems:   totalGems,
+		CurrentGems: currentGems,
+	}
+
 	return response.Ok(c, res)
 }
 

@@ -14,12 +14,27 @@ func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRe
 	}
 }
 
-func (r *stepService) GetGems(stepId *uint64, userId *uint64) (*uint64, *uint64, error) {
+func (r *stepService) GetGems(stepId *uint64, userId *float64) (*int, *int, error) {
 	stepEvals, err := r.stepEvalRepo.GetStepEvalByStepId(stepId)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	userEvals, err := r.userEvalRepo.GetUserEvalByUserId(userId)
+	totalGems := 0
+	currentGems := 0
+	for _, eval := range stepEvals {
+		totalGems += *eval.Gem
+		userEvals, err := r.userEvalRepo.GetUserEvalByStepEvalId(eval.Id, userId)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		if *userEvals.Pass {
+			currentGems += *eval.Gem
+		}
+
+	}
+
+	return &totalGems, &currentGems, nil
 
 }

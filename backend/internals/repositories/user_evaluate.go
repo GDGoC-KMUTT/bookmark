@@ -3,5 +3,5 @@ package repositories
 import "backend/internals/db/models"
 
 type UserEvaluateRepository interface {
-	GetUserEvalByUserId(userId *uint64) ([]*models.UserEvaluate, error)
+	GetUserEvalByStepEvalId(stepEvalId *uint64, userId *float64) (*models.UserEvaluate, error)
 }

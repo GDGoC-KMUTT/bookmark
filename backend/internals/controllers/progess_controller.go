@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
 	"backend/internals/services"
-	"backend/internals/entities/payload"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -25,7 +25,7 @@ func NewProgressController(progressService services.ProgressService) *ProgressCo
 // @Description Calculates the course completion percentage for a user based on completed steps.
 // @Accept json
 // @Produce json
-// @Param courseID path int true "Course ID"
+// @Param courseId path int true "Course ID"
 // @Success 200 {object} map[string]float64 "completion_percentage"
 // @Failure 400 {object} map[string]string "error"
 // @Failure 500 {object} map[string]string "error"
