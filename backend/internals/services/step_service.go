@@ -8,18 +8,20 @@ import (
 )
 
 type stepService struct {
-	stepEvalRepo    repositories.StepEvaluateRepository
-	userEvalRepo    repositories.UserEvaluateRepository
-	userRepo        repositories.UserRepository
-	stepCommentRepo repositories.StepCommentRepository
+	stepEvalRepo          repositories.StepEvaluateRepository
+	userEvalRepo          repositories.UserEvaluateRepository
+	userRepo              repositories.UserRepository
+	stepCommentRepo       repositories.StepCommentRepository
+	stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository
 }
 
-func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository, stepCommentRepo repositories.StepCommentRepository) StepService {
+func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository, stepCommentRepo repositories.StepCommentRepository, stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository) StepService {
 	return &stepService{
-		stepEvalRepo:    stepEvalRepo,
-		userEvalRepo:    userEvalRepo,
-		userRepo:        userRepo,
-		stepCommentRepo: stepCommentRepo,
+		stepEvalRepo:          stepEvalRepo,
+		userEvalRepo:          userEvalRepo,
+		userRepo:              userRepo,
+		stepCommentRepo:       stepCommentRepo,
+		stepCommentUpVoteRepo: stepCommentUpVoteRepo,
 	}
 }
 
@@ -64,6 +66,11 @@ func (r *stepService) GetStepComment(stepId *uint64) ([]payload.StepCommentInfo,
 			return nil, err
 		}
 
+		stepCommentUpVote, err := r.stepCommentUpVoteRepo.GetStepCommentUpVoteByStepCommentId(comment.Id)
+		if err != nil {
+			return nil, err
+		}
+
 		stepCommentInfo = append(stepCommentInfo, payload.StepCommentInfo{
 			UserInfo: &payload.CommentedBy{
 				UserId:    user.Id,
@@ -73,6 +80,7 @@ func (r *stepService) GetStepComment(stepId *uint64) ([]payload.StepCommentInfo,
 				PhotoUrl:  user.PhotoUrl,
 			},
 			Comment: comment.Content,
+			UpVote:  utils.Ptr(len(stepCommentUpVote)),
 		})
 	}
 

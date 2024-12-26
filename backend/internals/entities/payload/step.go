@@ -12,6 +12,7 @@ type GetGemsResponse struct {
 type StepCommentInfo struct {
 	UserInfo *CommentedBy `json:"userInfo"`
 	Comment  *string      `json:"comment"`
+	UpVote   *int         `json:"upVote"`
 }
 
 type CommentedBy struct {

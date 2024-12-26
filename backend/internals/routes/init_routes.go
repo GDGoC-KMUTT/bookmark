@@ -25,6 +25,7 @@ func SetupRoutes() {
 	var stepEvalRepo = repositories.NewStepEvaluateRepository(db.Gorm)
 	var userEvalRepo = repositories.NewUserEvaluateRepo(db.Gorm)
 	var stepCommentRepo = repositories.NewStepCommentRepository(db.Gorm)
+	var stepCommentUpVoteRepo = repositories.NewStepCommentUpVote(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -35,7 +36,7 @@ func SetupRoutes() {
 	var profileService = services.NewProfileService(userRepo)
 	var courseService = services.NewCourseService(courseRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
-	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo)
+	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo, stepCommentUpVoteRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
