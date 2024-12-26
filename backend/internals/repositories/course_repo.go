@@ -67,16 +67,27 @@ func (r *courseRepository) GetCurrentCourse(userID uint) (*models.Course, error)
 }
 
 func (r *courseRepository) GetAllCourseSteps(courseID uint) ([]models.Step, error) {
-    var courseContent models.CourseContent
-    result := r.db.First(&courseContent, "course_id = ?", courseID)
+    var courseContents []models.CourseContent
+    result := r.db.Where("course_id = ?", courseID).Find(&courseContents)
     if result.Error != nil {
-		return []models.Step{}, result.Error
+        return nil, result.Error
+    }
+
+    if len(courseContents) == 0 {
+        return nil, nil
+    }
+
+    var moduleIDs []uint64
+    for _, content := range courseContents {
+        if content.ModuleId != nil {
+            moduleIDs = append(moduleIDs, *content.ModuleId)
+        }
     }
 
     var steps []models.Step
-    result = r.db.Where("module_id = ?", courseContent.ModuleId).Find(&steps)
+    result = r.db.Where("module_id IN ?", moduleIDs).Find(&steps)
     if result.Error != nil {
-        return []models.Step{}, result.Error
+        return nil, result.Error
     }
 
     return steps, nil
