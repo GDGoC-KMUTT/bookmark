@@ -1,6 +1,7 @@
 package services
 
 import (
+	"backend/internals/db/models"
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
 	"backend/internals/utils"
@@ -85,4 +86,18 @@ func (r *stepService) GetStepComment(stepId *uint64) ([]payload.StepCommentInfo,
 	}
 
 	return stepCommentInfo, nil
+}
+
+func (r *stepService) CreteStpComment(stepId *uint64, userId *float64, content *string) error {
+	stepComment := &models.StepComment{
+		Content: content,
+		StepId:  stepId,
+		UserId:  utils.Ptr(uint64(*userId)),
+	}
+
+	if err := r.stepCommentRepo.CreateStepComment(stepComment); err != nil {
+		return err
+	}
+
+	return nil
 }

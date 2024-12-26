@@ -22,3 +22,8 @@ type CommentedBy struct {
 	Email     *string `json:"email"`
 	PhotoUrl  *string `json:"photoUrl"`
 }
+
+type Comment struct {
+	StepId  *uint64 `json:"stepId" validate:"required"`
+	Content *string `json:"content" validate:"required"`
+}

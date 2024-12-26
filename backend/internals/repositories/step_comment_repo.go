@@ -25,3 +25,7 @@ func (r *stepCommentRepo) GetStepCommentByStepId(stepId *uint64) ([]*models.Step
 
 	return stepComments, nil
 }
+
+func (r *stepCommentRepo) CreateStepComment(stepComment *models.StepComment) error {
+	return r.db.Create(stepComment).Error
+}

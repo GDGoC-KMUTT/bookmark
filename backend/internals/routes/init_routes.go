@@ -85,7 +85,10 @@ func SetupRoutes() {
 
 	step := api.Group("/step", middleware.Jwt())
 	step.Get("/gem/:stepId", stepController.GetGemEachStep)
-	step.Get("/comment/:stepId", stepController.GetStepComment)
+
+	stepComment := step.Group("/comment")
+	stepComment.Get("/:stepId", stepController.GetStepComment)
+	stepComment.Post("/create", stepController.CreateStepComment)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {

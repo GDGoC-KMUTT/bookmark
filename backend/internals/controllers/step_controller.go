@@ -33,7 +33,7 @@ func NewStepController(stepSvc services.StepService) StepController {
 // @Router /step/stepInfo/{stepId} [get]
 func (r *StepController) GetStepInfo(c *fiber.Ctx) error {
 	param := new(payload.StepIdParam)
-
+	// TODO
 	if err := c.ParamsParser(param); err != nil {
 		return &response.GenericError{
 			Err:     err,
@@ -123,17 +123,18 @@ func (r *StepController) GetStepComment(c *fiber.Ctx) error {
 // @Summary CreateStepComment
 // @Accept json
 // @Produce json
-// @Param q body payload.OauthCallback true "OauthCallback"
-// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
+// @Param q body payload.Comment true "Comment"
+// @Success 200 {object} response.InfoResponse[string]
 // @Failure 400 {object} response.GenericError
-// @Router /step/create [post]
+// @Router /step/comment/create [post]
 func (r *StepController) CreateStepComment(c *fiber.Ctx) error {
-	body := new(payload.StepIdParam)
+	body := new(payload.Comment)
 
+	// TODO
 	if err := c.BodyParser(body); err != nil {
 		return &response.GenericError{
 			Err:     err,
-			Message: "invalid stepId param",
+			Message: "invalid comment payload",
 		}
 	}
 
@@ -146,8 +147,19 @@ func (r *StepController) CreateStepComment(c *fiber.Ctx) error {
 		}
 	}
 
-	res := new(payload.StepIdParam)
-	return response.Ok(c, res)
+	// * login state
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["userId"].(float64)
+
+	if err := r.stepSvc.CreteStpComment(body.StepId, &userId, body.Content); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to create stepComment",
+		}
+	}
+
+	return response.Ok(c, "successfully create step comment")
 }
 
 // GetStepEvaluate
@@ -163,10 +175,45 @@ func (r *StepController) CreateStepComment(c *fiber.Ctx) error {
 func (r *StepController) GetStepEvaluate(c *fiber.Ctx) error {
 	param := new(payload.StepIdParam)
 
+	// TODO
 	if err := c.ParamsParser(param); err != nil {
 		return &response.GenericError{
 			Err:     err,
 			Message: "invalid stepId param",
+		}
+	}
+
+	res := new(payload.StepIdParam)
+	return response.Ok(c, res)
+}
+
+// CreateStepCommentUpVote
+// @ID createStepCommentUpVote
+// @Tags step
+// @Summary CreateStepCommentUpVote
+// @Accept json
+// @Produce json
+// @Param q body payload.OauthCallback true "OauthCallback"
+// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
+// @Failure 400 {object} response.GenericError
+// @Router /step/create [post]
+func (r *StepController) CreateStepCommentUpVote(c *fiber.Ctx) error {
+	body := new(payload.Comment)
+
+	// TODO
+	if err := c.BodyParser(body); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "invalid comment payload",
+		}
+	}
+
+	// * validate body
+	if err := utils.Validate.Struct(body); err != nil {
+		var validationErrors validator.ValidationErrors
+		errors.As(err, &validationErrors)
+		return &response.GenericError{
+			Err: validationErrors,
 		}
 	}
 
