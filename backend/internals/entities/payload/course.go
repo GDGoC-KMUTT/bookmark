@@ -22,3 +22,18 @@ type TotalStepsByCourseIdPayload struct {
 type CourseIdParam struct {
     CourseId uint `json:"courseId" param:"courseId"`
 }
+
+type Enroll struct {
+	Id         *uint64 `json:"id"`
+	UserId     *uint64 `json:"userId"`
+	CourseId   *uint64 `json:"courseId"`
+}
+
+type EnrollwithCourse struct {
+	Id         	  *uint64 `json:"id"`
+	UserId     	  *uint64 `json:"userId"`
+	CourseId   	  *uint64 `json:"courseId"`
+	CourseName 	  *Course `json:"courseName"`
+	FieldName  	  *string `json:"fieldName"`
+	FieldImageURL *string `json:"fieldImageUrl"`
+}

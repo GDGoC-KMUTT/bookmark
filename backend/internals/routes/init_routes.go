@@ -78,6 +78,7 @@ func SetupRoutes() {
 	course.Get("/field-types", courseController.GetAllFieldTypes)
 	course.Get("/current", courseController.GetCurrentCourse)
 	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
+	course.Get("/enrolled", courseController.GetEnrollCourseByUserId)
 
 	article := api.Group("/article", middleware.Jwt())
 	article.Get("", articleController.GetAllArticles)

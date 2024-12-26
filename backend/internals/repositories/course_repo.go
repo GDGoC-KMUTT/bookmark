@@ -99,5 +99,42 @@ func (r *courseRepository) GetTotalStepsByCourseId(courseID uint) (int, error) {
 		return 0, err
 	}
 
-	return len(steps), nil
+    return len(steps), nil
+}
+
+func (r *courseRepository) FindEnrollCourseByUserId(userId int) ([]*models.Enroll, error) {
+	var enrollments []*models.Enroll
+	result := r.db.Where("user_id = ?", userId).Find(&enrollments)
+
+	if result.RowsAffected == 0 {
+		return nil, nil
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return enrollments, nil
+}
+
+func (r *courseRepository) FindCourseByCourseId(courseId *uint64) (*models.Course, error) {
+	var course models.Course
+	result := r.db.Where("id = ?", courseId).First(&course)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &course, nil
+}
+
+func (r *courseRepository) FindFieldByFieldId(fieldId *uint64) (*models.FieldType, error) {
+	var field models.FieldType
+	result := r.db.Where("id = ?", fieldId).First(&field)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &field, nil
 }

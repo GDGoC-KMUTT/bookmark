@@ -7,4 +7,5 @@ type CourseService interface {
 	GetAllFieldTypes() ([]payload.FieldType, error)
 	GetCurrentCourse(userID uint) (*payload.Course, error)
 	GetTotalStepsByCourseId(courseID uint) (*payload.TotalStepsByCourseIdPayload, error)
+	GetEnrollCourseByUserId(userId int) ([]*payload.EnrollwithCourse, error)
 }
