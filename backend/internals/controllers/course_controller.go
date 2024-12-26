@@ -6,6 +6,7 @@ import (
 	"backend/internals/services"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"fmt"
 )
 
 type CourseController struct {
@@ -103,4 +104,31 @@ func (r *CourseController) GetTotalStepsByCourseId(c *fiber.Ctx) error {
 	}
 
 	return response.Ok(c, totalSteps)
+}
+
+// GetEnrollCourseByUserId
+// @ID getEnrollCourseByUserId
+// @Tags courses
+// @Summary Get all courses that a user has enrolled in
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.InfoResponse[[]payload.EnrollwithCourse]
+// @Failure 400 {object} response.GenericError
+// @Router /courses/enrolled [get]
+func (r *CourseController) GetEnrollCourseByUserId(c *fiber.Ctx) error {
+    // * login state
+    user := c.Locals("user").(*jwt.Token)
+    claims := user.Claims.(jwt.MapClaims)
+    userId := claims["userId"].(float64)
+    
+    // * query the enroll table using the userId
+    enrollInfo, err := r.courseSvc.GetEnrollCourseByUserId(int(userId))
+    if err != nil {
+        fmt.Printf("Failed to fetch enrollments for user %v: %v\n", userId, err)
+        return &response.GenericError{
+			Err:     err,
+			Message: "Failed to fetch enrollments",
+		}
+    }
+    return response.Ok(c, enrollInfo)
 }

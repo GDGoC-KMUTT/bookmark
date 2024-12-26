@@ -7,4 +7,7 @@ type CourseRepository interface {
 	GetCurrentCourse(userID uint) (*models.Course, error)
 	GetTotalStepsByCourseId(courseID uint) (int, error)
 	GetAllCourseSteps(courseID uint) ([]models.Step, error)
+	FindEnrollCourseByUserId(userId int) ([]*models.Enroll, error)
+	FindCourseByCourseId(courseId *uint64) (*models.Course, error)
+	FindFieldByFieldId(fieldId *uint64) (*models.FieldType, error)
 }

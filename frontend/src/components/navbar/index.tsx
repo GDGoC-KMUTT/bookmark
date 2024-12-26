@@ -95,7 +95,7 @@ const Navbar = () => {
 
                 <div className="flex items-center space-x-1 text-foreground">
                     <Gem size={20} />
-                    <span className="font-medium">{totalGems}</span>
+                    <span className="font-medium">{totalGems ?? 0}</span>
                 </div>
 
                 {/* user profile image */}

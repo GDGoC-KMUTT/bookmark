@@ -73,6 +73,7 @@ func SetupRoutes() {
 	course.Get("/field/:field_id", courseController.GetCoursesByFieldId)
 	course.Get("/current", courseController.GetCurrentCourse)
 	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
+	course.Get("/enrolled", courseController.GetEnrollCourseByUserId)
 
 	progress := api.Group("/progress", middleware.Jwt())
 	progress.Get("/:courseId/percentage", progressController.GetCompletionPercentage)
