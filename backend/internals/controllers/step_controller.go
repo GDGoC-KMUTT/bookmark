@@ -93,7 +93,7 @@ func (r *StepController) GetGemEachStep(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param stepId path uint true "Step ID"
-// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
+// @Success 200 {object} response.InfoResponse[[]payload.StepCommentInfo]
 // @Failure 400 {object} response.GenericError
 // @Router /step/comment/{stepId} [get]
 func (r *StepController) GetStepComment(c *fiber.Ctx) error {
@@ -106,8 +106,15 @@ func (r *StepController) GetStepComment(c *fiber.Ctx) error {
 		}
 	}
 
-	res := new(payload.StepIdParam)
-	return response.Ok(c, res)
+	stepComments, err := r.stepSvc.GetStepComment(param.StepId)
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to getStepComment",
+		}
+	}
+
+	return response.Ok(c, stepComments)
 }
 
 // CreateStepComment

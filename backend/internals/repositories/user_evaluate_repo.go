@@ -22,5 +22,10 @@ func (r *userEvaluateRepo) GetUserEvalByStepEvalId(stepEvalId *uint64, userId *f
 	if result.Error != nil {
 		return nil, result.Error
 	}
+
+	if result.RowsAffected == 0 {
+		return nil, nil
+	}
+
 	return userEval, nil
 }

@@ -1,16 +1,25 @@
 package services
 
-import "backend/internals/repositories"
+import (
+	"backend/internals/entities/payload"
+	"backend/internals/repositories"
+	"backend/internals/utils"
+	"strconv"
+)
 
 type stepService struct {
-	stepEvalRepo repositories.StepEvaluateRepository
-	userEvalRepo repositories.UserEvaluateRepository
+	stepEvalRepo    repositories.StepEvaluateRepository
+	userEvalRepo    repositories.UserEvaluateRepository
+	userRepo        repositories.UserRepository
+	stepCommentRepo repositories.StepCommentRepository
 }
 
-func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository) StepService {
+func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository, stepCommentRepo repositories.StepCommentRepository) StepService {
 	return &stepService{
-		stepEvalRepo: stepEvalRepo,
-		userEvalRepo: userEvalRepo,
+		stepEvalRepo:    stepEvalRepo,
+		userEvalRepo:    userEvalRepo,
+		userRepo:        userRepo,
+		stepCommentRepo: stepCommentRepo,
 	}
 }
 
@@ -24,17 +33,48 @@ func (r *stepService) GetGems(stepId *uint64, userId *float64) (*int, *int, erro
 	currentGems := 0
 	for _, eval := range stepEvals {
 		totalGems += *eval.Gem
-		userEvals, err := r.userEvalRepo.GetUserEvalByStepEvalId(eval.Id, userId)
-		if err != nil {
-			return nil, nil, err
+		userEvals, err2 := r.userEvalRepo.GetUserEvalByStepEvalId(eval.Id, userId)
+		if err2 != nil {
+			return nil, nil, err2
 		}
 
-		if *userEvals.Pass {
+		if userEvals == nil {
+			continue
+		}
+
+		if *userEvals.Pass == true {
 			currentGems += *eval.Gem
 		}
 
 	}
 
 	return &totalGems, &currentGems, nil
+}
 
+func (r *stepService) GetStepComment(stepId *uint64) ([]payload.StepCommentInfo, error) {
+	stepComments, err := r.stepCommentRepo.GetStepCommentByStepId(stepId)
+	if err != nil {
+		return nil, err
+	}
+
+	stepCommentInfo := make([]payload.StepCommentInfo, 0)
+	for _, comment := range stepComments {
+		user, err := r.userRepo.FindUserByID(utils.Ptr(strconv.FormatUint(*comment.UserId, 10)))
+		if err != nil {
+			return nil, err
+		}
+
+		stepCommentInfo = append(stepCommentInfo, payload.StepCommentInfo{
+			UserInfo: &payload.CommentedBy{
+				UserId:    user.Id,
+				FirstName: user.Firstname,
+				Lastname:  user.Lastname,
+				Email:     user.Email,
+				PhotoUrl:  user.PhotoUrl,
+			},
+			Comment: comment.Content,
+		})
+	}
+
+	return stepCommentInfo, nil
 }

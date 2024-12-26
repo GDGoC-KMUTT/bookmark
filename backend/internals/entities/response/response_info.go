@@ -6,9 +6,9 @@ import (
 
 type InfoResponse[T any] struct {
 	Success bool   `json:"success"`
-	Code    int    `json:"code,omitempty"`
+	Code    int    `json:"code"`
 	Message string `json:"message,omitempty"`
-	Data    T      `json:"data,omitempty"`
+	Data    T      `json:"data"`
 }
 
 func Ok[T any](ctx *fiber.Ctx, data T, meta ...any) error {

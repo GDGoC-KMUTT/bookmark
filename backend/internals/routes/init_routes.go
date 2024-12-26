@@ -24,6 +24,7 @@ func SetupRoutes() {
 	var courseRepo = repositories.NewCourseRepository(db.Gorm)
 	var stepEvalRepo = repositories.NewStepEvaluateRepository(db.Gorm)
 	var userEvalRepo = repositories.NewUserEvaluateRepo(db.Gorm)
+	var stepCommentRepo = repositories.NewStepCommentRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -34,7 +35,7 @@ func SetupRoutes() {
 	var profileService = services.NewProfileService(userRepo)
 	var courseService = services.NewCourseService(courseRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
-	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo)
+	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
@@ -83,6 +84,7 @@ func SetupRoutes() {
 
 	step := api.Group("/step", middleware.Jwt())
 	step.Get("/gem/:stepId", stepController.GetGemEachStep)
+	step.Get("/comment/:stepId", stepController.GetStepComment)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {
