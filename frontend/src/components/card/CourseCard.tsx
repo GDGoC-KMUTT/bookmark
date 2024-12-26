@@ -12,13 +12,13 @@ const CourseCard: FC<ICourseCard> = ({ course }) => {
             <div className="text-wrap">
                 <div className="flex items-center text-border">
                     <Bookmark className="stroke-2 w-5 h-5" />
-                    <p className="text-md font-normal">COURSE / {course.field_name}</p>
+                    <p className="text-md font-normal">COURSE / {course.fieldName}</p>
                 </div>
 
                 <h2 className="text-foreground text-xl">{course.name}</h2>
             </div>
-            <div className="w-[60px] h-[40px] bg-slate-300">
-                <img src={course.field_image} />
+            <div className="w-[80px] ">
+                <img src={course.fieldImageUrl} />
             </div>
         </div>
     )
