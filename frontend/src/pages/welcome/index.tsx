@@ -23,7 +23,7 @@ const index = () => {
     }
 
     return (
-        <div className="flex flex-col w-screen">
+        <div className="flex flex-col">
             <div className={`flex items-center pl-20 h-[75vh] w-full bg-center bg-cover bg-[url('@/assets/banner3.jpg')] `}>
                 <div className="flex flex-col gap-y-3 text-white">
                     <div className="flex flex-row items-center">
