@@ -22,7 +22,11 @@ const Explore = () => {
     }, [fieldTypes])
 
     if (isLoadingFieldTypes || isLoadingCourseWithFiledId || isArticlesLoading) {
-        return <div>loading</div>
+        return (
+            <div className="min-h-screen flex flex-col justify-center items-center w-[100vw] ">
+                <h1 className="text-primary">Loading Data</h1>
+            </div>
+        )
     }
 
     const handleKeywordChange = (event: ChangeEvent<HTMLInputElement>) => {

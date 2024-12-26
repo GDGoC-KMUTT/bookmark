@@ -203,7 +203,7 @@ button:focus-visible {
         background-color: hsl(var(--footer));
     }
     .bg-droplet1 {
-        background-image: url("/src/assets/droplet1.png");
+        background-image: url("@/assets/droplet1.png");
     }
 }
 

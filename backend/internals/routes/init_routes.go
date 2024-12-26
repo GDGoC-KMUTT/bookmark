@@ -80,7 +80,7 @@ func SetupRoutes() {
 	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
 
 	article := api.Group("/article", middleware.Jwt())
-	article.Get("/", articleController.GetAllArticles)
+	article.Get("", articleController.GetAllArticles)
 
 	progress := api.Group("/progress", middleware.Jwt())
 	progress.Get("/:courseId/percentage", progressController.GetCompletionPercentage)

@@ -57,7 +57,7 @@ export default {
                 },
             },
             backgroundImage: {
-                droplet1: "url('/src/assets/droplet1.png')"
+                droplet1: "url('@/assets/droplet1.png')"
             }
         },
         fontFamily: {
