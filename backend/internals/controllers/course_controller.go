@@ -62,7 +62,7 @@ func (r *CourseController) GetCoursesByFieldId(c *fiber.Ctx) error {
 // @Produce json
 // @Success 200 {object} response.InfoResponse[[]payload.FieldType]
 // @Failure 400 {object} response.GenericError
-// @Router /courses/field_types [get]
+// @Router /courses/field-types [get]
 func (r *CourseController) GetAllFieldTypes(c *fiber.Ctx) error {
 	fieldTypes, err := r.courseSvc.GetAllFieldTypes()
 	if err != nil {
