@@ -8,30 +8,38 @@ const AppLoading: React.FC<PropsWithChildren> = ({ children }) => {
     const navigate = useNavigate()
     const location = useLocation()
 
-    const { currentUser, isLoading, refetch } = useCurrentUser() // Destructure refetch
+    const { currentUser, isLoading, refetch } = useCurrentUser()
     const [isLoaded, setIsLoaded] = useState(false)
-
-    const isLoggedIn = !!currentUser // Ensure it's a boolean
 
     useEffect(() => {
         if (isLoading) {
             return
         }
 
+        // If on `/callback`, refetch user info and prevent redirection
         if (location.pathname === "/callback") {
-            refetch()
-            setIsLoaded(true)
+            refetch().then(() => {
+                setIsLoaded(true)
+            })
             return
         }
 
-        if (isLoggedIn) {
-            navigate("/portal", { replace: true })
+        // Redirect based on login state and root path
+        if (currentUser) {
+            if (location.pathname === "/welcome" || location.pathname === "/") {
+                navigate("/portal", { replace: true }) // Redirect to portal
+            } else {
+                setIsLoaded(true) // Allow navigation for other paths
+            }
         } else {
-            navigate("/welcome", { replace: true })
+            if (location.pathname !== "/welcome") {
+                navigate("/welcome", { replace: true }) // Redirect to welcome
+            } else {
+                setIsLoaded(true)
+            }
         }
+    }, [isLoading, currentUser, navigate, location.pathname, refetch])
 
-        setIsLoaded(true)
-    }, [isLoading, isLoggedIn, navigate, location.pathname, refetch])
     return (
         <>
             <div
