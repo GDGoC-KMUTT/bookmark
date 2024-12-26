@@ -23,7 +23,7 @@ const Profile = () => {
 
                 // Fetch enrolled courses
                 const coursesResponse = await server.courses.getEnrollCourseByUserId()
-                if (coursesResponse.code !== 200) {
+                if (coursesResponse.code === 200) {
                     setEnrolledCourses(coursesResponse.data)
                 } else {
                     setError("Failed to fetch enrolled courses. Please try again.")
