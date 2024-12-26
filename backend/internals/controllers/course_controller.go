@@ -98,10 +98,10 @@ func (r *CourseController) GetCurrentCourse(c *fiber.Ctx) error {
 // GetTotalStepsByCourseId
 // @ID getTotalStepsByCourseId
 // @Tags courses
-// @Summary Get the total steps for a specific course by course_id
+// @Summary Get the total steps for a specific course by courseId
 // @Accept json
 // @Produce json
-// @Param course_id path uint true "Course ID"
+// @Param courseId path uint true "Course ID"
 // @Success 200 {object} response.InfoResponse[payload.TotalStepsByCourseIdPayload]
 // @Failure 400 {object} response.GenericError
 // @Router /courses/{courseId}/total-steps [get]
