@@ -213,8 +213,6 @@ func (suite *CourseControllerTestSuit) TestGetCourseByFieldIdWhenFailedToFetchCo
 	var errResponse response.GenericError
 	body, _ := io.ReadAll(res.Body)
 	json.Unmarshal(body, &errResponse)
-	fmt.Println("errResponse ==== ", errResponse)
-	fmt.Println("body ==== ", string(body))
 
 	is.Nil(err)
 	is.Equal(http.StatusInternalServerError, res.StatusCode)

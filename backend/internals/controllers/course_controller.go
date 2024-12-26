@@ -45,10 +45,6 @@ func (r *CourseController) GetCoursesByFieldId(c *fiber.Ctx) error {
 			Err:     err,
 			Message: "failed to get course by fieldId",
 		}
-		// return c.Status(http.StatusInternalServerError).JSON(response.GenericError{
-		// 	Err:     err,
-		// 	Message: "failed to get course by fieldId",
-		// })
 	}
 
 	return response.Ok(c, courses)
