@@ -130,7 +130,6 @@ func (r *StepController) GetStepComment(c *fiber.Ctx) error {
 func (r *StepController) CreateStepComment(c *fiber.Ctx) error {
 	body := new(payload.Comment)
 
-	// TODO
 	if err := c.BodyParser(body); err != nil {
 		return &response.GenericError{
 			Err:     err,
@@ -159,7 +158,7 @@ func (r *StepController) CreateStepComment(c *fiber.Ctx) error {
 		}
 	}
 
-	return response.Ok(c, "successfully create step comment")
+	return response.Created(c, "successfully create step comment")
 }
 
 // GetStepEvaluate
@@ -193,12 +192,12 @@ func (r *StepController) GetStepEvaluate(c *fiber.Ctx) error {
 // @Summary CreateStepCommentUpVote
 // @Accept json
 // @Produce json
-// @Param q body payload.OauthCallback true "OauthCallback"
+// @Param q body payload.UpVoteComment true "UpVoteComment"
 // @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
 // @Failure 400 {object} response.GenericError
-// @Router /step/create [post]
+// @Router /step/comment/upvote [post]
 func (r *StepController) CreateStepCommentUpVote(c *fiber.Ctx) error {
-	body := new(payload.Comment)
+	body := new(payload.UpVoteComment)
 
 	// TODO
 	if err := c.BodyParser(body); err != nil {
@@ -217,6 +216,17 @@ func (r *StepController) CreateStepCommentUpVote(c *fiber.Ctx) error {
 		}
 	}
 
-	res := new(payload.StepIdParam)
-	return response.Ok(c, res)
+	// * login state
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["userId"].(float64)
+
+	if err := r.stepSvc.CreateStepCommentUpVote(&userId, body.StepCommentId); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to create step comment upvote",
+		}
+	}
+
+	return response.Created(c, "successfully create step comment upvote")
 }

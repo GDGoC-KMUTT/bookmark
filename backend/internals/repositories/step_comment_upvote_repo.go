@@ -25,3 +25,7 @@ func (r *stepCommentUpVoteRepo) GetStepCommentUpVoteByStepCommentId(stepCommentI
 
 	return stepCommentUpVote, nil
 }
+
+func (r *stepCommentUpVoteRepo) CreateStepCommentUpVote(stepCommentUpVote *models.StepCommentUpvote) error {
+	return r.db.Create(stepCommentUpVote).Error
+}

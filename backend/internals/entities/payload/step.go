@@ -10,9 +10,10 @@ type GetGemsResponse struct {
 }
 
 type StepCommentInfo struct {
-	UserInfo *CommentedBy `json:"userInfo"`
-	Comment  *string      `json:"comment"`
-	UpVote   *int         `json:"upVote"`
+	StepCommentId *uint64      `json:"stepCommentId"`
+	UserInfo      *CommentedBy `json:"userInfo"`
+	Comment       *string      `json:"comment"`
+	UpVote        *int         `json:"upVote"`
 }
 
 type CommentedBy struct {
@@ -26,4 +27,8 @@ type CommentedBy struct {
 type Comment struct {
 	StepId  *uint64 `json:"stepId" validate:"required"`
 	Content *string `json:"content" validate:"required"`
+}
+
+type UpVoteComment struct {
+	StepCommentId *uint64 `json:"stepCommentId" validate:"required"`
 }

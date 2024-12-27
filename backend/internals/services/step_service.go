@@ -73,6 +73,7 @@ func (r *stepService) GetStepComment(stepId *uint64) ([]payload.StepCommentInfo,
 		}
 
 		stepCommentInfo = append(stepCommentInfo, payload.StepCommentInfo{
+			StepCommentId: comment.Id,
 			UserInfo: &payload.CommentedBy{
 				UserId:    user.Id,
 				FirstName: user.Firstname,
@@ -96,6 +97,19 @@ func (r *stepService) CreteStpComment(stepId *uint64, userId *float64, content *
 	}
 
 	if err := r.stepCommentRepo.CreateStepComment(stepComment); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *stepService) CreateStepCommentUpVote(userId *float64, stepCommentId *uint64) error {
+	stepCommentUpVote := &models.StepCommentUpvote{
+		StepCommentId: stepCommentId,
+		UserId:        utils.Ptr(uint64(*userId)),
+	}
+
+	if err := r.stepCommentUpVoteRepo.CreateStepCommentUpVote(stepCommentUpVote); err != nil {
 		return err
 	}
 
