@@ -83,8 +83,8 @@ const Explore = () => {
                 </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-4 items-center w-full mx-auto">
-                {searchType == "course" &&
+            <div className="w-full mx-auto grid gap-4 place-items-center grid-cols-[repeat(auto-fit,minmax(380px,1fr))] max-w-[1200px]">
+            {searchType == "course" &&
                     filteredCourses?.map((course) => {
                         return <CourseCard key={course.id} course={course} />
                     })}
