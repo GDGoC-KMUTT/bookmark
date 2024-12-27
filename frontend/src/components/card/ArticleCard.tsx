@@ -1,7 +1,6 @@
 import { PayloadArticle } from "@/api/api"
 import { Text } from "lucide-react"
 import { FC } from "react"
-import { useNavigate } from "react-router-dom"
 
 interface IArticleCard {
     article: PayloadArticle
