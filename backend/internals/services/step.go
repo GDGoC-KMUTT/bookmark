@@ -8,4 +8,5 @@ type StepService interface {
 	CreteStpComment(stepId *uint64, userId *float64, content *string) error
 	CreateStepCommentUpVote(userId *float64, stepCommentId *uint64) error
 	GetStepInfo(courseId *uint64, moduleId *uint64, stepId *uint64) (*payload.StepInfo, error)
+	GetStepEvalInfo(stepId *uint64) ([]*payload.StepEvalInfo, error)
 }

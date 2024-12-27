@@ -185,31 +185,6 @@ func (r *StepController) CreateStepComment(c *fiber.Ctx) error {
 	return response.Created(c, "successfully create step comment")
 }
 
-// GetStepEvaluate
-// @ID getStepEvaluate
-// @Tags step
-// @Summary GetStepEvaluate
-// @Accept json
-// @Produce json
-// @Param stepId path uint true "Step ID"
-// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
-// @Failure 400 {object} response.GenericError
-// @Router /step/stepEval/{stepId} [get]
-func (r *StepController) GetStepEvaluate(c *fiber.Ctx) error {
-	param := new(payload.StepIdParam)
-
-	// TODO
-	if err := c.ParamsParser(param); err != nil {
-		return &response.GenericError{
-			Err:     err,
-			Message: "invalid stepId param",
-		}
-	}
-
-	res := new(payload.StepIdParam)
-	return response.Ok(c, res)
-}
-
 // CreateStepCommentUpVote
 // @ID createStepCommentUpVote
 // @Tags step
@@ -252,4 +227,61 @@ func (r *StepController) CreateStepCommentUpVote(c *fiber.Ctx) error {
 	}
 
 	return response.Created(c, "successfully create step comment upvote")
+}
+
+// GetStepEvaluate
+// @ID getStepEvaluate
+// @Tags step
+// @Summary GetStepEvaluate
+// @Accept json
+// @Produce json
+// @Param stepId path uint true "Step ID"
+// @Success 200 {object} response.InfoResponse[[]payload.StepEvalInfo]
+// @Failure 400 {object} response.GenericError
+// @Router /step/stepEval/{stepId} [get]
+func (r *StepController) GetStepEvaluate(c *fiber.Ctx) error {
+	param := new(payload.StepIdParam)
+
+	// TODO
+	if err := c.ParamsParser(param); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "invalid stepId param",
+		}
+	}
+
+	stepEvals, err := r.stepSvc.GetStepEvalInfo(param.StepId)
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to get step eval info",
+		}
+	}
+
+	return response.Ok(c, stepEvals)
+}
+
+// SubmitStepEval
+// @ID submitStepEval
+// @Tags step
+// @Summary SubmitStepEval
+// @Accept json
+// @Produce json
+// @Param stepId path uint true "Step ID"
+// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
+// @Failure 400 {object} response.GenericError
+// @Router /step/stepEval/{stepId} [post]
+func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
+	param := new(payload.StepIdParam)
+
+	// TODO
+	if err := c.ParamsParser(param); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "invalid stepId param",
+		}
+	}
+
+	res := new(payload.StepIdParam)
+	return response.Ok(c, res)
 }

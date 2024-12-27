@@ -91,6 +91,9 @@ func SetupRoutes() {
 	step.Get("/:stepId", stepController.GetStepInfo)
 	step.Get("/gem/:stepId", stepController.GetGemEachStep)
 
+	stepEval := step.Group("/stepEval")
+	stepEval.Get("/:stepId", stepController.GetStepEvaluate)
+
 	stepComment := step.Group("/comment")
 	stepComment.Get("/:stepId", stepController.GetStepComment)
 	stepComment.Post("/create", stepController.CreateStepComment)

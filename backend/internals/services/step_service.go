@@ -5,6 +5,7 @@ import (
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
 	"backend/internals/utils"
+	"sort"
 	"strconv"
 )
 
@@ -174,4 +175,34 @@ func (r *stepService) GetStepInfo(courseId *uint64, moduleId *uint64, stepId *ui
 	stepInfo.UserPassed = userPassedList
 
 	return stepInfo, nil
+}
+
+func (r *stepService) GetStepEvalInfo(stepId *uint64) ([]*payload.StepEvalInfo, error) {
+	stepEvals, err := r.stepEvalRepo.GetStepEvalByStepId(stepId)
+	if err != nil {
+		return nil, err
+	}
+
+	stepEvalInfoList := make([]*payload.StepEvalInfo, 0)
+
+	for _, eval := range stepEvals {
+		result := &payload.StepEvalInfo{
+			StepId:      eval.StepId,
+			StepEvalId:  eval.Id,
+			Order:       eval.Order,
+			Instruction: eval.Instruction,
+			Type:        eval.Type,
+			Question:    eval.Question,
+		}
+
+		stepEvalInfoList = append(stepEvalInfoList, result)
+	}
+
+	// order result by Order field
+	sort.SliceStable(stepEvalInfoList, func(i, j int) bool {
+		return *stepEvalInfoList[i].Order < *stepEvalInfoList[j].Order
+	})
+
+	return stepEvalInfoList, nil
+
 }

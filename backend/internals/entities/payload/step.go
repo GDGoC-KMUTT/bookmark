@@ -56,3 +56,16 @@ type StepInfoQuery struct {
 	CourseId *uint64 `query:"courseId" validate:"required"`
 	ModuleId *uint64 `query:"moduleId" validate:"required"`
 }
+
+type SubmitStepEval struct {
+	StepEvalId *uint64 `json:"stepEvalId" validate:"required"`
+}
+
+type StepEvalInfo struct {
+	StepEvalId  *uint64 `json:"stepEvalId"`
+	StepId      *uint64 `json:"stepId"`
+	Order       *int    `json:"order"`
+	Question    *string `json:"question"`
+	Type        *string `json:"type"`
+	Instruction *string `json:"instruction"`
+}
