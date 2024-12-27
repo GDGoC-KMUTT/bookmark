@@ -5,6 +5,7 @@ import { BookMarked, Gem } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { getFallbackName } from "@/utils/getFallbackName"
 
 const Navbar = () => {
     const [userProfile, setUserProfile] = useState<PayloadProfile | undefined>(undefined)
@@ -15,14 +16,6 @@ const Navbar = () => {
 
     const handleClick = () => {
         navigate("/profile")
-    }
-
-    const getFallbackName = (text: string) => {
-        const parts = text.split(" ")
-        return parts
-            .slice(0, 2)
-            .map((part) => part.charAt(0).toUpperCase())
-            .join("")
     }
 
     useEffect(() => {
@@ -61,7 +54,7 @@ const Navbar = () => {
         }
 
         fetchData()
-    }, [setUserProfile, setTotalGems, setCurrentCourse, setProgress])
+    }, [])
 
     return (
         <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between z-[99]">
