@@ -199,7 +199,6 @@ func (r *StepController) GetStepEvaluate(c *fiber.Ctx) error {
 func (r *StepController) CreateStepCommentUpVote(c *fiber.Ctx) error {
 	body := new(payload.UpVoteComment)
 
-	// TODO
 	if err := c.BodyParser(body); err != nil {
 		return &response.GenericError{
 			Err:     err,
