@@ -1,6 +1,7 @@
 package routes
 
 import (
+	_ "backend/docs"
 	"backend/internals/config"
 	"backend/internals/controllers"
 	"backend/internals/db"

@@ -3,6 +3,7 @@ package main
 import (
 	"backend/internals/config"
 	"backend/internals/db"
+	"backend/internals/minio"
 	"backend/internals/routes"
 	"golang.org/x/exp/rand"
 	"time"
@@ -23,5 +24,6 @@ func main() {
 
 	config.BootConfiguration()
 	db.SetUpDatabase()
+	minio.SetUpMinio()
 	routes.SetupRoutes()
 }
