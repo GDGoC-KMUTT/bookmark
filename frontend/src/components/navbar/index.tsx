@@ -61,7 +61,7 @@ const Navbar = () => {
     }, [setUserProfile, setTotalGems, setCurrentCourse, setProgress])
 
     return (
-        <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between">
+        <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between z-[99]">
             <div className="flex items-center space-x-8">
                 <Link to="/portal">
                     <img src={BookmarkLogo} alt="bookmarkLogo" className="w-8 h-8" />
