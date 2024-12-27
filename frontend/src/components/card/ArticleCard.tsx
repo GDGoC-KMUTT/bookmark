@@ -8,11 +8,15 @@ interface IArticleCard {
 }
 
 const ArticleCard: FC<IArticleCard> = ({ article }) => {
-    const navigate = useNavigate()
+    const openArticle = () => {
+        if (article?.href) {
+            window.open(article.href, "_blank", "noopener,noreferrer")
+        }
+    }
     return (
         <div
-            className="flex flex-col p-4 w-[380px] h-[200px] bg-background rounded-sm border border-border break-words m-2"
-            onClick={() => navigate(`${article?.href}`)}
+            className="flex flex-col p-4 w-[380px] h-[200px] bg-background rounded-sm border border-border break-words m-2 cursor-pointer"
+            onClick={openArticle}
         >
             <div className="text-wrap">
                 <div className="flex items-center text-border">

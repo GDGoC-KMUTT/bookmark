@@ -35,10 +35,8 @@ const Explore = () => {
 
     const handleFieldChange = (fieldId: number) => {
         setActiveField(fieldId)
-        console.log(`Filtering results for field: ${fieldId}`)
     }
     const handleSearchTypeChange = (searchType: string) => {
-        console.log(searchType)
         setSearchType(searchType)
     }
     const filteredCourses = courses?.filter((course) => course.name?.toLowerCase().includes(keyword.toLowerCase()))
