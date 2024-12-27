@@ -202,5 +202,8 @@ button:focus-visible {
     .bg-footer {
         background-color: hsl(var(--footer));
     }
+    .bg-droplet1 {
+        background-image: url("@/assets/droplet1.png");
+    }
 }
 
