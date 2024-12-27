@@ -46,8 +46,8 @@ const Explore = () => {
         <div className="min-h-screen flex flex-col items-center w-[100vw] py-24 px-10">
             <div className="flex flex-col justify-center items-center bg-droplet1 bg-center bg-contain bg-no-repeat py-10">
                 <h1 className="mb-[20px] text-explore-foreground text-center">Explore something new!</h1>
-                <div className={`flex justify-center space-x-4 flex-wrap`}>
-                    <div className="relative mt-4">
+                <div className={`flex justify-center  flex-wrap`}>
+                    <div className="relative mt-4 mr-4">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 " />
                         <input
                             type="text"
@@ -56,7 +56,7 @@ const Explore = () => {
                             onChange={handleKeywordChange}
                         />
                     </div>
-                    <div className="mt-4">
+                    <div className="mt-4 space-x-4">
                         <button
                             className={`rounded-lg w-[120px] h-[50px] hover:border-primary hover:border-2  ${searchType == "course" ? "bg-explore text-explore-foreground" : "text-foreground bg-transparent"}`}
                             onClick={() => handleSearchTypeChange("course")}
@@ -84,7 +84,7 @@ const Explore = () => {
             </div>
 
             <div className="w-full mx-auto grid gap-4 place-items-center grid-cols-[repeat(auto-fit,minmax(380px,1fr))] max-w-[1200px]">
-            {searchType == "course" &&
+                {searchType == "course" &&
                     filteredCourses?.map((course) => {
                         return <CourseCard key={course.id} course={course} />
                     })}
