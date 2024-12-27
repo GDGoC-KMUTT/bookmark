@@ -14,15 +14,21 @@ type stepService struct {
 	userRepo              repositories.UserRepository
 	stepCommentRepo       repositories.StepCommentRepository
 	stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository
+	stepRepo              repositories.StepRepository
+	userPassedRepo        repositories.UserPassedRepository
+	stepAuthorRepo        repositories.StepAuthorRepository
 }
 
-func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository, stepCommentRepo repositories.StepCommentRepository, stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository) StepService {
+func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository, stepCommentRepo repositories.StepCommentRepository, stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository, stepRepo repositories.StepRepository, userPassedRepo repositories.UserPassedRepository, stepAuthorRepo repositories.StepAuthorRepository) StepService {
 	return &stepService{
 		stepEvalRepo:          stepEvalRepo,
 		userEvalRepo:          userEvalRepo,
 		userRepo:              userRepo,
 		stepCommentRepo:       stepCommentRepo,
 		stepCommentUpVoteRepo: stepCommentUpVoteRepo,
+		stepRepo:              stepRepo,
+		userPassedRepo:        userPassedRepo,
+		stepAuthorRepo:        stepAuthorRepo,
 	}
 }
 
@@ -114,4 +120,58 @@ func (r *stepService) CreateStepCommentUpVote(userId *float64, stepCommentId *ui
 	}
 
 	return nil
+}
+
+func (r *stepService) GetStepInfo(courseId *uint64, moduleId *uint64, stepId *uint64) (*payload.StepInfo, error) {
+	step, err := r.stepRepo.GetStepById(stepId)
+	if err != nil {
+		return nil, err
+	}
+
+	stepAuthor, err := r.stepAuthorRepo.GetStepAuthorByStepId(stepId)
+	if err != nil {
+		return nil, err
+	}
+
+	userPassed, err := r.userPassedRepo.GetUserPassedByStepIdCourseIdModuleId(stepId, courseId, moduleId)
+	if err != nil {
+		return nil, err
+	}
+
+	stepDetail := &payload.StepDetail{
+		StepId:      step.Id,
+		ModuleId:    step.ModuleId,
+		Title:       step.Title,
+		Description: step.Description,
+		Content:     step.Content,
+		Outcome:     step.Outcome,
+		Check:       step.Check,
+		Error:       step.Error,
+	}
+
+	stepInfo := &payload.StepInfo{
+		Step: stepDetail,
+	}
+
+	authors := make([]*models.User, 0)
+	for _, author := range stepAuthor {
+		user, err := r.userRepo.FindUserByID(utils.Ptr(strconv.FormatUint(*author.UserId, 10)))
+		if err != nil {
+			return nil, err
+		}
+		authors = append(authors, user)
+	}
+	stepInfo.Authors = authors
+
+	userPassedList := make([]*models.User, 0)
+	for _, passed := range userPassed {
+		user, err := r.userRepo.FindUserByID(utils.Ptr(strconv.FormatUint(*passed.UserId, 10)))
+		if err != nil {
+			return nil, err
+		}
+		userPassedList = append(userPassedList, user)
+	}
+	stepInfo.UserPassed = userPassedList
+
+	return stepInfo, nil
 }

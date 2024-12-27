@@ -28,12 +28,12 @@ func NewStepController(stepSvc services.StepService) StepController {
 // @Accept json
 // @Produce json
 // @Param stepId path uint true "Step ID"
-// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
+// @Param q query payload.StepInfoQuery true "StepInfoQuery"
+// @Success 200 {object} response.InfoResponse[[]payload.StepInfo]
 // @Failure 400 {object} response.GenericError
-// @Router /step/stepInfo/{stepId} [get]
+// @Router /step/{stepId} [get]
 func (r *StepController) GetStepInfo(c *fiber.Ctx) error {
 	param := new(payload.StepIdParam)
-	// TODO
 	if err := c.ParamsParser(param); err != nil {
 		return &response.GenericError{
 			Err:     err,
@@ -41,8 +41,32 @@ func (r *StepController) GetStepInfo(c *fiber.Ctx) error {
 		}
 	}
 
-	res := new(payload.StepIdParam)
-	return response.Ok(c, res)
+	query := new(payload.StepInfoQuery)
+	if err := c.QueryParser(query); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "invalid stepInfoQuery",
+		}
+	}
+
+	// * validate body
+	if err := utils.Validate.Struct(query); err != nil {
+		var validationErrors validator.ValidationErrors
+		errors.As(err, &validationErrors)
+		return &response.GenericError{
+			Err: validationErrors,
+		}
+	}
+
+	stepInfo, err := r.stepSvc.GetStepInfo(query.CourseId, query.ModuleId, param.StepId)
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to get step info",
+		}
+	}
+
+	return response.Ok(c, stepInfo)
 }
 
 // GetGemEachStep

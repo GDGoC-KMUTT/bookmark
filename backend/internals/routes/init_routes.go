@@ -24,8 +24,11 @@ func SetupRoutes() {
 	var courseRepo = repositories.NewCourseRepository(db.Gorm)
 	var stepEvalRepo = repositories.NewStepEvaluateRepository(db.Gorm)
 	var userEvalRepo = repositories.NewUserEvaluateRepo(db.Gorm)
+	var stepRepo = repositories.NewStepRepository(db.Gorm)
 	var stepCommentRepo = repositories.NewStepCommentRepository(db.Gorm)
 	var stepCommentUpVoteRepo = repositories.NewStepCommentUpVote(db.Gorm)
+	var stepAuthorRepo = repositories.NewStepAuthorRepository(db.Gorm)
+	var userPassedRepo = repositories.NewUserPassedRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -36,7 +39,7 @@ func SetupRoutes() {
 	var profileService = services.NewProfileService(userRepo)
 	var courseService = services.NewCourseService(courseRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
-	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo, stepCommentUpVoteRepo)
+	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo, stepCommentUpVoteRepo, stepRepo, userPassedRepo, stepAuthorRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
@@ -85,6 +88,7 @@ func SetupRoutes() {
 	progress.Get("/:courseId/percentage", progressController.GetCompletionPercentage)
 
 	step := api.Group("/step", middleware.Jwt())
+	step.Get("/:stepId", stepController.GetStepInfo)
 	step.Get("/gem/:stepId", stepController.GetGemEachStep)
 
 	stepComment := step.Group("/comment")
