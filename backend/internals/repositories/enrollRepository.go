@@ -31,7 +31,6 @@ func (r *enrollRepository) FindEnrollmentsByUserID(userId *string) ([]models.Enr
 	return enrollments, err
 }
 
-// GetTotalStepsByCourseID fetches the total steps for a given course.
 func (r *enrollRepository) GetTotalStepsByCourseID(courseId uint64) (int64, error) {
 	log.Printf("Fetching total steps for course ID: %d", courseId)
 	var totalSteps int64
@@ -47,7 +46,6 @@ func (r *enrollRepository) GetTotalStepsByCourseID(courseId uint64) (int64, erro
 	return totalSteps, nil
 }
 
-// GetEvaluatedStepsByUserAndCourse fetches the number of evaluated steps for a user in a specific course.
 func (r *enrollRepository) GetEvaluatedStepsByUserAndCourse(userId uint64, courseId uint64) (int64, error) {
 	log.Printf("Fetching evaluated steps for user: %d, course: %d", userId, courseId)
 	var evaluatedSteps int64

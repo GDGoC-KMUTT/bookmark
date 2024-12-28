@@ -27,7 +27,7 @@ func NewUserActivityController(userActivitySvc services.UserActivityService) *Us
 // @Produce json
 // @Success 200 {object} response.InfoResponse[response.UserActivityResponse]
 // @Failure 400 {object} response.GenericError
-// @Router /user/{userId}/recent-activity [get]
+// @Router /user/recent-activity [get]
 func (r *UserActivityController) GetRecentActivity(c *fiber.Ctx) error {
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
