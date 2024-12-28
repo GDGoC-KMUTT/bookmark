@@ -39,6 +39,7 @@ func SetupRoutes() {
 	var courseContentRepo = repositories.NewCourseContentRepository(db.Gorm)
 	var enrollRepo = repositories.NewEnrollRepository(db.Gorm)
 	var userActivityRepo = repositories.NewUserActivityRepository(db.Gorm)
+	var userStrengthRepo = repositories.NewUserStrengthRepository(db.Gorm) // Add UserStrengthRepo
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -66,6 +67,7 @@ func SetupRoutes() {
 	var moduleService = services.NewModuleService(moduleRepo)
 	var moduleStepService = services.NewModuleStepService(stepRepo, userEvalRepo)
 	var userActivityService = services.NewUserActivityService(userActivityRepo)
+	var userStrengthService = services.NewUserStrengthService(userStrengthRepo) // Add UserStrengthService
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
@@ -79,6 +81,7 @@ func SetupRoutes() {
 	var enrollController = controllers.NewEnrollController(enrollService)
 	var stepController = controllers.NewStepController(stepService, config.Env, minioService)
 	var userActivityController = controllers.NewUserActivityController(userActivityService)
+	var userStrengthController = controllers.NewUserStrengthController(userStrengthService) // Add UserStrengthController
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
@@ -159,6 +162,9 @@ func SetupRoutes() {
 
 	userActivity := api.Group("/user", middleware.Jwt())
 	userActivity.Get("/recent-activities", userActivityController.GetRecentActivity)
+
+	userStrength := api.Group("/strength", middleware.Jwt())
+	userStrength.Get("/strength-info", userStrengthController.GetStrengthDataByUserID)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {
