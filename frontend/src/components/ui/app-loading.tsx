@@ -1,8 +1,8 @@
+import useCurrentUser from "@/hooks/userCurrentUser"
+import { cn } from "@/utils/cn"
 import { PropsWithChildren, useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import bookmarkLogo from "../../assets/logo2.png"
-import { cn } from "@/utils/cn"
-import useCurrentUser from "@/hooks/userCurrentUser"
 
 const AppLoading: React.FC<PropsWithChildren> = ({ children }) => {
     const navigate = useNavigate()
@@ -52,7 +52,7 @@ const AppLoading: React.FC<PropsWithChildren> = ({ children }) => {
                     }
                 )}
             >
-                <img src={bookmarkLogo} alt="Bookmark" className="w-96 h-96" />
+                <img src={bookmarkLogo} alt="Bookmark" className={"w-96 h-96 animate-spin-360"} />
             </div>
             {isLoaded && children}
         </>
