@@ -1,11 +1,13 @@
 package services
 
 import (
+	"backend/internals/config"
 	"backend/internals/db/models"
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
 	"backend/internals/utils"
 	"fmt"
+	"net/url"
 	"sort"
 	"strconv"
 	"time"
@@ -65,7 +67,7 @@ func (r *stepService) GetGems(stepId *uint64, userId *float64) (*int, *int, erro
 	return &totalGems, &currentGems, nil
 }
 
-func (r *stepService) GetStepComment(stepId *uint64) ([]payload.StepCommentInfo, error) {
+func (r *stepService) GetStepComment(stepId *uint64, userId *uint64) ([]payload.StepCommentInfo, error) {
 	stepComments, err := r.stepCommentRepo.GetStepCommentByStepId(stepId)
 	if err != nil {
 		return nil, err
@@ -82,6 +84,12 @@ func (r *stepService) GetStepComment(stepId *uint64) ([]payload.StepCommentInfo,
 		if err != nil {
 			return nil, err
 		}
+		hasUpVoted := utils.Ptr(false)
+		for _, upVote := range stepCommentUpVote {
+			if *upVote.UserId == *userId {
+				hasUpVoted = utils.Ptr(true)
+			}
+		}
 
 		stepCommentInfo = append(stepCommentInfo, payload.StepCommentInfo{
 			StepCommentId: comment.Id,
@@ -92,8 +100,9 @@ func (r *stepService) GetStepComment(stepId *uint64) ([]payload.StepCommentInfo,
 				Email:     user.Email,
 				PhotoUrl:  user.PhotoUrl,
 			},
-			Comment: comment.Content,
-			UpVote:  utils.Ptr(len(stepCommentUpVote)),
+			Comment:    comment.Content,
+			UpVote:     utils.Ptr(len(stepCommentUpVote)),
+			HasUpVoted: hasUpVoted,
 		})
 	}
 
@@ -114,16 +123,27 @@ func (r *stepService) CreteStpComment(stepId *uint64, userId *float64, content *
 	return nil
 }
 
-func (r *stepService) CreateStepCommentUpVote(userId *float64, stepCommentId *uint64) error {
-	stepCommentUpVote := &models.StepCommentUpvote{
-		StepCommentId: stepCommentId,
-		UserId:        utils.Ptr(uint64(*userId)),
-	}
-
-	if err := r.stepCommentUpVoteRepo.CreateStepCommentUpVote(stepCommentUpVote); err != nil {
+func (r *stepService) CreateOrDeleteStepCommentUpVote(userId *float64, stepCommentId *uint64) error {
+	existUpvote, err := r.stepCommentUpVoteRepo.GetStepCommentUpVoteByStepCommentIdAndUserId(stepCommentId, utils.Ptr(uint64(*userId)))
+	if err != nil {
 		return err
 	}
 
+	if existUpvote == nil {
+		stepCommentUpVote := &models.StepCommentUpvote{
+			StepCommentId: stepCommentId,
+			UserId:        utils.Ptr(uint64(*userId)),
+		}
+
+		if err := r.stepCommentUpVoteRepo.CreateStepCommentUpVote(stepCommentUpVote); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	if err := r.stepCommentUpVoteRepo.DeleteStepCommentUpVote(stepCommentId, utils.Ptr(uint64(*userId))); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -158,13 +178,21 @@ func (r *stepService) GetStepInfo(stepId *uint64) (*payload.StepInfo, error) {
 		Step: stepDetail,
 	}
 
-	authors := make([]*models.User, 0)
+	authors := make([]*payload.UserInfo, 0)
 	for _, author := range stepAuthor {
 		user, err := r.userRepo.FindUserByID(utils.Ptr(strconv.FormatUint(*author.UserId, 10)))
 		if err != nil {
 			return nil, err
 		}
-		authors = append(authors, user)
+
+		newUser := &payload.UserInfo{
+			UserId:    user.Id,
+			FirstName: user.Firstname,
+			LastName:  user.Lastname,
+			Email:     user.Email,
+			PhotoUrl:  user.PhotoUrl,
+		}
+		authors = append(authors, newUser)
 	}
 	stepInfo.Authors = authors
 
@@ -191,13 +219,21 @@ func (r *stepService) GetStepInfo(stepId *uint64) (*payload.StepInfo, error) {
 	}
 
 	// Fetch user details for the passed users
-	users := make([]*models.User, 0, len(passedUsers))
+	users := make([]*payload.UserInfo, 0, len(passedUsers))
 	for _, userId := range passedUsers {
 		user, err := r.userRepo.FindUserByID(utils.Ptr(strconv.FormatUint(userId, 10)))
 		if err != nil {
 			return nil, fmt.Errorf("failed to fetch user by ID: %w", err)
 		}
-		users = append(users, user)
+		newUser := &payload.UserInfo{
+			UserId:    user.Id,
+			FirstName: user.Firstname,
+			LastName:  user.Lastname,
+			Email:     user.Email,
+			PhotoUrl:  user.PhotoUrl,
+		}
+
+		users = append(users, newUser)
 	}
 	stepInfo.UserPassed = users
 
@@ -232,6 +268,14 @@ func (r *stepService) GetStepEvalInfo(stepId *uint64, userId *float64) ([]*paylo
 			Pass:    userEval.Pass,
 			Comment: userEval.Comment,
 		}
+		if *eval.Type == "image" {
+			content, err := url.JoinPath(*config.Env.MinioS3Endpoint, *config.Env.MinioS3BucketName, *userEval.Content)
+			if err != nil {
+				return nil, err
+			}
+			evalResult.Content = &content
+		}
+
 		result.UserEval = evalResult
 
 		stepEvalInfoList = append(stepEvalInfoList, result)
@@ -283,7 +327,7 @@ func (r *stepService) CheckStepEvalStatus(userEvalIds []*uint64, userId *uint64)
 		if err != nil {
 			return nil, err
 		}
-		
+
 		if userEvalInfo == nil {
 			return nil, err
 		}

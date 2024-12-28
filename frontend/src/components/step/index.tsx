@@ -1,4 +1,4 @@
-import { BadgeCheck, Blocks, CircleSlash, Gem, MessageSquare, ShieldQuestion } from "lucide-react"
+import { BadgeCheck, Blocks, CircleSlash, Gem, Loader2, MessageSquare, ShieldQuestion, SquareArrowUp } from "lucide-react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -9,43 +9,105 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip"
 import { getFallbackName } from "@/utils/getFallbackName"
+import { useStepInfo } from "@/hooks/useStepInfo"
+import { useGemEachStep } from "@/hooks/useGemEachStep"
+import { useStepComment } from "@/hooks/useStepComment"
+import { Input } from "@/components/ui/input"
+import { useState } from "react"
+import { useComment } from "@/hooks/useComment"
+import { PayloadStepCommentInfo } from "@/api/api"
+import useCurrentUser from "@/hooks/userCurrentUser"
+import { useUpVote } from "@/hooks/useUpVote"
 
-const peoplePassed = [
-    {
-        avatar: "https://picsum.photos/1920/1080?random",
-        name: "test1 gg",
-    },
-    {
-        avatar: "https://github.com/shadcn.png",
-        name: "test2 dd",
-    },
-    {
-        avatar: "https://picsum.photos/1920/1080?random",
-        name: "test3 hh",
-    },
-    {
-        avatar: "https://github.com/shadcn.png",
-        name: "test4 ll",
-    },
-    {
-        avatar: "https://picsum.photos/1920/1080?random",
-        name: "test5 pp",
-    },
-    {
-        avatar: "https://github.com/shadcn.png",
-        name: "test6 qq",
-    },
-    {
-        avatar: "https://picsum.photos/1920/1080?random",
-        name: "test7 rr",
-    },
-    {
-        avatar: "https://picsum.photos/1920/1080?random",
-        name: "test7 rr",
-    },
-]
-export function Step() {
-    const author = "hello world"
+type StepProps = {
+    stepId: number
+}
+
+const StepCard: React.FC<StepProps> = ({ stepId }) => {
+    const [userComment, setUserComment] = useState<string>("")
+
+    const { stepInfo, error: errorStepInfo, isLoading: isLoadingStepInfo } = useStepInfo(stepId)
+    const {
+        gemEachStep,
+        error: errorGetGemEachStep,
+        isLoading: isLoadingGetGemEachStep,
+        fetchGemEachStep: refetchGemEachStep,
+    } = useGemEachStep(stepId)
+    const {
+        stepComments,
+        setStepComments,
+        error: errorGetStepComment,
+        isLoading: isLoadingGetStepComment,
+        fetchStepComment: refetchStepComment,
+    } = useStepComment(stepId)
+    // const author = "hello world"
+
+    const { isLoading: isLoadingCommentOnStep, error: errorCommentOnStep, commentOnStep } = useComment()
+    const { currentUser, error: errorGetUserInfo, isLoading: isLoadingGetUserInfo } = useCurrentUser()
+    const { error: errorUpVote, upvoteComment } = useUpVote()
+
+    const submitComment = async () => {
+        if (userComment !== "") {
+            try {
+                await commentOnStep(stepId, userComment)
+                const newComment: PayloadStepCommentInfo = {
+                    userInfo: {
+                        firstName: currentUser?.firstname,
+                        lastname: currentUser?.lastname,
+                        photoUrl: currentUser?.photoUrl,
+                    },
+                    comment: userComment,
+                    upVote: 0,
+                }
+
+                // Optimistically update the comments list in the UI
+                stepComments?.unshift(newComment)
+                refetchStepComment()
+                setUserComment("")
+                console.log("Comment submitted successfully!")
+            } catch (err) {
+                console.error("Error submitting comment:", err)
+            }
+        }
+    }
+
+    const upVote = async (stepCommentId: number) => {
+        try {
+            await upvoteComment(stepCommentId)
+            // Optimistically toggle the upVote count
+            setStepComments((prevComments) =>
+                prevComments?.map((comment) =>
+                    comment.stepCommentId === stepCommentId
+                        ? {
+                              ...comment,
+                              upVote: comment.hasUpVoted
+                                  ? (comment.upVote ?? 0) - 1 // Decrease if already upvoted
+                                  : (comment.upVote ?? 0) + 1, // Increase if not upvoted
+                          }
+                        : comment
+                )
+            )
+
+            // Optionally refetch comments if necessary
+            // await refetchStepComment();
+        } catch (err) {
+            console.log("Error toggling upvote: ", err)
+
+            // Optionally revert optimistic update in case of failure
+            setStepComments((prevComments) =>
+                prevComments?.map((comment) =>
+                    comment.stepCommentId === stepCommentId
+                        ? {
+                              ...comment,
+                              upVote: comment.hasUpVoted
+                                  ? (comment.upVote ?? 0) + 1 // Revert decrease
+                                  : (comment.upVote ?? 0) - 1, // Revert increase
+                          }
+                        : comment
+                )
+            )
+        }
+    }
 
     return (
         <Sheet>
@@ -55,133 +117,185 @@ export function Step() {
             <SheetContent className="w-[95%]">
                 <ScrollArea className="h-full">
                     <SheetHeader>
-                        {/* <SheetTitle>Edit profile</SheetTitle>
-                        <SheetDescription>Make changes to your profile here. Click save when you're done.</SheetDescription> */}
                         <div className="h-60 overflow-hidden -z-100">
                             <AspectRatio ratio={16 / 9}>
                                 <img src="https://proxy.bsthun.com/raspi/bookmark/Python.jpg" alt="Photo by Drew Beamer" />
                             </AspectRatio>
                         </div>
                     </SheetHeader>
-                    <div className="p-6">
-                        <div className="flex justify-between">
-                            <div className="flex items-center gap-2">
-                                <Blocks color="grey" size={"1rem"} />
-                                <Label className="uppercase text-stone-500">Step</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Gem color="grey" size={"1rem"} />
-                                <Label className="text-stone-500">1/2</Label>
-                            </div>
-                        </div>
-                        <div className="my-4">
-                            <h2 className="text-2xl">ต่อ ESP32 board เข้ากับคอมพิวเตอร์</h2>
-                            <p>
-                                คือการจะคุม Microcontroller ได้เนี่ย เราต้องเขียนโปรแกรม ไส่มันผ่าน Arduino IDE ในโมดูลนี้เราจะมาลองตั้งค่าให้ Arduino
-                                สามารถแฟลชโปรแกรมลงไปในบอร์ดให้ได้กัน
-                            </p>
-                        </div>
-                        <div>
-                            <Label>Author(s)</Label>
-                            <div className="flex flex-col py-3 gap-2">
-                                <div className="flex flex-row items-center gap-4">
-                                    <Avatar>
-                                        <AvatarImage src="https://github.com/shadcn.png" />
-                                        <AvatarFallback>{getFallbackName(author)}</AvatarFallback>
-                                    </Avatar>
-                                    <p>{author}</p>
+                    {stepInfo && (
+                        <div className="p-20">
+                            <div className="flex justify-between">
+                                <div className="flex items-center gap-2">
+                                    <Blocks color="grey" size={"1rem"} />
+                                    <Label className="uppercase text-stone-500">Step</Label>
                                 </div>
-                                <div className="flex flex-row items-center gap-4">
-                                    <Avatar>
-                                        <AvatarImage src="https://github.com/shadcn.png" />
-                                        <AvatarFallback>{getFallbackName(author)}</AvatarFallback>
-                                    </Avatar>
-                                    <p>{author}</p>
+                                <div className="flex items-center gap-2">
+                                    <Gem color="grey" size={"1rem"} />
+                                    <Label className="text-stone-500">{`${gemEachStep?.currentGems}/${gemEachStep?.totalGems}`}</Label>
                                 </div>
                             </div>
-                        </div>
-                        <div>
-                            <Label>People Passed</Label>
-                            <div className="flex relative py-3">
-                                {peoplePassed.map((person, index) => {
-                                    if (index < 5) {
-                                        return (
-                                            <div className="relative -ml-3 first:ml-0">
-                                                <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <Avatar>
-                                                                <AvatarImage src={person.avatar} alt={person.name} />
-                                                                <AvatarFallback>{getFallbackName(person.name)}</AvatarFallback>
-                                                            </Avatar>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p>{person.name}</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider>
-                                            </div>
-                                        )
-                                    }
-                                })}
-                                {peoplePassed.length > 5 && (
-                                    <div className="relative -ml-3">
-                                        <Avatar>
-                                            <AvatarImage />
-                                            <AvatarFallback>+{peoplePassed.length - 5}</AvatarFallback>
-                                        </Avatar>
+                            <div className="my-4">
+                                <h2 className="text-2xl">{stepInfo?.step?.title}</h2>
+                                <p>{stepInfo?.step?.description}</p>
+                            </div>
+                            <div>
+                                <p className="text-base font-bold">Author(s)</p>
+                                {stepInfo?.authors && (
+                                    <div className="flex flex-col py-3 gap-2">
+                                        {stepInfo?.authors?.map((author) => {
+                                            return (
+                                                <div className="flex flex-row items-center gap-4" key={author.userId}>
+                                                    <Avatar>
+                                                        <AvatarImage src={author.photoUrl} alt={`${author.firstName} ${author.lastName}`} />
+                                                        <AvatarFallback>{getFallbackName(`${author.firstName} ${author.lastName}`)}</AvatarFallback>
+                                                    </Avatar>
+                                                    <p>{`${author.firstName} ${author.lastName}`}</p>
+                                                </div>
+                                            )
+                                        })}
                                     </div>
                                 )}
                             </div>
-                        </div>
-                        <div>
-                            <div className="h-2/4 w-full bg-gray-100 rounded-sm flex flex-col p-3">
-                                <Label>content</Label>
-                                <Label>content</Label>
-                                <Label>content</Label>
-                                <Label>content</Label>
-                                <Label>content</Label>
-                                <Label>content</Label>
-                                <Label>content</Label>
-                                <Label>content</Label>
-                                <Label>content</Label>
+                            <div>
+                                {stepInfo.userPassed && (
+                                    <>
+                                        <p className="text-base font-bold">People Passed</p>
+                                        <div className="flex relative py-3">
+                                            {stepInfo.userPassed?.map((person, index) => {
+                                                if (index < 5) {
+                                                    return (
+                                                        <div className="relative -ml-3 first:ml-0">
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <Avatar>
+                                                                            <AvatarImage
+                                                                                src={person.photoUrl}
+                                                                                alt={`${person.firstName} ${person.lastName}`}
+                                                                            />
+                                                                            <AvatarFallback>
+                                                                                {getFallbackName(`${person.firstName} ${person.lastName}`)}
+                                                                            </AvatarFallback>
+                                                                        </Avatar>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>{`${person.firstName} ${person.lastName}`}</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
+                                                        </div>
+                                                    )
+                                                }
+                                            })}
+                                            {stepInfo.userPassed.length > 5 && (
+                                                <div className="relative -ml-3">
+                                                    <Avatar>
+                                                        <AvatarImage />
+                                                        <AvatarFallback>+{stepInfo.userPassed.length - 5}</AvatarFallback>
+                                                    </Avatar>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                            <div>
+                                <div className="h-2/4 w-full bg-gray-100 rounded-sm flex flex-col p-3">
+                                    <p>content</p>
+                                    <p>content</p>
+                                    <p>content</p>
+                                    <p>content</p>
+                                    <p>content</p>
+                                    <p>content</p>
+                                    <p>content</p>
+                                    <p>content</p>
+                                    <p>content</p>
+                                </div>
+                            </div>
+                            <div className="my-4">
+                                <Badge className="bg-badge-outcome text-white gap-1 py-1">
+                                    <Gem size={"1rem"} />
+                                    <p className="uppercase text-base">outcome</p>
+                                </Badge>
+                            </div>
+                            <div className="my-4">
+                                <Badge className="bg-badge-check text-white gap-1 py-1">
+                                    <ShieldQuestion size={"1rem"} />
+                                    <p className="uppercase text-base">check</p>
+                                </Badge>
+                            </div>
+                            <div className="my-4">
+                                <Badge className="bg-badge-error text-white gap-1 py-1">
+                                    <CircleSlash size={"1rem"} />
+                                    <p className="uppercase text-base">error</p>
+                                </Badge>
+                            </div>
+                            <div className="my-4">
+                                <Badge className="bg-badge-comment text-white gap-1 py-1">
+                                    <MessageSquare size={"1rem"} />
+                                    <p className="uppercase text-base">comment</p>
+                                </Badge>
+                                <div className="pt-8">
+                                    {stepComments?.map((cm) => {
+                                        return (
+                                            <div className="flex items-start pb-6 justify-between">
+                                                <div className="flex">
+                                                    <Avatar>
+                                                        <AvatarImage
+                                                            alt={`${cm.userInfo?.firstName} ${cm.userInfo?.lastname}`}
+                                                            src={cm.userInfo?.photoUrl}
+                                                        />
+                                                        <AvatarFallback>
+                                                            {getFallbackName(`${cm.userInfo?.firstName} ${cm.userInfo?.lastname}`)}
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                    <div>
+                                                        <p className="ps-4 font-bold">{`${cm.userInfo?.firstName} ${cm.userInfo?.lastname}`}</p>
+                                                        <p className="ps-4">{cm.comment} </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center cursor-pointer" onClick={() => upVote(cm.stepCommentId ?? 0)}>
+                                                    {/* TODO add upvote comment */}
+                                                    <SquareArrowUp className="text-explore-foreground" />
+                                                    <p className="ps-2 text-explore-foreground">{cm.upVote}</p>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+
+                                <div className="flex w-full items-center space-x-2">
+                                    <Input
+                                        type="text"
+                                        placeholder="Writing something..."
+                                        onChange={(e) => setUserComment(e.target.value)}
+                                        value={userComment}
+                                    />
+                                    <Button
+                                        className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800"
+                                        disabled={userComment === "" || isLoadingCommentOnStep}
+                                        onClick={submitComment}
+                                    >
+                                        {isLoadingCommentOnStep && <Loader2 className="animate-spin" />}
+                                        {isLoadingCommentOnStep ? "Please wait" : "Comment"}
+                                    </Button>
+                                </div>
+                            </div>
+                            <Separator />
+                            <div className="my-4">
+                                <Badge className="bg-badge-evaluate text-white gap-1 py-1">
+                                    <BadgeCheck size={"1rem"} />
+                                    <p className="uppercase text-base">evaluate</p>
+                                </Badge>
                             </div>
                         </div>
-                        <div className="my-4">
-                            <Badge className="bg-badge-outcome text-white gap-1 py-1">
-                                <Gem size={"1rem"} />
-                                <p className="uppercase">outcome</p>
-                            </Badge>
-                        </div>
-                        <div className="my-4">
-                            <Badge className="bg-badge-check text-white gap-1 py-1">
-                                <ShieldQuestion size={"1rem"} />
-                                <p className="uppercase">check</p>
-                            </Badge>
-                        </div>
-                        <div className="my-4">
-                            <Badge className="bg-badge-error text-white gap-1 py-1">
-                                <CircleSlash size={"1rem"} />
-                                <p className="uppercase">error</p>
-                            </Badge>
-                        </div>
-                        <div className="my-4">
-                            <Badge className="bg-badge-comment text-white gap-1 py-1">
-                                <MessageSquare size={"1rem"} />
-                                <p className="uppercase">comment</p>
-                            </Badge>
-                        </div>
-                        <Separator />
-                        <div className="my-4">
-                            <Badge className="bg-badge-evaluate text-white gap-1 py-1">
-                                <BadgeCheck size={"1rem"} />
-                                <p className="uppercase">evaluate</p>
-                            </Badge>
-                        </div>
-                    </div>
+                    )}
                 </ScrollArea>
             </SheetContent>
         </Sheet>
     )
 }
+
+export default StepCard
 

@@ -34,7 +34,7 @@ func NewStepController(stepSvc services.StepService) StepController {
 // @Accept json
 // @Produce json
 // @Param stepId path uint true "Step ID"
-// @Success 200 {object} response.InfoResponse[[]payload.StepInfo]
+// @Success 200 {object} response.InfoResponse[payload.StepInfo]
 // @Failure 400 {object} response.GenericError
 // @Router /step/{stepId} [get]
 func (r *StepController) GetStepInfo(c *fiber.Ctx) error {
@@ -118,7 +118,12 @@ func (r *StepController) GetStepComment(c *fiber.Ctx) error {
 		}
 	}
 
-	stepComments, err := r.stepSvc.GetStepComment(param.StepId)
+	// * login state
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["userId"].(float64)
+
+	stepComments, err := r.stepSvc.GetStepComment(param.StepId, utils.Ptr(uint64(userId)))
 	if err != nil {
 		return &response.GenericError{
 			Err:     err,
@@ -180,7 +185,7 @@ func (r *StepController) CommentOnStep(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param q body payload.UpVoteComment true "UpVoteComment"
-// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
+// @Success 200 {object} response.InfoResponse[string]
 // @Failure 400 {object} response.GenericError
 // @Router /step/comment/upvote [post]
 func (r *StepController) UpVoteStepComment(c *fiber.Ctx) error {
@@ -207,7 +212,7 @@ func (r *StepController) UpVoteStepComment(c *fiber.Ctx) error {
 	claims := user.Claims.(jwt.MapClaims)
 	userId := claims["userId"].(float64)
 
-	if err := r.stepSvc.CreateStepCommentUpVote(&userId, body.StepCommentId); err != nil {
+	if err := r.stepSvc.CreateOrDeleteStepCommentUpVote(&userId, body.StepCommentId); err != nil {
 		return &response.GenericError{
 			Err:     err,
 			Message: "failed to create step comment upvote",
@@ -236,7 +241,7 @@ func (r *StepController) GetStepEvaluate(c *fiber.Ctx) error {
 			Message: "invalid stepId param",
 		}
 	}
-
+	// TODO check logic for sending user eval content
 	// * login state
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)

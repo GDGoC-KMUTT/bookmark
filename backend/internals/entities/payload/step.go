@@ -1,7 +1,5 @@
 package payload
 
-import "backend/internals/db/models"
-
 type StepIdParam struct {
 	StepId *uint64 `param:"stepId"`
 }
@@ -20,6 +18,7 @@ type StepCommentInfo struct {
 	UserInfo      *CommentedBy `json:"userInfo"`
 	Comment       *string      `json:"comment"`
 	UpVote        *int         `json:"upVote"`
+	HasUpVoted    *bool        `json:"hasUpVoted"`
 }
 
 type CommentedBy struct {
@@ -40,9 +39,9 @@ type UpVoteComment struct {
 }
 
 type StepInfo struct {
-	Step       *StepDetail    `json:"step"`
-	Authors    []*models.User `json:"authors"`
-	UserPassed []*models.User `json:"userPassed"`
+	Step       *StepDetail `json:"step"`
+	Authors    []*UserInfo `json:"authors"`
+	UserPassed []*UserInfo `json:"userPassed"`
 }
 
 type StepDetail struct {
@@ -91,4 +90,12 @@ type CreateUserEvalReq struct {
 
 type CreateUserEvalRes struct {
 	UserEvalId *uint64 `json:"userEvalId"`
+}
+
+type UserInfo struct {
+	UserId    *uint64 `json:"userId"`
+	FirstName *string `json:"firstName"`
+	LastName  *string `json:"lastName"`
+	Email     *string `json:"email"`
+	PhotoUrl  *string `json:"photoUrl"`
 }
