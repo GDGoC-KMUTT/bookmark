@@ -23,9 +23,12 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
+      - name: Install Necessary Go Libraries
+        run: go install github.com/swaggo/swag/cmd/swag@latest
       - name: Go Production build
         run: |
           cd ./backend
+          swag init
           env GOOS=linux GOARCH=amd64 go build -o ./backend-file-build
       - name: Upload artifact
         uses: actions/upload-artifact@v4
