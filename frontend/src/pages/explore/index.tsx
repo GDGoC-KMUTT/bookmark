@@ -1,11 +1,12 @@
-import { ChangeEvent, useEffect, useState } from "react"
-import { Search } from "lucide-react"
 import FieldButton from "@/components/buttons/FieldButton"
+import ArticleCard from "@/components/card/ArticleCard"
 import CourseCard from "@/components/card/CourseCard"
+import AppLoading from "@/components/ui/app-loading"
+import useArticles from "@/hooks/useArticles"
 import useCourseWithFieldId from "@/hooks/useCourseByFieldId"
 import useFieldTypes from "@/hooks/useFieldTypes"
-import useArticles from "@/hooks/useArticles"
-import ArticleCard from "@/components/card/ArticleCard"
+import { Search } from "lucide-react"
+import { ChangeEvent, useEffect, useState } from "react"
 const Explore = () => {
     const [keyword, setKeyword] = useState<string>("")
     const [activeField, setActiveField] = useState<number | undefined>(undefined)
@@ -22,11 +23,7 @@ const Explore = () => {
     }, [fieldTypes])
 
     if (isLoadingFieldTypes || isLoadingCourseWithFiledId || isArticlesLoading) {
-        return (
-            <div className="min-h-screen flex flex-col justify-center items-center w-[100vw] ">
-                <h1 className="text-primary">Loading Data</h1>
-            </div>
-        )
+        return <AppLoading></AppLoading>
     }
 
     const handleKeywordChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -98,4 +95,3 @@ const Explore = () => {
 }
 
 export default Explore
-
