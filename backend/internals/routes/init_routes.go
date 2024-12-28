@@ -31,6 +31,8 @@ func SetupRoutes() {
 	var stepAuthorRepo = repositories.NewStepAuthorRepository(db.Gorm)
 	var userPassedRepo = repositories.NewUserPassedRepository(db.Gorm)
 	var courseContentRepo = repositories.NewCourseContentRepository(db.Gorm)
+	var fieldTypeRepo = repositories.NewFieldTypeRepository(db.Gorm)
+	var articleRepo = repositories.NewArticleRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -39,14 +41,16 @@ func SetupRoutes() {
 	// * Services
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
-	var courseService = services.NewCourseService(courseRepo)
+	var courseService = services.NewCourseService(courseRepo, fieldTypeRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
 	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo, stepCommentUpVoteRepo, stepRepo, userPassedRepo, stepAuthorRepo, courseContentRepo)
+	var articleService = services.NewArticleService(articleRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
 	var profileController = controllers.NewProfileController(profileService)
 	var courseController = controllers.NewCourseController(courseService)
+	var articleController = controllers.NewArticleController(articleService)
 	var progressController = controllers.NewProgressController(progressService)
 	var stepController = controllers.NewStepController(stepService)
 
@@ -81,10 +85,14 @@ func SetupRoutes() {
 	profile.Get("/totalgems", profileController.GetUserGems)
 
 	course := api.Group("/courses", middleware.Jwt())
-	course.Get("/field/:field_id", courseController.GetCoursesByFieldId)
+	course.Get("/field/:fieldId", courseController.GetCoursesByFieldId)
+	course.Get("/field-types", courseController.GetAllFieldTypes)
 	course.Get("/current", courseController.GetCurrentCourse)
 	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
 	course.Get("/enrolled", courseController.GetEnrollCourseByUserId)
+
+	article := api.Group("/article", middleware.Jwt())
+	article.Get("", articleController.GetAllArticles)
 
 	progress := api.Group("/progress", middleware.Jwt())
 	progress.Get("/:courseId/percentage", progressController.GetCompletionPercentage)
