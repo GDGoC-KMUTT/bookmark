@@ -22,8 +22,7 @@ const Course = () => {
 	useEffect(() => {
 		const fetchCourseInfo = async () => {
 			try {
-				const response = await server.course.getCourseInfo(courseId.toString());
-				// console.log(response);
+				const response = await server.coursePage.getCoursePageInfo(courseId.toString());
 
 				if (response.data) {
 					const courseData = response.data;
@@ -53,7 +52,7 @@ const Course = () => {
 	useEffect(() => {
 		const fetchCourseContent = async () => {
 			try {
-				const response = await server.course.getCourseContent(courseId.toString());
+				const response = await server.coursePage.getCoursePageContent(courseId.toString());
 				if (response.data) {
 					const courseContentData = response.data;
 
@@ -88,6 +87,8 @@ const Course = () => {
 			  }
 
 			  const response = await server.module.getModuleInfo(moduleId.toString());
+				console.log(response.data);
+
 			  if (response.data) {
 				const transformedModule = {
 				  module_id: response.data.id ?? 0,
