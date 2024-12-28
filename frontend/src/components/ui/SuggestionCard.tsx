@@ -1,4 +1,3 @@
-import React from "react"
 import { Card, CardContent } from "@/components/ui/card"
 
 export interface SuggestionCardProps {
@@ -18,3 +17,4 @@ export const SuggestionCard = ({ title }: SuggestionCardProps) => (
         </CardContent>
     </Card>
 )
+
