@@ -1,13 +1,14 @@
 import { BadgeCheck, Blocks, CircleSlash, Gem, MessageSquare, ShieldQuestion } from "lucide-react"
-import { AspectRatio } from "../ui/aspect-ratio"
-import { Button } from "../ui/button"
-import { Label } from "../ui/label"
-import { ScrollArea } from "../ui/scroll-area"
-import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "../ui/sheet"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { Badge } from "../ui/badge"
-import { Separator } from "../ui/separator"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip"
+import { getFallbackName } from "@/utils/getFallbackName"
 
 const peoplePassed = [
     {
@@ -45,11 +46,6 @@ const peoplePassed = [
 ]
 export function Step() {
     const author = "hello world"
-    const getFallBackName = (text: string) => {
-        const test = text.split(" ")
-        const firsTwo = test.slice(0, 2)
-        return firsTwo.map((str) => str.substring(0, 1).toUpperCase())
-    }
 
     return (
         <Sheet>
@@ -91,14 +87,14 @@ export function Step() {
                                 <div className="flex flex-row items-center gap-4">
                                     <Avatar>
                                         <AvatarImage src="https://github.com/shadcn.png" />
-                                        <AvatarFallback>{getFallBackName(author)}</AvatarFallback>
+                                        <AvatarFallback>{getFallbackName(author)}</AvatarFallback>
                                     </Avatar>
                                     <p>{author}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-4">
                                     <Avatar>
                                         <AvatarImage src="https://github.com/shadcn.png" />
-                                        <AvatarFallback>{getFallBackName(author)}</AvatarFallback>
+                                        <AvatarFallback>{getFallbackName(author)}</AvatarFallback>
                                     </Avatar>
                                     <p>{author}</p>
                                 </div>
@@ -116,7 +112,7 @@ export function Step() {
                                                         <TooltipTrigger asChild>
                                                             <Avatar>
                                                                 <AvatarImage src={person.avatar} alt={person.name} />
-                                                                <AvatarFallback>{getFallBackName(person.name)}</AvatarFallback>
+                                                                <AvatarFallback>{getFallbackName(person.name)}</AvatarFallback>
                                                             </Avatar>
                                                         </TooltipTrigger>
                                                         <TooltipContent>
