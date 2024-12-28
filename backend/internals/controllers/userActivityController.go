@@ -22,26 +22,24 @@ func NewUserActivityController(userActivitySvc services.UserActivityService) *Us
 // GetRecentActivity
 // @ID getRecentActivity
 // @Tags user-activity
-// @Summary Get the most recent activity for a user
+// @Summary Get the most recent activities for a user
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.InfoResponse[response.UserActivityResponse]
 // @Failure 400 {object} response.GenericError
 // @Router /user/{userId}/recent-activity [get]
 func (r *UserActivityController) GetRecentActivity(c *fiber.Ctx) error {
-	// Get user information from JWT token
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	userId := claims["userId"].(float64)
 
-	// Fetch the most recent user activity
-	recentActivity, err := r.userActivitySvc.GetRecentActivityByUserID(utils.Ptr(strconv.Itoa(int(userId))))
+	recentActivities, err := r.userActivitySvc.GetRecentActivitiesByUserID(utils.Ptr(strconv.Itoa(int(userId))))
 	if err != nil {
-		return &response.GenericError{
+		return c.Status(fiber.StatusBadRequest).JSON(response.GenericError{
 			Err:     err,
-			Message: "Failed to fetch recent user activity",
-		}
+			Message: "Failed to fetch recent user activities",
+		})
 	}
 
-	return response.Ok(c, recentActivity)
+	return response.Ok(c, recentActivities)
 }

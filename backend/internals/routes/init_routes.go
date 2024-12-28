@@ -38,6 +38,7 @@ func SetupRoutes() {
 	var stepAuthorRepo = repositories.NewStepAuthorRepository(db.Gorm)
 	var courseContentRepo = repositories.NewCourseContentRepository(db.Gorm)
 	var enrollRepo = repositories.NewEnrollRepository(db.Gorm)
+	var userActivityRepo = repositories.NewUserActivityRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -64,6 +65,7 @@ func SetupRoutes() {
 	var enrollService = services.NewEnrollService(enrollRepo)
 	var moduleService = services.NewModuleService(moduleRepo)
 	var moduleStepService = services.NewModuleStepService(stepRepo, userEvalRepo)
+	var userActivityService = services.NewUserActivityService(userActivityRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
@@ -76,6 +78,7 @@ func SetupRoutes() {
 	var moduleStepController = controllers.NewModuleStepController(moduleStepService)
 	var enrollController = controllers.NewEnrollController(enrollService)
 	var stepController = controllers.NewStepController(stepService, config.Env, minioService)
+	var userActivityController = controllers.NewUserActivityController(userActivityService)
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
@@ -153,6 +156,9 @@ func SetupRoutes() {
 
 	enrollments := api.Group("/enrollments", middleware.Jwt())
 	enrollments.Get("/enroll", enrollController.GetUserEnrollments)
+
+	userActivity := api.Group("/user", middleware.Jwt())
+	userActivity.Get("/recent-activities", userActivityController.GetRecentActivity)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {
