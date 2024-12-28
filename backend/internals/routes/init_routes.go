@@ -23,6 +23,7 @@ func SetupRoutes() {
 	var userRepo = repositories.NewUserRepository(db.Gorm)
 	var courseRepo = repositories.NewCourseRepository(db.Gorm)
 	var moduleRepo = repositories.NewModuleRepository(db.Gorm)
+	var moduleStepRepo = repositories.NewStepRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -33,12 +34,14 @@ func SetupRoutes() {
 	var profileService = services.NewProfileService(userRepo)
 	var courseService = services.NewCourseService(courseRepo)
 	var moduleService = services.NewModuleService(moduleRepo)
+	var moduleStepService = services.NewModuleStepService(moduleStepRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
 	var profileController = controllers.NewProfileController(profileService)
 	var courseController = controllers.NewCourseController(courseService)
 	var moduleController = controllers.NewModuleController(moduleService)
+	var moduleStepController = controllers.NewModuleStepController(moduleStepService)
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
@@ -77,6 +80,11 @@ func SetupRoutes() {
 	// * Module routes
 	module := api.Group("/module", middleware.Jwt()) // Protect routes with JWT middleware
 	module.Get("/:moduleId/info", moduleController.GetModuleInfo)
+
+	// Step routes
+	step := api.Group("/step", middleware.Jwt())
+	step.Get("/:moduleId/info", moduleStepController.GetModuleSteps)
+
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {

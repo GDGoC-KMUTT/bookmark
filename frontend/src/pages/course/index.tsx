@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import { courseInfoAtom, courseContentAtom } from '@/stores/course';
+import { courseInfoAtom, courseContentAtom} from '@/stores/course';
 import { moduleAtom } from '@/stores/module';
+import { moduleStepsAtom } from '@/stores/moduleStep';
 import Hero from "../../components/course/hero";
 import Text from "../../components/course/text";
 import Module from "../../components/course/module";
@@ -11,10 +12,13 @@ const Course = () => {
 	const [courseInfo, setCourseInfo] = useAtom(courseInfoAtom); // Global state for course data
 	const [courseContent, setCourseContent] = useAtom(courseContentAtom); // Global state for course content
 	const [modules, setModules] = useAtom(moduleAtom); // Global state for module data
+	const [moduleSteps, setModuleSteps] = useAtom(moduleStepsAtom);
 	const [error, setError] = useState<string | null>(null);
 
+	//! don't forget to fix this later
 	const courseId = 1; // Replace with dynamic courseId if needed
 
+	// Fetch course information
 	useEffect(() => {
 		const fetchCourseInfo = async () => {
 			try {
@@ -45,6 +49,7 @@ const Course = () => {
 		fetchCourseInfo();
 	}, [courseId, setCourseInfo]);
 
+	 // Fetch course content
 	useEffect(() => {
 		const fetchCourseContent = async () => {
 			try {
@@ -73,32 +78,33 @@ const Course = () => {
 		fetchCourseContent();
 	}, [courseId, setCourseContent]);
 
+	// Fetch module info
 	useEffect(() => {
 		const fetchModuleInfo = async (moduleId: number) => {
 			try {
-				const response = await server.module.getModuleInfo(moduleId.toString());
-				if (response.data) {
-					const moduleData = response.data;
+			  if (modules.some((mod) => mod.module_id === moduleId)) {
+				console.log(`Module ID: ${moduleId} already fetched.`);
+				return;
+			  }
 
-					// Ensure the data matches the atom structure
-					const transformedModule = {
-						module_id: moduleData.id ?? 0, // Assuming `id` is the correct key in the response
-						title: moduleData.title ?? '',
-						description: moduleData.description ?? '',
-						image_url: moduleData.image_url ?? '',
-					};
+			  const response = await server.module.getModuleInfo(moduleId.toString());
+			  if (response.data) {
+				const transformedModule = {
+				  module_id: response.data.id ?? 0,
+				  title: response.data.title ?? '',
+				  description: response.data.description ?? '',
+				  image_url: response.data.image_url ?? '',
+				};
 
-					setModules((prev) => [
-						...prev.filter((module) => module.module_id !== moduleId), // Avoid duplicates
-						transformedModule, // Add the new module data
-					]);
-				} else {
-					console.error(`Failed to fetch module info for ID: ${moduleId}`);
-				}
+				setModules((prev) => [...prev, transformedModule]);
+			  } else {
+				console.error(`Failed to fetch module info for ID: ${moduleId}`);
+			  }
 			} catch (err) {
-				console.error(`Error fetching module info for ID: ${moduleId}`, err);
+			  console.error(`Error fetching module info for ID: ${moduleId}`, err);
 			}
-		};
+		  };
+
 
 		// Fetch module data for all modules in the course content
 		if (courseContent && Array.isArray(courseContent)) {
@@ -113,13 +119,54 @@ const Course = () => {
 	}, [courseContent, modules, setModules]);
 
 
-	if (error) {
+	// Fetch steps for each module
+	useEffect(() => {
+		const fetchModuleSteps = async (moduleId: number) => {
+			try {
+			  if (moduleSteps[moduleId]) {
+				console.log(`Steps for Module ID: ${moduleId} already fetched.`);
+				return;
+			  }
+
+			  const response = await server.moduleStep.getModuleSteps(moduleId.toString());
+			  if (response.data && Array.isArray(response.data)) {
+				const transformedSteps = response.data.map((step: any) => ({
+				  step_id: step.id ?? 0,
+				  title: step.title ?? '',
+				  check: step.check ?? '',
+				}));
+
+				setModuleSteps((prev) => ({ ...prev, [moduleId]: transformedSteps }));
+			  } else {
+				console.log(`No step for Module ID: ${moduleId}`, response);
+			  }
+			} catch (err) {
+			  console.error(`Error fetching steps for Module ID: ${moduleId}`, err);
+			}
+		  };
+
+
+
+		// Fetch steps for all modules in the course content
+		if (courseContent && Array.isArray(courseContent)) {
+		  courseContent
+			.filter((item) => item.type === "module")
+			.forEach((module) => {
+			  if (!moduleSteps[module.module_id]) {
+				fetchModuleSteps(module.module_id);
+			  }
+			});
+		}
+	  }, [courseContent, moduleSteps, setModuleSteps]);
+
+
+	  if (error) {
 		return <div className="error">{error}</div>;
-	}
+	  }
 
 	return (
 		<div className="relative w-full mt-[50px] mb-[150px] flex flex-col overflow-y-auto">
-			<Hero key={courseId} courseField={courseInfo.field} courseName={courseInfo.name} />
+			<Hero key={courseId}/>
 			<div className="w-full flex flex-col items-center justify-center space-y-10 mt-20">
 				{courseContent &&
 					courseContent.map((item, index) => {
@@ -131,9 +178,7 @@ const Course = () => {
 								return (
 									<Module
 										key={index}
-										title={moduleData.title || ''}
-										description={moduleData.description || ''}
-										imageUrl={moduleData.image_url || ''}
+										moduleId={moduleData.module_id || 0}
 									/>
 								);
 							}
