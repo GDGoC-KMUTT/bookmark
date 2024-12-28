@@ -1,14 +1,18 @@
 package controllers
 
 import (
+	"backend/internals/config"
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
+	minio2 "backend/internals/minio"
 	"backend/internals/services"
 	"backend/internals/utils"
+	"encoding/json"
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/minio/minio-go/v7"
 )
 
 type StepController struct {
@@ -141,17 +145,17 @@ func (r *StepController) GetStepComment(c *fiber.Ctx) error {
 	return response.Ok(c, stepComments)
 }
 
-// CreateStepComment
-// @ID createStepComment
+// CommentOnStep
+// @ID commentOnStep
 // @Tags step
-// @Summary CreateStepComment
+// @Summary CommentOnStep
 // @Accept json
 // @Produce json
 // @Param q body payload.Comment true "Comment"
 // @Success 200 {object} response.InfoResponse[string]
 // @Failure 400 {object} response.GenericError
 // @Router /step/comment/create [post]
-func (r *StepController) CreateStepComment(c *fiber.Ctx) error {
+func (r *StepController) CommentOnStep(c *fiber.Ctx) error {
 	body := new(payload.Comment)
 
 	if err := c.BodyParser(body); err != nil {
@@ -185,17 +189,17 @@ func (r *StepController) CreateStepComment(c *fiber.Ctx) error {
 	return response.Created(c, "successfully create step comment")
 }
 
-// CreateStepCommentUpVote
-// @ID createStepCommentUpVote
+// UpVoteStepComment
+// @ID upVoteStepComment
 // @Tags step
-// @Summary CreateStepCommentUpVote
+// @Summary UpVoteStepComment
 // @Accept json
 // @Produce json
 // @Param q body payload.UpVoteComment true "UpVoteComment"
 // @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
 // @Failure 400 {object} response.GenericError
 // @Router /step/comment/upvote [post]
-func (r *StepController) CreateStepCommentUpVote(c *fiber.Ctx) error {
+func (r *StepController) UpVoteStepComment(c *fiber.Ctx) error {
 	body := new(payload.UpVoteComment)
 
 	if err := c.BodyParser(body); err != nil {
@@ -242,7 +246,6 @@ func (r *StepController) CreateStepCommentUpVote(c *fiber.Ctx) error {
 func (r *StepController) GetStepEvaluate(c *fiber.Ctx) error {
 	param := new(payload.StepIdParam)
 
-	// TODO
 	if err := c.ParamsParser(param); err != nil {
 		return &response.GenericError{
 			Err:     err,
@@ -267,21 +270,137 @@ func (r *StepController) GetStepEvaluate(c *fiber.Ctx) error {
 // @Summary SubmitStepEval
 // @Accept json
 // @Produce json
-// @Param stepId path uint true "Step ID"
-// @Success 200 {object} response.InfoResponse[[]payload.CourseWithFieldType]
+// @Param data formData string true "JSON data as string"
+// @Param file formData file true "File to upload"
+// @Success 200 {object} response.InfoResponse[payload.CreateUserEvalRes]
 // @Failure 400 {object} response.GenericError
-// @Router /step/stepEval/{stepId} [post]
+// @Router /step/stepEval/submit [post]
 func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
-	param := new(payload.StepIdParam)
-
-	// TODO
-	if err := c.ParamsParser(param); err != nil {
+	// Parse JSON from "data" form field
+	jsonData := c.FormValue("data")
+	body := new(payload.SubmitStepEval)
+	if err := json.Unmarshal([]byte(jsonData), body); err != nil {
 		return &response.GenericError{
 			Err:     err,
-			Message: "invalid stepId param",
+			Message: "Invalid JSON in form field 'data'",
 		}
 	}
 
-	res := new(payload.StepIdParam)
-	return response.Ok(c, res)
+	// * validate body
+	if err := utils.Validate.Struct(body); err != nil {
+		var validationErrors validator.ValidationErrors
+		errors.As(err, &validationErrors)
+		return &response.GenericError{
+			Err: validationErrors,
+		}
+	}
+
+	// * login state
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["userId"].(float64)
+
+	userEval := &payload.CreateUserEvalReq{
+		UserId:     &userId,
+		StepEvalId: body.StepEvalId,
+		Content:    body.Content,
+	}
+
+	if body.Content == nil {
+		// * Parse file form
+		// Note: file is a *multipart.FileHeader instance
+		fileHeader, err := c.FormFile("file")
+		if err != nil {
+			return &response.GenericError{
+				Err:     err,
+				Message: "file not found",
+			}
+		}
+
+		// * Convert multipart.FileHeader to File (which satisfies io.Reader)
+		// Note: Since file is a *multipart.FileHeader instance
+		// and minio.PutObject() requires a io.Reader instance
+		file, err := fileHeader.Open()
+		if err != nil {
+			return &response.GenericError{
+				Err:     err,
+				Message: "failed to open file",
+			}
+		}
+
+		// * Generate filename
+		filename, err := r.stepSvc.CreateFileFormat(body.StepId, body.StepEvalId, &userId)
+		if err != nil {
+			return &response.GenericError{
+				Err:     err,
+				Message: "failed to create file format",
+			}
+		}
+
+		userEval.Content = filename
+
+		// * Upload file to minio
+		_, err = minio2.MinioClient.PutObject(
+			c.Context(),
+			*config.Env.MinioS3BucketName,
+			*filename,
+			file,
+			fileHeader.Size,
+			minio.PutObjectOptions{ContentType: fileHeader.Header.Get("Content-Type")},
+		)
+		if err != nil {
+			return &response.GenericError{
+				Err:     err,
+				Message: "Failed to upload file",
+			}
+		}
+	}
+
+	userStepEvalId, err := r.stepSvc.CreateUserEval(userEval)
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to create user eval",
+		}
+	}
+
+	result := &payload.CreateUserEvalRes{
+		UserStepEvalId: userStepEvalId,
+	}
+
+	return response.Ok(c, result)
+
+}
+
+// CheckStepEvalStatus
+// @ID checkStepEvalStatus
+// @Tags step
+// @Summary CheckStepEvalStatus
+// @Accept json
+// @Produce json
+// @Param q body payload.StepEvalIdBody true "StepEvalIdBody"
+// @Success 200 {object} response.InfoResponse[[]payload.StepEvalInfo]
+// @Failure 400 {object} response.GenericError
+// @Router /step/stepEval/status [post]
+func (r *StepController) CheckStepEvalStatus(c *fiber.Ctx) error {
+	body := new(payload.StepEvalIdBody)
+
+	// TODO
+	if err := c.BodyParser(body); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "invalid stepEvalId body request",
+		}
+	}
+
+	// * validate body
+	if err := utils.Validate.Struct(body); err != nil {
+		var validationErrors validator.ValidationErrors
+		errors.As(err, &validationErrors)
+		return &response.GenericError{
+			Err: validationErrors,
+		}
+	}
+
+	return response.Ok(c, "test")
 }
