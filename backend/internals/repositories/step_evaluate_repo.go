@@ -24,3 +24,12 @@ func (r *stepEvaluateRepository) GetStepEvalByStepId(stepId *uint64) ([]*models.
 	}
 	return stepEvals, nil
 }
+
+func (r *stepEvaluateRepository) GetStepEvalById(stepEvalId *uint64) (*models.StepEvaluate, error) {
+	stepEval := new(models.StepEvaluate)
+
+	if err := r.db.First(&stepEval, stepEvalId); err != nil {
+		return nil, err.Error
+	}
+	return stepEval, nil
+}

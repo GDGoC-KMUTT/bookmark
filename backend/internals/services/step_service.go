@@ -47,7 +47,7 @@ func (r *stepService) GetGems(stepId *uint64, userId *float64) (*int, *int, erro
 	currentGems := 0
 	for _, eval := range stepEvals {
 		totalGems += *eval.Gem
-		userEvals, err2 := r.userEvalRepo.GetUserEvalByStepEvalId(eval.Id, userId)
+		userEvals, err2 := r.userEvalRepo.GetUserEvalByStepEvalIdUserId(eval.Id, userId)
 		if err2 != nil {
 			return nil, nil, err2
 		}
@@ -127,7 +127,7 @@ func (r *stepService) CreateStepCommentUpVote(userId *float64, stepCommentId *ui
 	return nil
 }
 
-func (r *stepService) GetStepInfo(courseId *uint64, moduleId *uint64, stepId *uint64) (*payload.StepInfo, error) {
+func (r *stepService) GetStepInfo(stepId *uint64) (*payload.StepInfo, error) {
 	step, err := r.stepRepo.GetStepById(stepId)
 	if err != nil {
 		return nil, err
@@ -138,7 +138,7 @@ func (r *stepService) GetStepInfo(courseId *uint64, moduleId *uint64, stepId *ui
 		return nil, err
 	}
 
-	userPassed, err := r.userPassedRepo.GetUserPassedByStepIdCourseIdModuleId(stepId, courseId, moduleId)
+	stepEvals, err := r.stepEvalRepo.GetStepEvalByStepId(stepId)
 	if err != nil {
 		return nil, err
 	}
@@ -168,20 +168,44 @@ func (r *stepService) GetStepInfo(courseId *uint64, moduleId *uint64, stepId *ui
 	}
 	stepInfo.Authors = authors
 
-	userPassedList := make([]*models.User, 0)
-	for _, passed := range userPassed {
-		user, err := r.userRepo.FindUserByID(utils.Ptr(strconv.FormatUint(*passed.UserId, 10)))
+	passedUsersMap := make(map[uint64]int)
+	for _, stepEval := range stepEvals {
+		userEvals, err := r.userEvalRepo.GetPassAllUserEvalByStepEvalId(stepEval.Id)
 		if err != nil {
 			return nil, err
 		}
-		userPassedList = append(userPassedList, user)
+
+		// Increment pass count for each user
+		for _, userEval := range userEvals {
+			userId := *userEval.UserId
+			passedUsersMap[userId]++
+		}
 	}
-	stepInfo.UserPassed = userPassedList
+	fmt.Println(passedUsersMap)
+
+	requiredPassCount := len(stepEvals)
+	passedUsers := make([]uint64, 0)
+	for userId, passCount := range passedUsersMap {
+		if passCount == requiredPassCount {
+			passedUsers = append(passedUsers, userId)
+		}
+	}
+
+	// Fetch user details for the passed users
+	users := make([]*models.User, 0, len(passedUsers))
+	for _, userId := range passedUsers {
+		user, err := r.userRepo.FindUserByID(utils.Ptr(strconv.FormatUint(userId, 10)))
+		if err != nil {
+			return nil, fmt.Errorf("failed to fetch user by ID: %w", err)
+		}
+		users = append(users, user)
+	}
+	stepInfo.UserPassed = users
 
 	return stepInfo, nil
 }
 
-func (r *stepService) GetStepEvalInfo(stepId *uint64) ([]*payload.StepEvalInfo, error) {
+func (r *stepService) GetStepEvalInfo(stepId *uint64, userId *float64) ([]*payload.StepEvalInfo, error) {
 	stepEvals, err := r.stepEvalRepo.GetStepEvalByStepId(stepId)
 	if err != nil {
 		return nil, err
@@ -198,6 +222,18 @@ func (r *stepService) GetStepEvalInfo(stepId *uint64) ([]*payload.StepEvalInfo, 
 			Type:        eval.Type,
 			Question:    eval.Question,
 		}
+
+		userEval, err := r.userEvalRepo.GetUserEvalByStepEvalIdUserId(eval.Id, userId)
+		if err != nil {
+			return nil, err
+		}
+
+		evalResult := &payload.UserEvalResult{
+			Content: userEval.Content,
+			Pass:    userEval.Pass,
+			Comment: userEval.Comment,
+		}
+		result.UserEval = evalResult
 
 		stepEvalInfoList = append(stepEvalInfoList, result)
 	}
@@ -239,4 +275,23 @@ func (r *stepService) CreateUserEval(payload *payload.CreateUserEvalReq) (*uint6
 	}
 
 	return result.Id, nil
+}
+
+func (r *stepService) CheckStepEvalStatus(userEvalId *uint64) (*models.UserEvaluate, error) {
+	userEval, err := r.userEvalRepo.GetUserEvalById(userEvalId)
+	if err != nil {
+		return nil, err
+	}
+
+	if userEval.Pass == nil && userEval.Comment == nil {
+		return nil, nil
+	}
+
+	// TODO
+	//stepEval, err := r.stepEvalRepo.GetStepEvalById(userEval.StepEvaluateId)
+	//if err != nil {
+	//	return nil, err
+	//}
+
+	return userEval, nil
 }
