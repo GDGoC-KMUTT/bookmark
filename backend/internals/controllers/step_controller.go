@@ -13,6 +13,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/minio/minio-go/v7"
+	"strconv"
+	"strings"
 )
 
 type StepController struct {
@@ -365,23 +367,23 @@ func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
 // @Summary CheckStepEvalStatus
 // @Accept json
 // @Produce json
-// @Param q body payload.StepEvalIdBody true "StepEvalIdBody"
-// @Success 200 {object} response.InfoResponse[[]payload.StepEvalInfo]
+// @Param q query payload.UserEvalIdsBody true "UserEvalIdsBody"
+// @Success 200 {object} response.InfoResponse[[]models.UserEvaluate]
 // @Failure 400 {object} response.GenericError
-// @Router /step/stepEval/status [post]
+// @Router /step/stepEval/status [get]
 func (r *StepController) CheckStepEvalStatus(c *fiber.Ctx) error {
-	body := new(payload.UserEvalIdBody)
+	query := new(payload.UserEvalIdsBody)
 
 	// TODO
-	if err := c.BodyParser(body); err != nil {
+	if err := c.QueryParser(query); err != nil {
 		return &response.GenericError{
 			Err:     err,
-			Message: "invalid stepEvalId body request",
+			Message: "invalid userEvalId query request",
 		}
 	}
 
 	// * validate body
-	if err := utils.Validate.Struct(body); err != nil {
+	if err := utils.Validate.Struct(query); err != nil {
 		var validationErrors validator.ValidationErrors
 		errors.As(err, &validationErrors)
 		return &response.GenericError{
@@ -389,5 +391,32 @@ func (r *StepController) CheckStepEvalStatus(c *fiber.Ctx) error {
 		}
 	}
 
-	return response.Ok(c, "test")
+	userEvalIds := make([]*uint64, 0)
+	result := strings.Split(*query.UserEvalIds, ",")
+	for _, str := range result {
+		// Parse the string to uint64
+		value, err := strconv.ParseUint(str, 10, 64)
+		if err != nil {
+			return &response.GenericError{
+				Err:     err,
+				Message: "Error parsing string to uint64",
+			}
+		}
+		userEvalIds = append(userEvalIds, &value)
+	}
+
+	// * login state
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["userId"].(float64)
+
+	userEvals, err := r.stepSvc.CheckStepEvalStatus(userEvalIds, utils.Ptr(uint64(userId)))
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to get latest status of each user eval",
+		}
+	}
+
+	return response.Ok(c, userEvals)
 }

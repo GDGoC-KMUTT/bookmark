@@ -181,7 +181,6 @@ func (r *stepService) GetStepInfo(stepId *uint64) (*payload.StepInfo, error) {
 			passedUsersMap[userId]++
 		}
 	}
-	fmt.Println(passedUsersMap)
 
 	requiredPassCount := len(stepEvals)
 	passedUsers := make([]uint64, 0)
@@ -277,21 +276,22 @@ func (r *stepService) CreateUserEval(payload *payload.CreateUserEvalReq) (*uint6
 	return result.Id, nil
 }
 
-func (r *stepService) CheckStepEvalStatus(userEvalId *uint64) (*models.UserEvaluate, error) {
-	userEval, err := r.userEvalRepo.GetUserEvalById(userEvalId)
-	if err != nil {
-		return nil, err
+func (r *stepService) CheckStepEvalStatus(userEvalIds []*uint64, userId *uint64) ([]models.UserEvaluate, error) {
+	userEvalList := make([]models.UserEvaluate, 0)
+	for _, userEval := range userEvalIds {
+		userEvalInfo, err := r.userEvalRepo.GetUserEvalByIdAndUserId(userEval, userId)
+		if err != nil {
+			return nil, err
+		}
+		
+		if userEvalInfo == nil {
+			return nil, err
+		}
+
+		if userEvalInfo.Pass != nil && userEvalInfo.Comment != nil {
+			userEvalList = append(userEvalList, *userEvalInfo)
+		}
 	}
 
-	if userEval.Pass == nil && userEval.Comment == nil {
-		return nil, nil
-	}
-
-	// TODO
-	//stepEval, err := r.stepEvalRepo.GetStepEvalById(userEval.StepEvaluateId)
-	//if err != nil {
-	//	return nil, err
-	//}
-
-	return userEval, nil
+	return userEvalList, nil
 }

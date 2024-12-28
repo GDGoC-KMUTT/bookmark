@@ -6,8 +6,8 @@ type StepIdParam struct {
 	StepId *uint64 `param:"stepId"`
 }
 
-type UserEvalIdBody struct {
-	UserEvalId *uint64 `json:"userEvalId" validate:"required"`
+type UserEvalIdsBody struct {
+	UserEvalIds *string `json:"userEvalIds" validate:"required"`
 }
 
 type GetGemsResponse struct {

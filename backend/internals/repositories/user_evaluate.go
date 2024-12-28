@@ -7,4 +7,5 @@ type UserEvaluateRepository interface {
 	CreateUserEval(userEval *models.UserEvaluate) (*models.UserEvaluate, error)
 	GetUserEvalById(userEvalId *uint64) (*models.UserEvaluate, error)
 	GetPassAllUserEvalByStepEvalId(stepEvalId *uint64) ([]*models.UserEvaluate, error)
+	GetUserEvalByIdAndUserId(userEvalId *uint64, userId *uint64) (*models.UserEvaluate, error)
 }
