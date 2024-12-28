@@ -29,3 +29,12 @@ func (r *userEvaluateRepo) GetUserEvalByStepEvalId(stepEvalId *uint64, userId *f
 
 	return userEval, nil
 }
+
+func (r *userEvaluateRepo) CreateUserEval(userEval *models.UserEvaluate) (*models.UserEvaluate, error) {
+	result := r.db.Create(userEval)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return userEval, nil
+}

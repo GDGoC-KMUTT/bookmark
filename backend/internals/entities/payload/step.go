@@ -6,6 +6,10 @@ type StepIdParam struct {
 	StepId *uint64 `param:"stepId"`
 }
 
+type StepEvalIdBody struct {
+	StepEvalId *uint64 `json:"stepEvalId" validate:"required"`
+}
+
 type GetGemsResponse struct {
 	TotalGems   *int `json:"totalGems"`
 	CurrentGems *int `json:"currentGems"`
@@ -58,7 +62,9 @@ type StepInfoQuery struct {
 }
 
 type SubmitStepEval struct {
+	StepId     *uint64 `json:"stepId" validate:"required"`
 	StepEvalId *uint64 `json:"stepEvalId" validate:"required"`
+	Content    *string `json:"content"`
 }
 
 type StepEvalInfo struct {
@@ -68,4 +74,14 @@ type StepEvalInfo struct {
 	Question    *string `json:"question"`
 	Type        *string `json:"type"`
 	Instruction *string `json:"instruction"`
+}
+
+type CreateUserEvalReq struct {
+	UserId     *float64 `json:"userId"`
+	StepEvalId *uint64  `json:"stepEvalId"`
+	Content    *string  `json:"content"`
+}
+
+type CreateUserEvalRes struct {
+	UserStepEvalId *uint64 `json:"userStepEvalId"`
 }

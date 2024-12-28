@@ -20,3 +20,9 @@ func (r *stepRepo) GetStepById(stepId *uint64) (*models.Step, error) {
 	result := r.db.First(&step, stepId)
 	return step, result.Error
 }
+
+func (r *stepRepo) GetModuleIdByStepId(stepId *uint64) (*uint64, error) {
+	step := new(models.Step)
+	result := r.db.First(&step, stepId)
+	return step.ModuleId, result.Error
+}

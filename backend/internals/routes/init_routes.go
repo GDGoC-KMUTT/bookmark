@@ -30,6 +30,7 @@ func SetupRoutes() {
 	var stepCommentUpVoteRepo = repositories.NewStepCommentUpVote(db.Gorm)
 	var stepAuthorRepo = repositories.NewStepAuthorRepository(db.Gorm)
 	var userPassedRepo = repositories.NewUserPassedRepository(db.Gorm)
+	var courseContentRepo = repositories.NewCourseContentRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -40,7 +41,7 @@ func SetupRoutes() {
 	var profileService = services.NewProfileService(userRepo)
 	var courseService = services.NewCourseService(courseRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
-	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo, stepCommentUpVoteRepo, stepRepo, userPassedRepo, stepAuthorRepo)
+	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo, stepCommentUpVoteRepo, stepRepo, userPassedRepo, stepAuthorRepo, courseContentRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
@@ -94,11 +95,13 @@ func SetupRoutes() {
 
 	stepEval := step.Group("/stepEval")
 	stepEval.Get("/:stepId", stepController.GetStepEvaluate)
+	stepEval.Post("/submit", stepController.SubmitStepEval)
+	stepEval.Get("/status", stepController.CheckStepEvalStatus)
 
 	stepComment := step.Group("/comment")
 	stepComment.Get("/:stepId", stepController.GetStepComment)
-	stepComment.Post("/create", stepController.CreateStepComment)
-	stepComment.Post("/upvote", stepController.CreateStepCommentUpVote)
+	stepComment.Post("/create", stepController.CommentOnStep)
+	stepComment.Post("/upvote", stepController.UpVoteStepComment)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {

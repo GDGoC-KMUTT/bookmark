@@ -5,8 +5,10 @@ import (
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
 	"backend/internals/utils"
+	"fmt"
 	"sort"
 	"strconv"
+	"time"
 )
 
 type stepService struct {
@@ -18,9 +20,10 @@ type stepService struct {
 	stepRepo              repositories.StepRepository
 	userPassedRepo        repositories.UserPassedRepository
 	stepAuthorRepo        repositories.StepAuthorRepository
+	courseContentRepo     repositories.CourseContentRepository
 }
 
-func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository, stepCommentRepo repositories.StepCommentRepository, stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository, stepRepo repositories.StepRepository, userPassedRepo repositories.UserPassedRepository, stepAuthorRepo repositories.StepAuthorRepository) StepService {
+func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository, stepCommentRepo repositories.StepCommentRepository, stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository, stepRepo repositories.StepRepository, userPassedRepo repositories.UserPassedRepository, stepAuthorRepo repositories.StepAuthorRepository, courseContentRepo repositories.CourseContentRepository) StepService {
 	return &stepService{
 		stepEvalRepo:          stepEvalRepo,
 		userEvalRepo:          userEvalRepo,
@@ -30,6 +33,7 @@ func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRe
 		stepRepo:              stepRepo,
 		userPassedRepo:        userPassedRepo,
 		stepAuthorRepo:        stepAuthorRepo,
+		courseContentRepo:     courseContentRepo,
 	}
 }
 
@@ -204,5 +208,35 @@ func (r *stepService) GetStepEvalInfo(stepId *uint64) ([]*payload.StepEvalInfo, 
 	})
 
 	return stepEvalInfoList, nil
+}
 
+func (r *stepService) CreateFileFormat(stepId *uint64, stepEvalId *uint64, userId *float64) (*string, error) {
+	moduleId, err := r.stepRepo.GetModuleIdByStepId(stepId)
+	if err != nil {
+		return nil, err
+	}
+
+	courseId, err := r.courseContentRepo.GetCourseIdByModuleId(moduleId)
+	if err != nil {
+		return nil, err
+	}
+
+	filename := fmt.Sprintf("course%d_module%d_step%d_userId%d_eval%d_%s.png", *courseId, *moduleId, *stepId, uint64(*userId), *stepEvalId, time.Now().UTC().Format(time.RFC3339))
+
+	return &filename, nil
+}
+
+func (r *stepService) CreateUserEval(payload *payload.CreateUserEvalReq) (*uint64, error) {
+	userEval := &models.UserEvaluate{
+		UserId:         utils.Ptr(uint64(*payload.UserId)),
+		Content:        payload.Content,
+		StepEvaluateId: payload.StepEvalId,
+	}
+
+	result, err := r.userEvalRepo.CreateUserEval(userEval)
+	if err != nil {
+		return nil, err
+	}
+
+	return result.Id, nil
 }
