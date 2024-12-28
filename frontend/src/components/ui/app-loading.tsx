@@ -1,57 +1,60 @@
 import { PropsWithChildren, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import bookmarkLogo from "../../assets/logo2.png"
 import { cn } from "@/utils/cn"
 import useCurrentUser from "@/hooks/userCurrentUser"
 
 const AppLoading: React.FC<PropsWithChildren> = ({ children }) => {
     const navigate = useNavigate()
+    const location = useLocation()
 
-    const { currentUser, isLoading } = useCurrentUser()
-    const isLoggedIn = currentUser != null
+    const { currentUser, isLoading, refetch } = useCurrentUser()
     const [isLoaded, setIsLoaded] = useState(false)
-
-    const verify = currentUser?.id !== undefined
 
     useEffect(() => {
         if (isLoading) {
             return
         }
 
-        if (!isLoggedIn && !isLoading) {
-            if (verify) {
+        // If on `/callback`, refetch user info and prevent redirection
+        if (location.pathname === "/callback") {
+            refetch().then(() => {
                 setIsLoaded(true)
-                return
+            })
+            return
+        }
+
+        // Redirect based on login state and root path
+        if (currentUser) {
+            if (location.pathname === "/welcome" || location.pathname === "/") {
+                navigate("/portal", { replace: true }) // Redirect to portal
+            } else {
+                setIsLoaded(true) // Allow navigation for other paths
             }
-
-            navigate("/welcome")
-            const timeout = setTimeout(() => {
+        } else {
+            if (location.pathname !== "/welcome") {
+                navigate("/welcome", { replace: true }) // Redirect to welcome
+            } else {
                 setIsLoaded(true)
-            }, 500)
-
-            return () => {
-                clearTimeout(timeout)
             }
         }
-        navigate("/portal")
-        setIsLoaded(true)
-    }, [isLoading, isLoggedIn, navigate, verify])
+    }, [isLoading, currentUser, navigate, location.pathname, refetch])
 
     return (
         <>
             <div
                 id="app-loading"
                 className={cn(
-                    "flex z-[9999] transition-all duration-1000 items-center justify-center bg-incompleteStep fixed inset-0 pointer-events-none",
+                    "flex z-[9999] transition-all duration-1000 items-center justify-center bg-gray-300 fixed inset-0 pointer-events-none",
                     {
                         "opacity-0": isLoaded,
                         "opacity-100": !isLoaded,
                     }
                 )}
             >
-                <img src={bookmarkLogo} alt="Bookmark" className={cn(`w-96 h-96`)} />
+                <img src={bookmarkLogo} alt="Bookmark" className="w-96 h-96" />
             </div>
-            {isLoaded ? children : null}
+            {isLoaded && children}
         </>
     )
 }

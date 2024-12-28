@@ -44,7 +44,58 @@ func setupTestProfileController(mockProfileService *mockServices.ProfileService)
 
 	// Register the route
 	app.Get("/profile/info", profileController.ProfileUserInfo)
+	app.Get("/profile/totalgems", profileController.GetUserGems) // Add the route for total gems
 	return app
+}
+
+func (suite *ProfileControllerTestSuit) TestGetUserGemsWhenSuccess() {
+	is := assert.New(suite.T())
+
+	mockProfileService := new(mockServices.ProfileService)
+
+	app := setupTestProfileController(mockProfileService)
+
+	expectedGems := payload.GemTotal{
+		Total: 100,
+	}
+
+	mockProfileService.EXPECT().GetTotalGems(mock.Anything).Return(&expectedGems, nil)
+
+	req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil) // Correct URL path
+	req.Header.Set("Authorization", "Bearer mockToken") // Add mock JWT token to the header
+
+	res, err := app.Test(req)
+
+	var responsePayload response.InfoResponse[payload.GemTotal]
+	body, _ := io.ReadAll(res.Body)
+	json.Unmarshal(body, &responsePayload)
+
+	is.Nil(err)
+	is.Equal(http.StatusOK, res.StatusCode)
+	is.Equal(expectedGems.Total, responsePayload.Data.Total)
+}
+
+func (suite *ProfileControllerTestSuit) TestGetUserGemsWhenFailedToFetchTotalGems() {
+	is := assert.New(suite.T())
+
+	mockProfileService := new(mockServices.ProfileService)
+
+	app := setupTestProfileController(mockProfileService)
+
+	mockProfileService.EXPECT().GetTotalGems(mock.Anything).Return(nil, fmt.Errorf("failed to fetch total gems"))
+
+	req := httptest.NewRequest(http.MethodGet, "/profile/totalgems", nil) // Correct URL path
+	req.Header.Set("Authorization", "Bearer mockToken") // Add mock JWT token to the header
+
+	res, err := app.Test(req)
+
+	var errResponse response.GenericError
+	body, _ := io.ReadAll(res.Body)
+	json.Unmarshal(body, &errResponse)
+
+	is.Nil(err)
+	is.Equal(http.StatusInternalServerError, res.StatusCode)
+	// is.Equal("failed to fetch total gems", errResponse.Message)
 }
 
 func (suite *ProfileControllerTestSuit) TestProfileUserInfoWhenSuccess() {
@@ -71,6 +122,7 @@ func (suite *ProfileControllerTestSuit) TestProfileUserInfoWhenSuccess() {
 	is.Equal(mockUserId, *r.Data.Id)
 	is.Equal(http.StatusOK, res.StatusCode)
 }
+
 func (suite *ProfileControllerTestSuit) TestProfileUserInfoWhenFailedToGetUserProfile() {
 	is := assert.New(suite.T())
 

@@ -13,6 +13,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/oauth2"
 	"gorm.io/gorm"
+	"strings"
 	"time"
 )
 
@@ -63,9 +64,8 @@ func (r *loginService) GetOrCreateUserFromClaims(userInfo *oidc.UserInfo) (*mode
 	// * if user not exist, create new user
 	if user.Id == nil {
 		user = &models.User{
-			Id:        nil,
 			Oid:       oidcClaims.Id,
-			Firstname: oidcClaims.FirstName,
+			Firstname: utils.Ptr(strings.Split(*oidcClaims.FirstName, " ")[0]),
 			Lastname:  oidcClaims.Lastname,
 			Email:     oidcClaims.Email,
 			PhotoUrl:  oidcClaims.Picture,
