@@ -5,7 +5,7 @@ type EnrollmentListDTO struct {
 	UserID     uint64  `json:"user_id"`
 	CourseID   uint64  `json:"course_id"`
 	CourseName string  `json:"course_name"`
-	Progress   float64 `json:"progress"` // New field for progress
+	Progress   float64 `json:"progress"`
 	CreatedAt  string  `json:"created_at"`
 	UpdatedAt  string  `json:"updated_at"`
 }

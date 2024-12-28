@@ -30,20 +30,26 @@ func NewProfileController(profileSvc services.ProfileService) ProfileController 
 // @Failure 400 {object} response.GenericError
 // @Router /profile/info [get]
 func (r *ProfileController) ProfileUserInfo(c *fiber.Ctx) error {
-	// * login state
+	// Extract userId from JWT claims
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-	userId := claims["userId"].(float64)
-
-	// * get user profile
-	userProfile, err := r.profileSvc.GetUserInfo(utils.Ptr(strconv.Itoa(int(userId))))
-	if err != nil {
-		return &response.GenericError{
-			Err:     err,
-			Message: "failed to get user profile",
-		}
+	userId, ok := claims["userId"].(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(response.GenericError{
+			Message: "Invalid user ID",
+		})
 	}
 
+	// Fetch user profile info
+	userProfile, err := r.profileSvc.GetUserInfo(utils.Ptr(strconv.Itoa(int(userId))))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(response.GenericError{
+			Err:     err,
+			Message: "Failed to get user profile",
+		})
+	}
+
+	// Return success response
 	return response.Ok(c, userProfile)
 }
 
