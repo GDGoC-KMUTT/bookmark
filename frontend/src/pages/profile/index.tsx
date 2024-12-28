@@ -3,6 +3,7 @@ import { server } from "@/configs/server"
 import { PayloadProfile, PayloadEnrollwithCourse } from "../../api/api"
 import CourseCard from "../../components/coursecard"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { getFallbackName } from "@/utils/getFallbackName"
 
 const Profile = () => {
     const [profile, setProfile] = useState<PayloadProfile | undefined>(undefined)
@@ -48,11 +49,6 @@ const Profile = () => {
         )
     }
 
-    const getFallBackName = (text: string) => {
-        const test = text.split(" ")
-        const firsTwo = test.slice(0, 2)
-        return firsTwo.map((str) => str.substring(0, 1).toUpperCase())
-    }
     return (
         <div className="items-start sm:p-20 p-10 min-h-screen">
             <div className="flex flex-col items-start space-y-4">
@@ -62,7 +58,7 @@ const Profile = () => {
                         <>
                             <Avatar className="w-28 h-28 sm:w-24 sm:h-24 rounded-full object-cover shadow-md bg-slate-200 text-continueCourse text-xl font-bold">
                                 <AvatarImage src={profile.photoUrl} alt={`${profile.firstname} ${profile.lastname}`} />
-                                <AvatarFallback>{getFallBackName(`${profile.firstname} ${profile.lastname}`)}</AvatarFallback>
+                                <AvatarFallback>{getFallbackName(`${profile.firstname} ${profile.lastname}`)}</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col self-center">
                                 <h2 className="text-2xl sm:text-3xl font-medium">
