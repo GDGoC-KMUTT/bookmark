@@ -94,7 +94,7 @@ const Navbar = () => {
                 </div>
 
                 {/* User profile with fallback to avatar */}
-                <div className="w-8 h-8" onClick={handleClick}>
+                <div className="w-8 h-8 cursor-pointer" onClick={handleClick}>
                     <Avatar className="w-8 h-8 rounded-full bg-slate-200 text-center font-bold text-sm flex items-center justify-center">
                         <AvatarImage
                             src={userProfile?.photoUrl || undefined}
