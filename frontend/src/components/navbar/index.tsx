@@ -4,6 +4,8 @@ import { server } from "@/configs/server"
 import { BookMarked, Gem } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { getFallbackName } from "@/utils/getFallbackName"
 
 const Navbar = () => {
     const [userProfile, setUserProfile] = useState<PayloadProfile | undefined>(undefined)
@@ -21,44 +23,38 @@ const Navbar = () => {
             try {
                 const profile = await server.profile.profileUserInfo()
                 setUserProfile(profile.data)
-                // console.log("Profile Data:", profile.data)
 
                 const gemsResponse = await server.gems.getUserGems()
-                if (gemsResponse.data) {
-                    // console.log("Gems Data:", gemsResponse.data);
-                    setTotalGems(gemsResponse.data.total as number) // Set total gems atom
-                } else {
-                    setTotalGems(0)
-                }
+                setTotalGems(gemsResponse.data?.total || 0)
 
                 const currentCourse = await server.courses.getCurrentCourse()
-                // console.log("Current course", currentCourse);
-                if (currentCourse.data && currentCourse.data.name) {
-                    // console.log("Current course", currentCourse.data);
+                if (currentCourse.data?.name) {
                     setCurrentCourse(currentCourse.data.name)
 
                     const progressResponse = await server.progress.getCompletionPercentage(currentCourse.data.id as number)
-                    setProgress(progressResponse.data ?? 0)
-                    // console.log("Progress Data:", progressResponse);
+                    setProgress(progressResponse.data || 0)
                 } else {
                     setCurrentCourse("No active course")
                 }
             } catch (error) {
-                if (typeof error === "object" && error !== null && "response" in error && typeof (error as any).response?.status === "number") {
+                if (
+                    typeof error === "object" &&
+                    error !== null &&
+                    "response" in error &&
+                    typeof (error as any).response?.status === "number"
+                ) {
                     const responseError = error as { response: { status: number } }
                     if (responseError.response.status === 500) {
-                        // console.error("Internal server error occurred:", error);
                         setCurrentCourse("No active course")
                     }
                 } else {
-                    // console.error("Failed to fetch data:", error);
                     setCurrentCourse("No active course")
                 }
             }
         }
 
         fetchData()
-    }, [setUserProfile, setTotalGems, setCurrentCourse, setProgress])
+    }, [])
 
     return (
         <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between z-[99]">
@@ -79,7 +75,6 @@ const Navbar = () => {
             <div className="flex items-center justify-center space-x-6">
                 <div className="flex items-center space-x-2">
                     <div className="space-y-1">
-                        <div></div>
                         <BookMarked className="text-foreground" size={20} />
                     </div>
                     <div className="items-center justify-center space-y-1">
@@ -87,7 +82,7 @@ const Navbar = () => {
                         <div className="relative w-24 h-1 bg-border rounded-full">
                             <div
                                 className="absolute h-1 bg-progressBar rounded-full"
-                                style={{ width: `${progress}%` }} // Replace with dynamic width later
+                                style={{ width: `${progress}%` }}
                             ></div>
                         </div>
                     </div>
@@ -98,11 +93,20 @@ const Navbar = () => {
                     <span className="font-medium">{totalGems ?? 0}</span>
                 </div>
 
-                {/* user profile image */}
-                <div className="w-8 h-8 bg-border rounded-full" onClick={handleClick}>
-                    {userProfile?.photoUrl && (
-                        <img src={userProfile.photoUrl} alt="User Profile" className="w-full h-full object-cover rounded-full" />
-                    )}
+                {/* User profile with fallback to avatar */}
+                <div className="w-8 h-8 cursor-pointer" onClick={handleClick}>
+                    <Avatar className="w-8 h-8 rounded-full bg-slate-200 text-center font-bold text-sm flex items-center justify-center">
+                        <AvatarImage
+                            src={userProfile?.photoUrl || undefined}
+                            alt="User Profile"
+                            className="w-full h-full object-cover rounded-full"
+                        />
+                        {!userProfile?.photoUrl && userProfile && (
+                            <AvatarFallback>
+                                {getFallbackName(`${userProfile.firstname} ${userProfile.lastname}`)}
+                            </AvatarFallback>
+                        )}
+                    </Avatar>
                 </div>
             </div>
         </div>
@@ -110,4 +114,5 @@ const Navbar = () => {
 }
 
 export default Navbar
+
 
