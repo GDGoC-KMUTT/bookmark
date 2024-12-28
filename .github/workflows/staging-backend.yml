@@ -29,6 +29,8 @@ jobs:
         run: |
           cd ./backend
           swag init
+          touch config.yml
+          echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
           env GOOS=linux GOARCH=amd64 go build -o ./backend-file-build
       - name: Upload artifact
         uses: actions/upload-artifact@v4
