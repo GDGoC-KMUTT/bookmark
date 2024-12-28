@@ -3,6 +3,15 @@ export default {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
     theme: {
         extend: {
+            keyframes: {
+                spin360: {
+                    from: { transform: 'rotate(0deg)' },
+                    to: { transform: 'rotate(360deg)' },
+                },
+            },
+            animation: {
+                'spin-360': 'spin360 1.5s linear infinite',
+            },
             borderRadius: {
                 DEFAULT: "val(--radius)",
                 lg: "var(--radius-large)",
