@@ -4,7 +4,7 @@ import { useAtom } from 'jotai';
 import { courseInfoAtom } from '@/stores/course';
 import { useCallback } from 'react';
 import { server } from '@/configs/server';
-
+import { toast } from "sonner"
 
 const Hero = () => {
 	const [courseInfo] = useAtom(courseInfoAtom);
@@ -12,23 +12,33 @@ const Hero = () => {
 	const courseField = courseInfo.field || '';
 	const courseId = courseInfo.course_id || 0; // Ensure `course_id` is present
 
+	// Placeholder for authenticated user ID
+	const userId = 1; // Replace with actual user ID from your authentication system
+
 	const handleEnroll = useCallback(async () => {
 		try {
-			const response = await server.enroll.enrollInCourse({
-				userId: 123, // Replace with the actual user ID from authentication
-				courseId: courseId,
-			});
+			const response = await server.enroll.enrollCreate(userId, courseId);
 
-			if (response.success) {
-				alert('Enrolled successfully!');
+			if (response) {
+				toast.success('Enrolled successfully!');
 			} else {
-				alert(response.message || 'Enrollment failed.');
+				toast.error('Enrollment failed. Please try again.');
 			}
-		} catch (error) {
-			alert('Error occurred during enrollment. Please try again.');
-			console.error(error);
+		} catch (error: any) {
+			// Log detailed error for debugging
+			console.error('Enrollment error:', error);
+
+			// Handle specific error code for 409 Conflict
+			if (error.response?.status === 409) {
+				toast.error('User already enrolled.');
+			} else {
+				const errorMessage =
+					error.response?.data?.message || 'An unexpected error occurred. Please try again.';
+				toast.error(errorMessage);
+			}
 		}
-	}, [courseId]);
+	}, [userId, courseId]);
+
 
 	return (
 		<div className="relative w-screen h-[480px] bg-cover bg-center" style={{ backgroundImage: `url(${courseBg})` }}>

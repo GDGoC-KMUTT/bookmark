@@ -26,7 +26,7 @@ func NewEnrollController(enrollService *services.EnrollService) *EnrollControlle
 // @Failure 400 {object} map[string]string
 // @Failure 409 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /api/enroll/{userId}/{courseId} [post]
+// @Router /enroll/{userId}/{courseId} [post]
 func (c *EnrollController) EnrollInCourse(ctx *fiber.Ctx) error {
 	userId, err := strconv.ParseUint(ctx.Params("userId"), 10, 64)
 	if err != nil || userId <= 0 {
