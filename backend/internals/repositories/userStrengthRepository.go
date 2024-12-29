@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"backend/internals/db/models"
 	"backend/internals/entities/response"
 	"gorm.io/gorm"
 	"log"
@@ -8,6 +9,7 @@ import (
 
 type UserStrengthRepository interface {
 	GetStrengthDataByUserID(userId uint64) ([]response.StrengthDataResponse, error)
+	GetSuggestionCourse(userId uint64) ([]models.Course, error)
 }
 
 type userStrengthRepository struct {
@@ -57,4 +59,23 @@ func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]respo
 	}
 
 	return strengthData, nil
+}
+
+func (r *userStrengthRepository) GetSuggestionCourse(userId uint64) ([]models.Course, error) {
+	log.Printf("Fetching random course suggestions for user ID: %d", userId)
+
+	var courses []models.Course
+	err := r.db.
+		Preload("Field").
+		Order("RANDOM()").
+		Limit(5).
+		Find(&courses).Error
+
+	if err != nil {
+		log.Printf("Error fetching random courses for user %d: %v", userId, err)
+		return nil, err
+	}
+
+	log.Printf("Found %d random courses for user %d", len(courses), userId)
+	return courses, nil
 }
