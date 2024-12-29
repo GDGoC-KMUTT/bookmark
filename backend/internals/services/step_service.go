@@ -60,6 +60,10 @@ func (r *stepService) GetGems(stepId *uint64, userId *float64) (*int, *int, erro
 			continue
 		}
 
+		if userEvals.Pass == nil {
+			continue
+		}
+
 		if *userEvals.Pass == true {
 			currentGems += *eval.Gem
 		}
@@ -271,20 +275,23 @@ func (r *stepService) GetStepEvalInfo(stepId *uint64, userId *float64) ([]*paylo
 			return nil, err
 		}
 
-		evalResult := &payload.UserEvalResult{
-			Content: userEval.Content,
-			Pass:    userEval.Pass,
-			Comment: userEval.Comment,
-		}
-		if *eval.Type == "image" {
-			content, err := url.JoinPath(*config.Env.MinioS3Endpoint, *config.Env.MinioS3BucketName, *userEval.Content)
-			if err != nil {
-				return nil, err
+		if userEval != nil {
+			evalResult := &payload.UserEvalResult{
+				UserEvalId: userEval.Id,
+				Content:    userEval.Content,
+				Pass:       userEval.Pass,
+				Comment:    userEval.Comment,
 			}
-			evalResult.Content = &content
-		}
+			if *eval.Type == "image" {
+				content, err := url.JoinPath(*config.Env.MinioS3Endpoint, *config.Env.MinioS3BucketName, *userEval.Content)
+				if err != nil {
+					return nil, err
+				}
+				evalResult.Content = &content
+			}
 
-		result.UserEval = evalResult
+			result.UserEval = evalResult
+		}
 
 		stepEvalInfoList = append(stepEvalInfoList, result)
 	}
@@ -346,4 +353,21 @@ func (r *stepService) CheckStepEvalStatus(userEvalIds []*uint64, userId *uint64)
 	}
 
 	return userEvalList, nil
+}
+
+func (r *stepService) SubmitStepEvalTypeCheck(stepEvalId *uint64, userId *uint64) (*uint64, error) {
+	userEval := &models.UserEvaluate{
+		UserId:         userId,
+		StepEvaluateId: stepEvalId,
+		Pass:           utils.Ptr(true),
+		Comment:        utils.Ptr(""),
+		Content:        utils.Ptr("mark as complete"),
+	}
+
+	newUserEval, err := r.userEvalRepo.CreateUserEval(userEval)
+	if err != nil {
+		return nil, err
+	}
+
+	return newUserEval.Id, nil
 }

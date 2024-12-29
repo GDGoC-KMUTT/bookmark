@@ -13,6 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/minio/minio-go/v7"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -241,7 +242,6 @@ func (r *StepController) GetStepEvaluate(c *fiber.Ctx) error {
 			Message: "invalid stepId param",
 		}
 	}
-	// TODO check logic for sending user eval content
 	// * login state
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
@@ -265,7 +265,7 @@ func (r *StepController) GetStepEvaluate(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param data formData string true "JSON data as string"
-// @Param file formData file true "File to upload"
+// @Param file formData file false "File to upload"
 // @Success 200 {object} response.InfoResponse[payload.CreateUserEvalRes]
 // @Failure 400 {object} response.GenericError
 // @Router /step/stepEval/submit [post]
@@ -300,6 +300,12 @@ func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
 		Content:    body.Content,
 	}
 
+	result := &payload.CreateUserEvalRes{
+		Pass: utils.Ptr(false),
+	}
+	
+	result.UserSubmission = body.Content
+
 	if body.Content == nil {
 		// * Parse file form
 		// Note: file is a *multipart.FileHeader instance
@@ -333,6 +339,12 @@ func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
 
 		userEval.Content = filename
 
+		content, err := url.JoinPath(*config.Env.MinioS3Endpoint, *config.Env.MinioS3BucketName, *filename)
+		if err != nil {
+			return err
+		}
+		result.UserSubmission = &content
+
 		// * Upload file to minio
 		_, err = minio2.MinioClient.PutObject(
 			c.Context(),
@@ -358,9 +370,7 @@ func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
 		}
 	}
 
-	result := &payload.CreateUserEvalRes{
-		UserEvalId: userStepEvalId,
-	}
+	result.UserEvalId = userStepEvalId
 
 	return response.Ok(c, result)
 
@@ -424,4 +434,53 @@ func (r *StepController) CheckStepEvalStatus(c *fiber.Ctx) error {
 	}
 
 	return response.Ok(c, userEvals)
+}
+
+// SubmitStepEvalTypCheck
+// @ID submitStepEvalTypCheck
+// @Tags step
+// @Summary SubmitStepEvalTypCheck
+// @Accept json
+// @Produce json
+// @Param q body payload.StepEvalIdBody true "StepEvalIdBody"
+// @Success 200 {object} response.InfoResponse[payload.CreateUserEvalRes]
+// @Failure 400 {object} response.GenericError
+// @Router /step/stepEval/submit-type-check [post]
+func (r *StepController) SubmitStepEvalTypCheck(c *fiber.Ctx) error {
+	body := new(payload.StepEvalIdBody)
+
+	if err := c.BodyParser(body); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to parse body",
+		}
+	}
+
+	// * validate body
+	if err := utils.Validate.Struct(body); err != nil {
+		var validationErrors validator.ValidationErrors
+		errors.As(err, &validationErrors)
+		return &response.GenericError{
+			Err: validationErrors,
+		}
+	}
+
+	// * login state
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["userId"].(float64)
+
+	userEvalId, err := r.stepSvc.SubmitStepEvalTypeCheck(body.StepEvalId, utils.Ptr(uint64(userId)))
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to submit step eval type check",
+		}
+	}
+
+	result := &payload.CreateUserEvalRes{
+		UserEvalId: userEvalId,
+	}
+
+	return response.Ok(c, result)
 }

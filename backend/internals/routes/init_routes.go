@@ -105,6 +105,7 @@ func SetupRoutes() {
 	stepEval := step.Group("/stepEval")
 	stepEval.Post("/submit", stepController.SubmitStepEval)
 	stepEval.Get("/status", stepController.CheckStepEvalStatus)
+	stepEval.Post("/submit-type-check", stepController.SubmitStepEvalTypCheck)
 	stepEval.Get("/:stepId", stepController.GetStepEvaluate)
 
 	stepComment := step.Group("/comment")

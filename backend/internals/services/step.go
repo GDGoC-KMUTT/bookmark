@@ -15,4 +15,5 @@ type StepService interface {
 	CreateFileFormat(stepId *uint64, stepEvalId *uint64, userId *float64) (*string, error)
 	CreateUserEval(payload *payload.CreateUserEvalReq) (*uint64, error)
 	CheckStepEvalStatus(userEvalIds []*uint64, userId *uint64) ([]models.UserEvaluate, error)
+	SubmitStepEvalTypeCheck(stepEvalId *uint64, userId *uint64) (*uint64, error)
 }

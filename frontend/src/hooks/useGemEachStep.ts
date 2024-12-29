@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react"
 export const useGemEachStep = (stepId: number) => {
     const [gemEachStep, setGemEachStep] = useState<PayloadGetGemsResponse | undefined>(undefined)
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
+    const [error, setError] = useState<string | null>(null)
 
     const fetchGemEachStep = useCallback(async () => {
         setIsLoading(true)
@@ -14,7 +14,7 @@ export const useGemEachStep = (stepId: number) => {
             const response = await server.step.getGemEachStep(stepId)
             setGemEachStep(response.data)
         } catch (err) {
-            setError(err as Error)
+            setError(`failed to fetch gems: ${err}`)
             setGemEachStep(undefined)
         } finally {
             setIsLoading(false)

@@ -4,7 +4,7 @@ import { useCallback, useState } from "react"
 export const useUpVote = () => {
     const [success, setSuccess] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
+    const [error, setError] = useState<string | null>(null)
 
     const upvoteComment = useCallback(async (stepCommentId: number) => {
         setIsLoading(true)
@@ -17,7 +17,7 @@ export const useUpVote = () => {
                 setIsLoading(false)
             }
         } catch (err) {
-            setError(err as Error)
+            setError(`failed to upvote current comment: ${err}`)
         } finally {
             setIsLoading(false)
         }

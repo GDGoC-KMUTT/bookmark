@@ -78,9 +78,10 @@ type StepEvalInfo struct {
 }
 
 type UserEvalResult struct {
-	Content *string `json:"content"`
-	Pass    *bool   `json:"pass"`
-	Comment *string `json:"comment "`
+	UserEvalId *uint64 `json:"userEvalId"`
+	Content    *string `json:"content"`
+	Pass       *bool   `json:"pass"`
+	Comment    *string `json:"comment"`
 }
 
 type CreateUserEvalReq struct {
@@ -90,7 +91,9 @@ type CreateUserEvalReq struct {
 }
 
 type CreateUserEvalRes struct {
-	UserEvalId *uint64 `json:"userEvalId"`
+	UserEvalId     *uint64 `json:"userEvalId"`
+	UserSubmission *string `json:"userSubmission"`
+	Pass           *bool   `json:"pass"`
 }
 
 type UserInfo struct {
@@ -99,4 +102,8 @@ type UserInfo struct {
 	LastName  *string `json:"lastName"`
 	Email     *string `json:"email"`
 	PhotoUrl  *string `json:"photoUrl"`
+}
+
+type StepEvalIdBody struct {
+	StepEvalId *uint64 `json:"stepEvalId" validate:"required"`
 }
