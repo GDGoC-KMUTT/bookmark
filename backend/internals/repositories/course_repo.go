@@ -138,3 +138,13 @@ func (r *courseRepository) FindFieldByFieldId(fieldId *uint64) (*models.FieldTyp
 
 	return &field, nil
 }
+
+func (r *courseRepository) FindCoursesByFieldId(fieldId uint64) ([]models.Course, error) {
+    var courses []models.Course
+    result := r.db.Where("field_id = ?", fieldId).Find(&courses)
+    if result.Error != nil {
+        return nil, result.Error
+    }
+    return courses, nil
+}
+

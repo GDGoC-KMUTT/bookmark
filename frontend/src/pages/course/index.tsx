@@ -88,15 +88,6 @@ const Course = () => {
 		fetchData();
 	}, [courseId]);
 
-	// Use this useEffect to log the updated `moduleSteps`
-	useEffect(() => {
-		if (Object.keys(moduleSteps).length > 0) {
-			console.log("Updated module steps:", moduleSteps);
-		}
-	}, [moduleSteps]);
-
-
-
 	if (error) {
 		return <div className="error">{error}</div>;
 	}
@@ -111,7 +102,6 @@ const Course = () => {
 							return <Text key={index} content={item.text || ''} />;
 						} else if (item.type === "module") {
 							const moduleData = modules.find((mod) => mod.id === item.moduleId);
-							const moduleStep = moduleSteps[item.moduleId || 0];  // Retrieve steps for the module
 
 							if (moduleData) {
 								return (

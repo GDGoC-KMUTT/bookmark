@@ -5,6 +5,8 @@ import (
 	"backend/internals/entities/response"
 	"backend/internals/services"
 	"github.com/gofiber/fiber/v2"
+	"fmt"
+	"strconv"
 )
 
 // CoursePageController handles course page-related endpoints
@@ -74,4 +76,48 @@ func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
 	return ctx.JSON(&response.InfoResponse[[]payload.CoursePageContent]{
 		Data: coursePageContent,
 	})
+}
+
+// GetSuggestCourseByFieldId
+// @ID getSuggestCourseByFieldId
+// @Tags course_page
+// @Summary Get suggest courses by field ID
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.InfoResponse[[]payload.SuggestCourse]
+// @Failure 400 {object} response.GenericError
+// @Router /courses/suggest [get]
+func (r *CoursePageController) GetSuggestCoursesByFieldId(c *fiber.Ctx) error {
+    fieldIdStr := c.Params("fieldId") // Get fieldId from the URL path parameter
+
+    if fieldIdStr == "" {
+        return c.Status(fiber.StatusBadRequest).JSON(response.GenericError{
+            Err:     fmt.Errorf("missing fieldId parameter"),
+            Message: "fieldId parameter is required",
+        })
+    }
+
+    // Convert fieldId to uint64
+    fieldId, err := strconv.ParseUint(fieldIdStr, 10, 64)
+    if err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(response.GenericError{
+            Err:     fmt.Errorf("invalid fieldId format"),
+            Message: "fieldId must be a valid number",
+        })
+    }
+
+    // Call the service to get the suggested courses by fieldId
+    suggestInfo, err := r.coursePageSvc.GetSuggestCourseByFieldId(fmt.Sprintf("%d", fieldId))
+    if err != nil {
+        fmt.Printf("Failed to fetch suggest courses for fieldId %v: %v\n", fieldId, err)
+        return c.Status(fiber.StatusInternalServerError).JSON(response.GenericError{
+            Err:     err,
+            Message: "Failed to fetch suggest course",
+        })
+    }
+
+    // Return successful response
+    return c.Status(fiber.StatusOK).JSON(response.InfoResponse[[]payload.SuggestCourse]{
+        Data: suggestInfo,
+    })
 }

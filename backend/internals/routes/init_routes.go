@@ -37,7 +37,7 @@ func SetupRoutes() {
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
 	var courseService = services.NewCourseService(courseRepo, fieldTypeRepo)
-	var coursePageService = services.NewCoursePageService(coursePageRepo)
+	var coursePageService = services.NewCoursePageService(coursePageRepo, courseRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
 	var articleService = services.NewArticleService(articleRepo)
 	var moduleService = services.NewModuleService(moduleRepo)
@@ -94,6 +94,7 @@ func SetupRoutes() {
 	course.Get("/enrolled", courseController.GetEnrollCourseByUserId)
 	course.Get("/:coursePageId/info", coursePageController.GetCoursePageInfo)
 	course.Get("/:coursePageId/content", coursePageController.GetCoursePageContent)
+	course.Get("/suggest/:fieldId", coursePageController.GetSuggestCoursesByFieldId)
 
 	// * Module routes
 	module := api.Group("/module", middleware.Jwt())

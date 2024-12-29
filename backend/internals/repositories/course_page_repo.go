@@ -35,3 +35,14 @@ func (r *CoursePageRepository) FindCoursePageContentByCoursePageID(coursePageId 
 	}
 	return contents, nil
 }
+
+func (r *CoursePageRepository) FindSuggestCourseByFieldID(fieldId string) ([]models.Course, error) {
+    var contents []models.Course
+    err := r.db.Raw(`SELECT * FROM courses WHERE field_id = ? ORDER BY "order" ASC`, fieldId).Scan(&contents).Error
+
+    if err != nil {
+        return nil, err
+    }
+    return contents, nil
+}
+
