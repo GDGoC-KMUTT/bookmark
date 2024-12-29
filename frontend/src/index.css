@@ -137,6 +137,8 @@ button:focus-visible {
         --chart-point-hover: 0 0% 100%;
         --chart-point-hover-border: 18 100% 75%;
 
+        --step-bg: 0, 0%, 98%;
+
         --radius-large: 40px;
         --radius-medium: 32px;
         --radius: 24px;
@@ -210,6 +212,9 @@ button:focus-visible {
     }
     .bg-check-failed {
         background-color: hsl(var(--check-failed));
+    }
+    .bg-step {
+        background-color: hsl(var(--step-bg));
     }
 }
 

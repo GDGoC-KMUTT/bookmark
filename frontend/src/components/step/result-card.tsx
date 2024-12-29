@@ -3,7 +3,7 @@ import React, { FC } from "react"
 
 type ResultCardProps = {
     pass: boolean
-    comment?: string
+    comment: string
 }
 
 const IconMap: Record<string, React.ReactNode> = {
@@ -12,8 +12,8 @@ const IconMap: Record<string, React.ReactNode> = {
 }
 
 const BgColorAndTextColorMap: Record<string, string> = {
-    true: "bg-check-passed text-green-600 rounded-sm p-4",
-    false: "bg-check-failed text-red-600 rounded-sm p-4",
+    true: "bg-check-passed text-green-800 rounded-sm p-4 mt-4",
+    false: "bg-check-failed text-red-800 rounded-sm p-4 mt-4",
 }
 
 const ResultCard: FC<ResultCardProps> = ({ pass, comment }) => {
