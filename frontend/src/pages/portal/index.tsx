@@ -5,16 +5,16 @@ import { SuggestionCard } from "@/components/ui/SuggestionCard"
 import { StrengthAnalysis } from "@/components/ui/StrengthAnalysis"
 import { radarOptions } from "@/configs/chart"
 import { server } from "@/configs/server"
-import { ResponseEnrollmentListDTO, ResponseUserActivityResponse, ResponseCourseResponse } from "@/api/api"
+import { PayloadEnrollmentListDTO, PayloadUserActivityResponse, PayloadCourseResponse } from "@/api/api"
 import { RadarData } from "@/types/chart"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 const Portal = () => {
     // State
     const [data, setData] = useState({
-        enrollments: [] as ResponseEnrollmentListDTO[],
-        recentActivity: [] as ResponseUserActivityResponse[],
-        suggestions: [] as ResponseCourseResponse[],
+        enrollments: [] as PayloadEnrollmentListDTO[],
+        recentActivity: [] as PayloadUserActivityResponse[],
+        suggestions: [] as PayloadCourseResponse[],
         strengthData: null as RadarData | null,
     })
 
@@ -109,7 +109,7 @@ const Portal = () => {
             {data.enrollments.map((enrollment, index) => (
                 <EnrollmentCard
                     key={enrollment.id || index}
-                    course_name={enrollment.course_name || "Untitled Course"}
+                    course_name={enrollment.courseName || "Untitled Course"}
                     progress={enrollment.progress ?? 0}
                     id={enrollment.id}
                 />
@@ -128,8 +128,8 @@ const Portal = () => {
             <div className="flex space-x-4 pb-4">
                 {data.recentActivity.length > 0 ? (
                     data.recentActivity.map((activity, index) => (
-                        <div key={activity.step_id || index} className="w-80 flex-none">
-                            <RecentCard moduleTitle={activity.module_title || "Untitled Module"} stepTitle={activity.step_title || "Untitled Step"} />
+                        <div key={activity.stepId || index} className="w-80 flex-none">
+                            <RecentCard moduleTitle={activity.moduleTitle || "Untitled Module"} stepTitle={activity.stepTitle || "Untitled Step"} />
                         </div>
                     ))
                 ) : (
