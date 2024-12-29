@@ -165,6 +165,7 @@ func SetupRoutes() {
 
 	userStrength := api.Group("/strength", middleware.Jwt())
 	userStrength.Get("/strength-info", userStrengthController.GetStrengthDataByUserID)
+	userStrength.Get("/suggestions", userStrengthController.GetSuggestionCourse)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {

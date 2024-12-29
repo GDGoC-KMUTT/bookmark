@@ -25,9 +25,9 @@ func NewEnrollController(enrollSvc services.EnrollService) EnrollController {
 // @Summary GetUserEnrollments
 // @Accept json
 // @Produce json
-// @Success 200 {object} response.InfoResponse[[]payload.Enrollment]
+// @Success 200 {object} response.InfoResponse[response.EnrollmentListResponse]
 // @Failure 400 {object} response.GenericError
-// @Router /enrollments/ [get]
+// @Router /enrollments/enroll [get]
 func (r *EnrollController) GetUserEnrollments(c *fiber.Ctx) error {
 	// Get user information from JWT token
 	user := c.Locals("user").(*jwt.Token)
@@ -42,6 +42,6 @@ func (r *EnrollController) GetUserEnrollments(c *fiber.Ctx) error {
 			Message: "Failed to fetch user enrollments",
 		}
 	}
-	
+
 	return response.Ok(c, enrollments)
 }

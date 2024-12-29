@@ -8,6 +8,7 @@ import (
 
 type UserStrengthService interface {
 	GetStrengthDataByUserID(userId uint64) ([]response.StrengthDataResponse, error)
+	GetSuggestionCourse(userId uint64) ([]response.CourseResponse, error)
 }
 
 type userStrengthService struct {
@@ -20,9 +21,7 @@ func NewUserStrengthService(repo repositories.UserStrengthRepository) UserStreng
 	}
 }
 
-// GetStrengthDataByUserID ทำการดึงข้อมูลคะแนน strength ของ user จาก repository
 func (s *userStrengthService) GetStrengthDataByUserID(userId uint64) ([]response.StrengthDataResponse, error) {
-	// เรียกใช้ repository เพื่อดึงข้อมูล strength ตาม userId
 	strengthData, err := s.repo.GetStrengthDataByUserID(userId)
 	if err != nil {
 		log.Printf("Error in service while fetching strength data for user %d: %v", userId, err)
@@ -30,4 +29,30 @@ func (s *userStrengthService) GetStrengthDataByUserID(userId uint64) ([]response
 	}
 
 	return strengthData, nil
+}
+
+func (s *userStrengthService) GetSuggestionCourse(userId uint64) ([]response.CourseResponse, error) {
+	courses, err := s.repo.GetSuggestionCourse(userId)
+	if err != nil {
+		log.Printf("Error in service while fetching random courses for user %d: %v", userId, err)
+		return nil, err
+	}
+
+	// Transform to response DTOs
+	var responses []response.CourseResponse
+	for _, course := range courses {
+		if course.Id != nil && course.Name != nil && course.Field != nil && course.Field.Id != nil && course.Field.Name != nil {
+			responses = append(responses, response.CourseResponse{
+				ID:   *course.Id,
+				Name: *course.Name,
+				Field: response.FieldResponse{
+					ID:       *course.Field.Id,
+					Name:     *course.Field.Name,
+					ImageUrl: course.Field.ImageUrl,
+				},
+			})
+		}
+	}
+
+	return responses, nil
 }
