@@ -1,7 +1,6 @@
 package services
 
 import (
-	"backend/internals/db/models"
 	"backend/internals/entities/payload"
 )
 
@@ -14,6 +13,6 @@ type StepService interface {
 	GetStepEvalInfo(stepId *uint64, userId *float64) ([]*payload.StepEvalInfo, error)
 	CreateFileFormat(stepId *uint64, stepEvalId *uint64, userId *float64) (*string, error)
 	CreateUserEval(payload *payload.CreateUserEvalReq) (*uint64, error)
-	CheckStepEvalStatus(userEvalIds []*uint64, userId *uint64) ([]models.UserEvaluate, error)
+	CheckStepEvalStatus(userEvalId *uint64, userId *uint64) (*payload.UserEvalResult, error)
 	SubmitStepEvalTypeCheck(stepEvalId *uint64, userId *uint64) (*uint64, error)
 }

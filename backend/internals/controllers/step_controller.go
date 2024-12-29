@@ -14,8 +14,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/minio/minio-go/v7"
 	"net/url"
-	"strconv"
-	"strings"
 )
 
 type StepController struct {
@@ -303,7 +301,7 @@ func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
 	result := &payload.CreateUserEvalRes{
 		Pass: utils.Ptr(false),
 	}
-	
+
 	result.UserSubmission = body.Content
 
 	if body.Content == nil {
@@ -383,7 +381,7 @@ func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param q query payload.UserEvalIdsBody true "UserEvalIdsBody"
-// @Success 200 {object} response.InfoResponse[[]models.UserEvaluate]
+// @Success 200 {object} response.InfoResponse[payload.UserEvalResult]
 // @Failure 400 {object} response.GenericError
 // @Router /step/stepEval/status [get]
 func (r *StepController) CheckStepEvalStatus(c *fiber.Ctx) error {
@@ -406,26 +404,12 @@ func (r *StepController) CheckStepEvalStatus(c *fiber.Ctx) error {
 		}
 	}
 
-	userEvalIds := make([]*uint64, 0)
-	result := strings.Split(*query.UserEvalIds, ",")
-	for _, str := range result {
-		// Parse the string to uint64
-		value, err := strconv.ParseUint(str, 10, 64)
-		if err != nil {
-			return &response.GenericError{
-				Err:     err,
-				Message: "Error parsing string to uint64",
-			}
-		}
-		userEvalIds = append(userEvalIds, &value)
-	}
-
 	// * login state
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	userId := claims["userId"].(float64)
 
-	userEvals, err := r.stepSvc.CheckStepEvalStatus(userEvalIds, utils.Ptr(uint64(userId)))
+	userEval, err := r.stepSvc.CheckStepEvalStatus(query.UserEvalId, utils.Ptr(uint64(userId)))
 	if err != nil {
 		return &response.GenericError{
 			Err:     err,
@@ -433,7 +417,7 @@ func (r *StepController) CheckStepEvalStatus(c *fiber.Ctx) error {
 		}
 	}
 
-	return response.Ok(c, userEvals)
+	return response.Ok(c, userEval)
 }
 
 // SubmitStepEvalTypCheck

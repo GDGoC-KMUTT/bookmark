@@ -335,24 +335,28 @@ func (r *stepService) CreateUserEval(payload *payload.CreateUserEvalReq) (*uint6
 	return result.Id, nil
 }
 
-func (r *stepService) CheckStepEvalStatus(userEvalIds []*uint64, userId *uint64) ([]models.UserEvaluate, error) {
-	userEvalList := make([]models.UserEvaluate, 0)
-	for _, userEval := range userEvalIds {
-		userEvalInfo, err := r.userEvalRepo.GetUserEvalByIdAndUserId(userEval, userId)
-		if err != nil {
-			return nil, err
-		}
-
-		if userEvalInfo == nil {
-			return nil, err
-		}
-
-		if userEvalInfo.Pass != nil && userEvalInfo.Comment != nil {
-			userEvalList = append(userEvalList, *userEvalInfo)
-		}
+func (r *stepService) CheckStepEvalStatus(userEvalId *uint64, userId *uint64) (*payload.UserEvalResult, error) {
+	userEvalInfo, err := r.userEvalRepo.GetUserEvalByIdAndUserId(userEvalId, userId)
+	if err != nil {
+		return nil, err
 	}
 
-	return userEvalList, nil
+	if userEvalInfo == nil {
+		return nil, err
+	}
+
+	if userEvalInfo.Pass != nil && userEvalInfo.Comment != nil {
+		result := &payload.UserEvalResult{
+			UserEvalId: userEvalInfo.Id,
+			Pass:       userEvalInfo.Pass,
+			Comment:    userEvalInfo.Comment,
+			Content:    userEvalInfo.Content,
+		}
+
+		return result, nil
+	}
+
+	return nil, nil
 }
 
 func (r *stepService) SubmitStepEvalTypeCheck(stepEvalId *uint64, userId *uint64) (*uint64, error) {

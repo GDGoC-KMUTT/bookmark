@@ -5,7 +5,7 @@ type StepIdParam struct {
 }
 
 type UserEvalIdsBody struct {
-	UserEvalIds *string `json:"userEvalIds" validate:"required"`
+	UserEvalId *uint64 `json:"userEvalId" validate:"required"`
 }
 
 type GetGemsResponse struct {
