@@ -1,13 +1,9 @@
 package services
 
 import (
-	"backend/internals/entities/response"
+	"backend/internals/entities/payload"
 	"backend/internals/repositories"
 )
-
-type UserActivityService interface {
-	GetRecentActivitiesByUserID(userId *string) (*response.UserActivitiesResponse, error)
-}
 
 type userActivityService struct {
 	userActivityRepo repositories.UserActivityRepository
@@ -19,13 +15,13 @@ func NewUserActivityService(userActivityRepo repositories.UserActivityRepository
 	}
 }
 
-func (s *userActivityService) GetRecentActivitiesByUserID(userId *string) (*response.UserActivitiesResponse, error) {
+func (s *userActivityService) GetRecentActivitiesByUserID(userId *string) (*payload.UserActivitiesResponse, error) {
 	activities, err := s.userActivityRepo.GetRecentActivitiesByUserID(userId)
 	if err != nil {
 		return nil, err
 	}
 
-	var activityResponses []response.UserActivityResponse
+	var activityResponses []payload.UserActivityResponse
 	for _, activity := range activities {
 		stepTitle := "Unknown Step"
 		moduleTitle := "Unknown Module"
@@ -37,7 +33,7 @@ func (s *userActivityService) GetRecentActivitiesByUserID(userId *string) (*resp
 			}
 		}
 
-		activityResponses = append(activityResponses, response.UserActivityResponse{
+		activityResponses = append(activityResponses, payload.UserActivityResponse{
 			StepID:      *activity.StepId,
 			StepTitle:   stepTitle,
 			ModuleTitle: moduleTitle,
@@ -46,7 +42,7 @@ func (s *userActivityService) GetRecentActivitiesByUserID(userId *string) (*resp
 		})
 	}
 
-	return &response.UserActivitiesResponse{
+	return &payload.UserActivitiesResponse{
 		Activities: activityResponses,
 	}, nil
 }

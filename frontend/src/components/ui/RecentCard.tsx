@@ -23,7 +23,11 @@ export const RecentCard = ({ moduleTitle, stepTitle }: RecentCardProps) => (
                 </div>
 
                 <div className="mt-4">
-                    <img src="/src/assets/database.png" alt="Step icon" className="w-12 h-12 object-contain opacity-80" />
+                    <img
+                        src="https://static.bookmark.scnd.app/asset/fieldicon/database.png"
+                        alt="Step icon"
+                        className="w-12 h-12 object-contain opacity-80"
+                    />
                 </div>
             </div>
         </CardContent>

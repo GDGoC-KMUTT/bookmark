@@ -1,4 +1,4 @@
-package response
+package payload
 
 type CourseResponse struct {
 	ID    uint64        `json:"id"`

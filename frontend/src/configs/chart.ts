@@ -2,23 +2,6 @@ import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler,
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend)
 
-export const radarData = {
-    labels: ["Microcontroller", "Database", "Internet of Things", "Web Development", "Operating System"],
-    datasets: [
-        {
-            label: "Strength Quotient",
-            data: [35, 65, 85, 45, 30],
-            backgroundColor: "rgba(255, 178, 166, 0.3)",
-            borderColor: "rgba(255, 178, 166, 1)",
-            borderWidth: 1,
-            pointBackgroundColor: "rgba(255, 178, 166, 1)",
-            pointBorderColor: "#fff",
-            pointHoverBackgroundColor: "#fff",
-            pointHoverBorderColor: "rgba(255, 178, 166, 1)",
-        },
-    ],
-}
-
 export const radarOptions = {
     scales: {
         r: {
@@ -52,3 +35,4 @@ export const radarOptions = {
     },
     maintainAspectRatio: false,
 }
+
