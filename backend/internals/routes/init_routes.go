@@ -33,6 +33,7 @@ func SetupRoutes() {
 	var courseContentRepo = repositories.NewCourseContentRepository(db.Gorm)
 	var fieldTypeRepo = repositories.NewFieldTypeRepository(db.Gorm)
 	var articleRepo = repositories.NewArticleRepository(db.Gorm)
+	var moduleRepo = repositories.NewModuleRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -43,7 +44,7 @@ func SetupRoutes() {
 	var profileService = services.NewProfileService(userRepo)
 	var courseService = services.NewCourseService(courseRepo, fieldTypeRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
-	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo, stepCommentUpVoteRepo, stepRepo, userPassedRepo, stepAuthorRepo, courseContentRepo)
+	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo, stepCommentUpVoteRepo, stepRepo, userPassedRepo, stepAuthorRepo, courseContentRepo, moduleRepo)
 	var articleService = services.NewArticleService(articleRepo)
 
 	// * Controller

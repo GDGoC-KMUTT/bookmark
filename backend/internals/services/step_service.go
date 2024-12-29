@@ -23,9 +23,10 @@ type stepService struct {
 	userPassedRepo        repositories.UserPassedRepository
 	stepAuthorRepo        repositories.StepAuthorRepository
 	courseContentRepo     repositories.CourseContentRepository
+	moduleRepo            repositories.ModulesRepository
 }
 
-func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository, stepCommentRepo repositories.StepCommentRepository, stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository, stepRepo repositories.StepRepository, userPassedRepo repositories.UserPassedRepository, stepAuthorRepo repositories.StepAuthorRepository, courseContentRepo repositories.CourseContentRepository) StepService {
+func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository, stepCommentRepo repositories.StepCommentRepository, stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository, stepRepo repositories.StepRepository, userPassedRepo repositories.UserPassedRepository, stepAuthorRepo repositories.StepAuthorRepository, courseContentRepo repositories.CourseContentRepository, moduleRepo repositories.ModulesRepository) StepService {
 	return &stepService{
 		stepEvalRepo:          stepEvalRepo,
 		userEvalRepo:          userEvalRepo,
@@ -36,6 +37,7 @@ func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRe
 		userPassedRepo:        userPassedRepo,
 		stepAuthorRepo:        stepAuthorRepo,
 		courseContentRepo:     courseContentRepo,
+		moduleRepo:            moduleRepo,
 	}
 }
 
@@ -153,6 +155,11 @@ func (r *stepService) GetStepInfo(stepId *uint64) (*payload.StepInfo, error) {
 		return nil, err
 	}
 
+	module, err := r.moduleRepo.GetModuleById(step.ModuleId)
+	if err != nil {
+		return nil, err
+	}
+
 	stepAuthor, err := r.stepAuthorRepo.GetStepAuthorByStepId(stepId)
 	if err != nil {
 		return nil, err
@@ -165,6 +172,7 @@ func (r *stepService) GetStepInfo(stepId *uint64) (*payload.StepInfo, error) {
 
 	stepDetail := &payload.StepDetail{
 		StepId:      step.Id,
+		Banner:      module.ImageUrl,
 		ModuleId:    step.ModuleId,
 		Title:       step.Title,
 		Description: step.Description,

@@ -47,6 +47,7 @@ type StepInfo struct {
 type StepDetail struct {
 	StepId      *uint64 `json:"stepId"`
 	ModuleId    *uint64 `json:"moduleId"`
+	Banner      *string `json:"banner"`
 	Title       *string `json:"title"`
 	Description *string `json:"description"`
 	Content     *string `json:"content"`

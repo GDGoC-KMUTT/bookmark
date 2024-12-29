@@ -1,4 +1,17 @@
-import { BadgeCheck, Blocks, CircleSlash, Gem, Loader2, MessageSquare, ShieldQuestion, SquareArrowUp } from "lucide-react"
+import {
+    ArrowBigUp,
+    BadgeCheck,
+    Blocks,
+    CircleSlash,
+    FilePen,
+    Gem,
+    Loader2,
+    MessageSquare,
+    ShieldQuestion,
+    SquareArrowUp,
+    SquareCheck,
+    SquareX,
+} from "lucide-react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -18,6 +31,8 @@ import { useComment } from "@/hooks/useComment"
 import { PayloadStepCommentInfo } from "@/api/api"
 import useCurrentUser from "@/hooks/userCurrentUser"
 import { useUpVote } from "@/hooks/useUpVote"
+import { useStepEval } from "@/hooks/useStepEval"
+import ResultCard from "./result-card"
 
 type StepProps = {
     stepId: number
@@ -40,7 +55,7 @@ const StepCard: React.FC<StepProps> = ({ stepId }) => {
         isLoading: isLoadingGetStepComment,
         fetchStepComment: refetchStepComment,
     } = useStepComment(stepId)
-    // const author = "hello world"
+    const { stepEval, error: errorGetStepEval, isLoading: isLoadingGetStepEval } = useStepEval(stepId)
 
     const { isLoading: isLoadingCommentOnStep, error: errorCommentOnStep, commentOnStep } = useComment()
     const { currentUser, error: errorGetUserInfo, isLoading: isLoadingGetUserInfo } = useCurrentUser()
@@ -117,9 +132,13 @@ const StepCard: React.FC<StepProps> = ({ stepId }) => {
             <SheetContent className="w-[95%]">
                 <ScrollArea className="h-full">
                     <SheetHeader>
-                        <div className="h-60 overflow-hidden -z-100">
-                            <AspectRatio ratio={16 / 9}>
-                                <img src="https://proxy.bsthun.com/raspi/bookmark/Python.jpg" alt="Photo by Drew Beamer" />
+                        <div className="relative h-60 overflow-hidden">
+                            <AspectRatio>
+                                <img
+                                    src={stepInfo?.step?.banner}
+                                    alt={stepInfo?.step?.title}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
                             </AspectRatio>
                         </div>
                     </SheetHeader>
@@ -214,25 +233,25 @@ const StepCard: React.FC<StepProps> = ({ stepId }) => {
                                 </div>
                             </div>
                             <div className="my-4">
-                                <Badge className="bg-badge-outcome text-white gap-1 py-1">
+                                <Badge className="bg-badge-outcome text-white gap-1 py-1 hover:bg-badge-outcome">
                                     <Gem size={"1rem"} />
                                     <p className="uppercase text-base">outcome</p>
                                 </Badge>
                             </div>
                             <div className="my-4">
-                                <Badge className="bg-badge-check text-white gap-1 py-1">
+                                <Badge className="bg-badge-check text-white gap-1 py-1 hover:bg-badge-check">
                                     <ShieldQuestion size={"1rem"} />
                                     <p className="uppercase text-base">check</p>
                                 </Badge>
                             </div>
                             <div className="my-4">
-                                <Badge className="bg-badge-error text-white gap-1 py-1">
+                                <Badge className="bg-badge-error text-white gap-1 py-1 hover:bg-badge-error">
                                     <CircleSlash size={"1rem"} />
                                     <p className="uppercase text-base">error</p>
                                 </Badge>
                             </div>
                             <div className="my-4">
-                                <Badge className="bg-badge-comment text-white gap-1 py-1">
+                                <Badge className="bg-badge-comment text-white gap-1 py-1 hover:bg-badge-comment">
                                     <MessageSquare size={"1rem"} />
                                     <p className="uppercase text-base">comment</p>
                                 </Badge>
@@ -257,7 +276,7 @@ const StepCard: React.FC<StepProps> = ({ stepId }) => {
                                                 </div>
                                                 <div className="flex items-center cursor-pointer" onClick={() => upVote(cm.stepCommentId ?? 0)}>
                                                     {/* TODO add upvote comment */}
-                                                    <SquareArrowUp className="text-explore-foreground" />
+                                                    <ArrowBigUp className="text-explore-foreground" />
                                                     <p className="ps-2 text-explore-foreground">{cm.upVote}</p>
                                                 </div>
                                             </div>
@@ -284,10 +303,29 @@ const StepCard: React.FC<StepProps> = ({ stepId }) => {
                             </div>
                             <Separator />
                             <div className="my-4">
-                                <Badge className="bg-badge-evaluate text-white gap-1 py-1">
+                                <Badge className="bg-badge-evaluate text-white gap-1 py-1 hover:bg-badge-evaluate">
                                     <BadgeCheck size={"1rem"} />
                                     <p className="uppercase text-base">evaluate</p>
                                 </Badge>
+
+                                <div className="flex gap-2 pt-8">
+                                    <FilePen />
+                                    <p>
+                                        tesasdasdtesasdastesasdastesasdastesasdastesasdastesasdastesasdastesasdastesasdastesasdastesasdastesasdastesasdas
+                                        tesasdas tesasdas tesasdas tesasdas tesasdas tesasdas tesasdas tesasdas tesasdas tesasdas
+                                    </p>
+                                </div>
+                                <div className="px-6 py-3 w-[25rem]">
+                                    <Label htmlFor="picture">Please upload image</Label>
+                                    <Input id="picture" type="file" className="rounded-sm" />
+                                </div>
+                                <div className="flex space-x-2">
+                                    <Input type="text" placeholder="write your answer..." />
+                                    <Button type="submit" className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800">
+                                        Subscribe
+                                    </Button>
+                                </div>
+                                <ResultCard pass={true} />
                             </div>
                         </div>
                     )}

@@ -205,5 +205,11 @@ button:focus-visible {
     .bg-droplet1 {
         background-image: url("@/assets/droplet1.png");
     }
+    .bg-check-passed {
+        background-color: hsl(var(--check-passed));
+    }
+    .bg-check-failed {
+        background-color: hsl(var(--check-failed));
+    }
 }
 
