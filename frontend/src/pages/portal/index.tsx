@@ -19,7 +19,12 @@ const Portal = () => {
     })
 
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+    const [error, setError] = useState<Record<string, string | null>>({
+        enrollment: null,
+        recentActivity: null,
+        strength: null,
+        suggestion: null,
+    })
 
     // Fetch Functions
     const fetchData = async (fetchFn: () => Promise<any>, onSuccess: (data: any) => void, errorMessage: string) => {
@@ -30,14 +35,14 @@ const Portal = () => {
             }
             onSuccess(response.data)
         } catch (err) {
-            setError(err instanceof Error ? err.message : "An unknown error occurred")
+            return err instanceof Error ? err.message : "An unknown error occurred"
         }
     }
 
     useEffect(() => {
         const fetchAllData = async () => {
             setLoading(true)
-            await Promise.all([
+            const [enrollmentError, recentActivityError, strengthError, suggestionError] = await Promise.all([
                 fetchData(server.enroll.getUserEnrollments, (data) => setData((prev) => ({ ...prev, enrollments: data.enrollments })), "enrollment"),
                 fetchData(
                     server.userActivity.getRecentActivity,
@@ -70,16 +75,24 @@ const Portal = () => {
                 fetchData(server.userStrength.getSuggestionCourse, (data) => setData((prev) => ({ ...prev, suggestions: data })), "suggestion"),
             ])
             setLoading(false)
+            setError({
+                enrollment: enrollmentError ?? null,
+                recentActivity: recentActivityError ?? null,
+                strength: strengthError ?? null,
+                suggestion: suggestionError ?? null,
+            })
         }
 
         fetchAllData()
     }, [])
 
     // Render Section Component
-    const renderSection = (title: string, content: JSX.Element, showScroll: boolean = true) => (
+    const renderSection = (title: string, content: JSX.Element, errorMessage: string | null, showScroll: boolean = true) => (
         <div className="flex flex-col space-y-4">
             <h2 className="text-xl font-semibold">{title}</h2>
-            {showScroll ? (
+            {errorMessage ? (
+                <div className="text-red-500">Error: {errorMessage}</div>
+            ) : showScroll ? (
                 <ScrollArea className="w-full">
                     {content}
                     <ScrollBar orientation="horizontal" />
@@ -108,23 +121,24 @@ const Portal = () => {
     const strengthContent = data.strengthData ? (
         <StrengthAnalysis data={data.strengthData} options={radarOptions} />
     ) : (
-        <div className="text-gray-500">Loading strength data...</div>
+        <div className="text-gray-500">No strength data</div>
     )
 
     const recentContent = (
-        <div className="flex w-full space-x-4 pb-4">
-            {data.recentActivity.length > 0 ? (
-                data.recentActivity.map((activity, index) => (
-                    <div className="flex-1" key={activity.step_id || index}>
-                        {" "}
-                        {/* Key moved to parent div */}
-                        <RecentCard moduleTitle={activity.module_title || "Untitled Module"} stepTitle={activity.step_title || "Untitled Step"} />
-                    </div>
-                ))
-            ) : (
-                <div className="text-gray-500">No recent activity found</div>
-            )}
-        </div>
+        <ScrollArea className="w-full">
+            <div className="flex space-x-4 pb-4">
+                {data.recentActivity.length > 0 ? (
+                    data.recentActivity.map((activity, index) => (
+                        <div key={activity.step_id || index} className="w-80 flex-none">
+                            <RecentCard moduleTitle={activity.module_title || "Untitled Module"} stepTitle={activity.step_title || "Untitled Step"} />
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-gray-500">No recent activity found</div>
+                )}
+            </div>
+            <ScrollBar orientation="horizontal" />
+        </ScrollArea>
     )
 
     const suggestionContent = (
@@ -132,8 +146,6 @@ const Portal = () => {
             {data.suggestions.length > 0 ? (
                 data.suggestions.map((item, index) => (
                     <div className="flex-1" key={item.id || index}>
-                        {" "}
-                        {/* Key moved to parent div */}
                         <SuggestionCard name={item.name || "Untitled Course"} field={item.field} />
                     </div>
                 ))
@@ -142,19 +154,18 @@ const Portal = () => {
             )}
         </div>
     )
+
     return (
         <div className="flex flex-col h-screen w-screen bg-gray-50 overflow-auto">
             <div className="flex flex-col flex-1 px-20 py-28 space-y-12">
                 {loading ? (
                     <div className="text-gray-500">Loading...</div>
-                ) : error ? (
-                    <div className="text-red-500">Error: {error}</div>
                 ) : (
                     <>
-                        {renderSection("Enrollment", enrollmentContent)}
-                        {renderSection("Recent", recentContent)}
-                        {renderSection("Strength Analysis", strengthContent, false)}
-                        {renderSection("Suggestion", suggestionContent)}
+                        {renderSection("Enrollment", enrollmentContent, error.enrollment)}
+                        {renderSection("Recent", recentContent, error.recentActivity)}
+                        {renderSection("Strength Analysis", strengthContent, error.strength, false)}
+                        {renderSection("Suggestion", suggestionContent, error.suggestion)}
                     </>
                 )}
             </div>
