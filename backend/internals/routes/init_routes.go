@@ -27,6 +27,7 @@ func SetupRoutes() {
 	var articleRepo = repositories.NewArticleRepository(db.Gorm)
 	var moduleRepo = repositories.NewModuleRepository(db.Gorm)
 	var moduleStepRepo = repositories.NewStepRepository(db.Gorm)
+	var enrollRepo = repositories.NewEnrollRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -41,6 +42,7 @@ func SetupRoutes() {
 	var articleService = services.NewArticleService(articleRepo)
 	var moduleService = services.NewModuleService(moduleRepo)
 	var moduleStepService = services.NewModuleStepService(moduleStepRepo)
+	var enrollService = services.NewEnrollService(enrollRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
@@ -51,6 +53,7 @@ func SetupRoutes() {
 	var progressController = controllers.NewProgressController(progressService)
 	var moduleController = controllers.NewModuleController(moduleService)
 	var moduleStepController = controllers.NewModuleStepController(moduleStepService)
+	var enrollController = controllers.NewEnrollController(enrollService)
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
@@ -107,6 +110,10 @@ func SetupRoutes() {
 	// * Progress routes
 	progress := api.Group("/progress", middleware.Jwt())
 	progress.Get("/:courseId/percentage", progressController.GetCompletionPercentage)
+
+	// * Enroll routes
+	enroll := api.Group("/enroll", middleware.Jwt())
+	enroll.Post("/:userId/:courseId", enrollController.EnrollInCourse)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {
