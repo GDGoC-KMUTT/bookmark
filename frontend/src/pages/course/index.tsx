@@ -116,7 +116,7 @@ const Course = () => {
 				{courseContent &&
 					courseContent.map((item, index) => {
 						if (item.type === "text") {
-							return <Text key={index} content={item.text || ''} />;
+							return <Text key={index} content={item.text || ''} backgroundIndex={index} />;
 						} else if (item.type === "module") {
 							const moduleData = modules.find((mod) => mod.id === item.moduleId);
 
@@ -134,6 +134,7 @@ const Course = () => {
 						}
 						return null;
 					})}
+
 			</div>
 
 			{Array.isArray(suggestCourses) && suggestCourses.length > 0 && (
