@@ -17,4 +17,5 @@ type Config struct {
 	OauthEndpoint     *string   `yaml:"OAUTH_ENDPOINT" mapstructure:"OAUTH_ENDPOINT"`
 	FrontendUrl       *string   `yaml:"FRONTEND_URL" mapstructure:"FRONTEND_URL"`
 	FrontendScheme    *string   `yaml:"FRONTEND_SCHEME" mapstructure:"FRONTEND_SCHEME"`
+	OutlineToken      *string   `yaml:"OUTLINE_TOKEN" mapstructure:"OUTLINE_TOKEN"`
 }
