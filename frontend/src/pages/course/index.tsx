@@ -1,192 +1,149 @@
 import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import { courseInfoAtom, courseContentAtom} from '@/stores/course';
-import { moduleAtom } from '@/stores/module';
-import { moduleStepsAtom } from '@/stores/moduleStep';
 import Hero from "../../components/course/hero";
 import Text from "../../components/course/text";
 import Module from "../../components/course/module";
-import { server } from '@/configs/server';
+import { server } from "@/configs/server";
+import CourseCard from "../../components/coursecard/index";
+import { PayloadModuleResponse, PayloadModuleStepResponse, PayloadCoursePage, PayloadCoursePageContent } from "../../api/api";
 
 const Course = () => {
-	const [courseInfo, setCourseInfo] = useAtom(courseInfoAtom); // Global state for course data
-	const [courseContent, setCourseContent] = useAtom(courseContentAtom); // Global state for course content
-	const [modules, setModules] = useAtom(moduleAtom); // Global state for module data
-	const [moduleSteps, setModuleSteps] = useAtom(moduleStepsAtom);
+	const [courseInfo, setCourseInfo] = useState<PayloadCoursePage | null>(null);
+	const [courseContent, setCourseContent] = useState<PayloadCoursePageContent[] | null>(null);
+	const [modules, setModules] = useState<PayloadModuleResponse[]>([]);
+	const [moduleSteps, setModuleSteps] = useState<Record<number, PayloadModuleStepResponse[]>>({});
 	const [error, setError] = useState<string | null>(null);
 
-	//! don't forget to fix this later
-	const courseId = 3; // Replace with dynamic courseId if needed
+	//! Don't forget to replace with dynamic courseId if needed
+	const courseId = 1;
 
-	// Fetch course information
 	useEffect(() => {
-		const fetchCourseInfo = async () => {
+		const fetchData = async () => {
 			try {
-				const response = await server.coursePage.getCoursePageInfo(courseId.toString());
-
-				if (response.data) {
-					const courseData = response.data;
-					// console.log(courseData.field);
-
-					// Transform courseData to match the required shape
-					const transformedCourse = {
-						course_id: courseData.id ?? 0,
-						name: courseData.name ?? '',
-						field: courseData.field ?? '',
-					};
-
-					setCourseInfo(transformedCourse); // Store course info in the global atom
-					// console.log(courseInfo);
+				//* Fetch course information
+				const courseInfoResponse = await server.coursePage.getCoursePageInfo(courseId.toString());
+				if (courseInfoResponse.data) {
+					setCourseInfo(courseInfoResponse.data);
 				} else {
-					setError("Failed to fetch course info");
+					setError("Failed to fetch course info.");
+					return;
 				}
-			} catch (err) {
-				setError("Error fetching course info");
-			}
-		};
 
-		fetchCourseInfo();
-	}, [courseId, setCourseInfo]);
+				//* Fetch course content
+				const courseContentResponse = await server.coursePage.getCoursePageContent(courseId.toString());
+				if (courseContentResponse.data) {
+					// console.log("Fetched course content:", courseContentResponse.data);
 
-	 // Fetch course content
-	useEffect(() => {
-		const fetchCourseContent = async () => {
-			try {
-				const response = await server.coursePage.getCoursePageContent(courseId.toString());
-				if (response.data) {
-					const courseContentData = response.data;
-
-					// Transform courseContentData to match the required atom structure
-					const transformedCourseContent = courseContentData.map((content: any) => ({
-						course_id: content.courseId ?? 0,
-						order: content.order ?? 0,
-						type: content.type ?? '',
-						text: content.text ?? '',
-						module_id: content.moduleId ?? 0,
+					// Transform the data to ensure it matches the interface
+					const contentData = courseContentResponse.data.map((item: PayloadCoursePageContent) => ({
+						coursePageId: item.coursePageId,
+						moduleId: item.moduleId,
+						order: item.order,
+						text: item.text || '', // Default empty text if undefined
+						type: item.type,
 					}));
+					setCourseContent(contentData);
 
-					setCourseContent(transformedCourseContent); // Store course content in the global atom
+					//* Fetch modules and their steps
+					const modulesToFetch = contentData.filter((item) => item.type === "module");
+
+					const modulePromises = modulesToFetch.map(async (module) => {
+						const moduleResponse = await server.module.getModuleInfo(module.moduleId?.toString() || "");
+						if (moduleResponse?.data) {
+							return {
+								module: moduleResponse.data,
+								moduleId: module.moduleId,
+							};
+						}
+						return null;
+					});
+
+					const fetchedModules = await Promise.all(modulePromises);
+					const validModules = fetchedModules.filter((m): m is { module: PayloadModuleResponse; moduleId: number } => !!m);
+					// console.log("Valid modules:", validModules);
+					setModules(validModules.map((m) => m.module));
+
+					// Fetch steps for each module
+					const stepsPromises = validModules.map(async ({ moduleId }) => {
+						const stepsResponse = await server.moduleStep.getModuleSteps(moduleId.toString());
+						return { moduleId, steps: stepsResponse.data || [] };
+					});
+
+					const fetchedSteps = await Promise.all(stepsPromises);
+					// console.log("fetchedSteps:", fetchedSteps);
+					const stepsMap = fetchedSteps.reduce(
+						(acc, { moduleId, steps }) => ({ ...acc, [moduleId]: steps }),
+						{} as Record<number, PayloadModuleStepResponse[]>
+					);
+					// console.log("stepsMap:", stepsMap);
+					setModuleSteps(stepsMap);
 				} else {
-					setError("Failed to fetch course content");
+					setError("Failed to fetch course content.");
 				}
 			} catch (err) {
-				setError("Error fetching course content");
+				console.error("Error fetching data:", err);
+				setError("An error occurred while fetching data. Please try again.");
 			}
 		};
 
-		fetchCourseContent();
-	}, [courseId, setCourseContent]);
+		fetchData();
+	}, [courseId]);
 
-	// Fetch module info
+	// Use this useEffect to log the updated `moduleSteps`
 	useEffect(() => {
-		const fetchModuleInfo = async (moduleId: number) => {
-			try {
-			  if (modules.some((mod) => mod.module_id === moduleId)) {
-				console.log(`Module ID: ${moduleId} already fetched.`);
-				return;
-			  }
-
-			  const response = await server.module.getModuleInfo(moduleId.toString());
-				// console.log(response.data);
-
-			  if (response.data) {
-				const transformedModule = {
-				  module_id: response.data.id ?? 0,
-				  title: response.data.title ?? '',
-				  description: response.data.description ?? '',
-				  image_url: response.data.imageUrl ?? '',
-				};
-
-				setModules((prev) => [...prev, transformedModule]);
-			  } else {
-				console.error(`Failed to fetch module info for ID: ${moduleId}`);
-			  }
-			} catch (err) {
-			  console.error(`Error fetching module info for ID: ${moduleId}`, err);
-			}
-		  };
-
-
-		// Fetch module data for all modules in the course content
-		if (courseContent && Array.isArray(courseContent)) {
-			courseContent
-				.filter((item) => item.type === "module")
-				.forEach((module) => {
-					if (!modules.some((mod) => mod.module_id === module.module_id)) {
-						fetchModuleInfo(module.module_id);
-					}
-				});
+		if (Object.keys(moduleSteps).length > 0) {
+			console.log("Updated module steps:", moduleSteps);
 		}
-	}, [courseContent, modules, setModules]);
-
-
-	// Fetch steps for each module
-	useEffect(() => {
-		const fetchModuleSteps = async (moduleId: number) => {
-			try {
-			  if (moduleSteps[moduleId]) {
-				console.log(`Steps for Module ID: ${moduleId} already fetched.`);
-				return;
-			  }
-
-			  const response = await server.moduleStep.getModuleSteps(moduleId.toString());
-			  if (response.data && Array.isArray(response.data)) {
-				const transformedSteps = response.data.map((step: any) => ({
-				  step_id: step.id ?? 0,
-				  title: step.title ?? '',
-				  check: step.check ?? '',
-				}));
-
-				setModuleSteps((prev) => ({ ...prev, [moduleId]: transformedSteps }));
-			  } else {
-				console.log(`No step for Module ID: ${moduleId}`, response);
-			  }
-			} catch (err) {
-			  console.error(`Error fetching steps for Module ID: ${moduleId}`, err);
-			}
-		  };
+	}, [moduleSteps]);
 
 
 
-		// Fetch steps for all modules in the course content
-		if (courseContent && Array.isArray(courseContent)) {
-		  courseContent
-			.filter((item) => item.type === "module")
-			.forEach((module) => {
-			  if (!moduleSteps[module.module_id]) {
-				fetchModuleSteps(module.module_id);
-			  }
-			});
-		}
-	  }, [courseContent, moduleSteps, setModuleSteps]);
-
-
-	  if (error) {
+	if (error) {
 		return <div className="error">{error}</div>;
-	  }
+	}
 
 	return (
 		<div className="relative w-full mt-[50px] mb-[150px] flex flex-col overflow-y-auto">
-			<Hero key={courseId}/>
+			<Hero key={courseId} courseName={courseInfo?.name ?? ""} courseField={courseInfo?.field ?? ""} courseId={courseInfo?.id ?? 0} />
 			<div className="w-full flex flex-col items-center justify-center space-y-10 mt-20">
 				{courseContent &&
 					courseContent.map((item, index) => {
 						if (item.type === "text") {
-							return <Text key={index} content={item.text} />;
+							return <Text key={index} content={item.text || ''} />;
 						} else if (item.type === "module") {
-							const moduleData = modules.find((mod) => mod.module_id === item.module_id);
+							const moduleData = modules.find((mod) => mod.id === item.moduleId);
+							const moduleStep = moduleSteps[item.moduleId || 0];  // Retrieve steps for the module
+
 							if (moduleData) {
 								return (
 									<Module
 										key={index}
-										moduleId={moduleData.module_id || 0}
+										moduleTitle={moduleData.title || "Untitled Module"}
+										moduleDescription={moduleData.description || "No description available."}
+										moduleImageUrl={moduleData.imageUrl || "/default-image.png"}
+										steps={moduleSteps[item.moduleId || 0] || []}
 									/>
 								);
 							}
 						}
 						return null;
 					})}
-				</div>
+
+			</div>
+			<p className="mt-20 text-2xl font-medium flex justify-center">What's next?</p>
+			<div className="flex justify-center mt-10 space-x-20">
+				<CourseCard
+					courseName="Introduction to React"
+					fieldName="Web Development"
+					imageUrl="/path/to/image.png"
+					courseId={1}
+				/>
+				<CourseCard
+					courseName="Advanced JavaScript"
+					fieldName="Programming"
+					imageUrl="/path/to/image2.png"
+					courseId={2}
+				/>
+			</div>
 		</div>
 	);
 };

@@ -1,19 +1,17 @@
 import courseBg from '../../assets/course_bg.png';
 import { Bookmark } from 'lucide-react';
-import { useAtom } from 'jotai';
-import { courseInfoAtom } from '@/stores/course';
 import { useCallback } from 'react';
 import { server } from '@/configs/server';
 import { toast } from "sonner"
 
-const Hero = () => {
-	const [courseInfo] = useAtom(courseInfoAtom);
-	const courseName = courseInfo.name || '';
-	const courseField = courseInfo.field || '';
-	const courseId = courseInfo.course_id || 0; // Ensure `course_id` is present
+type HeroProps = {
+    courseName: string
+    courseField: string
+	courseId: number
+}
 
-	// Placeholder for authenticated user ID
-	const userId = 1; // Replace with actual user ID from your authentication system
+const Hero: React.FC<HeroProps> = ({ courseName, courseField, courseId}) => {
+	const userId = 1; //! Replace with actual user ID from your authentication system
 
 	const handleEnroll = useCallback(async () => {
 		try {
