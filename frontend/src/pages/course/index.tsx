@@ -16,7 +16,7 @@ const Course = () => {
 	const [error, setError] = useState<string | null>(null);
 
 	//! don't forget to fix this later
-	const courseId = 1; // Replace with dynamic courseId if needed
+	const courseId = 3; // Replace with dynamic courseId if needed
 
 	// Fetch course information
 	useEffect(() => {
@@ -58,11 +58,11 @@ const Course = () => {
 
 					// Transform courseContentData to match the required atom structure
 					const transformedCourseContent = courseContentData.map((content: any) => ({
-						course_id: content.course_id ?? 0,
+						course_id: content.courseId ?? 0,
 						order: content.order ?? 0,
 						type: content.type ?? '',
 						text: content.text ?? '',
-						module_id: content.module_id ?? 0,
+						module_id: content.moduleId ?? 0,
 					}));
 
 					setCourseContent(transformedCourseContent); // Store course content in the global atom
@@ -87,14 +87,14 @@ const Course = () => {
 			  }
 
 			  const response = await server.module.getModuleInfo(moduleId.toString());
-				console.log(response.data);
+				// console.log(response.data);
 
 			  if (response.data) {
 				const transformedModule = {
 				  module_id: response.data.id ?? 0,
 				  title: response.data.title ?? '',
 				  description: response.data.description ?? '',
-				  image_url: response.data.image_url ?? '',
+				  image_url: response.data.imageUrl ?? '',
 				};
 
 				setModules((prev) => [...prev, transformedModule]);
