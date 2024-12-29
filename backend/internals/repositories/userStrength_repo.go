@@ -2,15 +2,10 @@ package repositories
 
 import (
 	"backend/internals/db/models"
-	"backend/internals/entities/response"
+	"backend/internals/entities/payload"
 	"gorm.io/gorm"
 	"log"
 )
-
-type UserStrengthRepository interface {
-	GetStrengthDataByUserID(userId uint64) ([]response.StrengthDataResponse, error)
-	GetSuggestionCourse(userId uint64) ([]models.Course, error)
-}
 
 type userStrengthRepository struct {
 	db *gorm.DB
@@ -23,8 +18,8 @@ func NewUserStrengthRepository(db *gorm.DB) UserStrengthRepository {
 }
 
 // GetStrengthDataByUserID ดึงคะแนน strength ตามแต่ละ field type ที่ผู้ใช้ตอบถูก
-func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]response.StrengthDataResponse, error) {
-	var strengthData []response.StrengthDataResponse
+func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]payload.StrengthDataResponse, error) {
+	var strengthData []payload.StrengthDataResponse
 
 	var evaluations []struct {
 		FieldName string
@@ -58,9 +53,9 @@ func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]respo
 			return nil, err
 		}
 
-		strengthData = make([]response.StrengthDataResponse, len(fieldTypes))
+		strengthData = make([]payload.StrengthDataResponse, len(fieldTypes))
 		for i, fieldType := range fieldTypes {
-			strengthData[i] = response.StrengthDataResponse{
+			strengthData[i] = payload.StrengthDataResponse{
 				FieldName: *fieldType.Name,
 				TotalGems: 0,
 			}
@@ -71,9 +66,9 @@ func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]respo
 	}
 
 	// Convert evaluations to response format
-	strengthData = make([]response.StrengthDataResponse, 0, len(evaluations))
+	strengthData = make([]payload.StrengthDataResponse, 0, len(evaluations))
 	for _, evaluation := range evaluations {
-		strengthData = append(strengthData, response.StrengthDataResponse{
+		strengthData = append(strengthData, payload.StrengthDataResponse{
 			FieldName: evaluation.FieldName,
 			TotalGems: evaluation.TotalGems,
 		})
@@ -88,9 +83,9 @@ func (r *userStrengthRepository) GetSuggestionCourse(userId uint64) ([]models.Co
 
 	var courses []models.Course
 	err := r.db.
-		Preload("Field"). // Preload the field relationship
+		Preload("Field").  // Preload the field relationship
 		Order("RANDOM()"). // Random order
-		Limit(5). // Limit to 5 courses
+		Limit(5).          // Limit to 5 courses
 		Find(&courses).Error
 
 	if err != nil {

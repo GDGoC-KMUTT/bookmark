@@ -35,7 +35,7 @@ func (r *UserActivityController) GetRecentActivity(c *fiber.Ctx) error {
 
 	recentActivities, err := r.userActivitySvc.GetRecentActivitiesByUserID(utils.Ptr(strconv.Itoa(int(userId))))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(response.GenericError{
+		return c.JSON(response.GenericError{
 			Err:     err,
 			Message: "Failed to fetch recent user activities",
 		})

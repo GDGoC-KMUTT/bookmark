@@ -1,15 +1,10 @@
 package services
 
 import (
-	"backend/internals/entities/response"
+	"backend/internals/entities/payload"
 	"backend/internals/repositories"
 	"log"
 )
-
-type UserStrengthService interface {
-	GetStrengthDataByUserID(userId uint64) ([]response.StrengthDataResponse, error)
-	GetSuggestionCourse(userId uint64) ([]response.CourseResponse, error)
-}
 
 type userStrengthService struct {
 	repo repositories.UserStrengthRepository
@@ -21,7 +16,7 @@ func NewUserStrengthService(repo repositories.UserStrengthRepository) UserStreng
 	}
 }
 
-func (s *userStrengthService) GetStrengthDataByUserID(userId uint64) ([]response.StrengthDataResponse, error) {
+func (s *userStrengthService) GetStrengthDataByUserID(userId uint64) ([]payload.StrengthDataResponse, error) {
 	strengthData, err := s.repo.GetStrengthDataByUserID(userId)
 	if err != nil {
 		log.Printf("Error in service while fetching strength data for user %d: %v", userId, err)
@@ -30,12 +25,12 @@ func (s *userStrengthService) GetStrengthDataByUserID(userId uint64) ([]response
 
 	if strengthData == nil {
 		log.Printf("No passing evaluations found for user %d", userId)
-		return []response.StrengthDataResponse{}, nil
+		return []payload.StrengthDataResponse{}, nil
 	}
 
 	return strengthData, nil
 }
-func (s *userStrengthService) GetSuggestionCourse(userId uint64) ([]response.CourseResponse, error) {
+func (s *userStrengthService) GetSuggestionCourse(userId uint64) ([]payload.CourseResponse, error) {
 	courses, err := s.repo.GetSuggestionCourse(userId)
 	if err != nil {
 		log.Printf("Error in service while fetching random courses for user %d: %v", userId, err)
@@ -43,13 +38,13 @@ func (s *userStrengthService) GetSuggestionCourse(userId uint64) ([]response.Cou
 	}
 
 	// Transform to response DTOs
-	var responses []response.CourseResponse
+	var responses []payload.CourseResponse
 	for _, course := range courses {
 		if course.Id != nil && course.Name != nil && course.Field != nil && course.Field.Id != nil && course.Field.Name != nil {
-			responses = append(responses, response.CourseResponse{
+			responses = append(responses, payload.CourseResponse{
 				ID:   *course.Id,
 				Name: *course.Name,
-				Field: response.FieldResponse{
+				Field: payload.FieldResponse{
 					ID:       *course.Field.Id,
 					Name:     *course.Field.Name,
 					ImageUrl: course.Field.ImageUrl,

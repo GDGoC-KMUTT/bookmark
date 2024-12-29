@@ -5,10 +5,9 @@ export interface EnrollmentCardProps {
     id?: string | number
     course_name: string
     progress?: number
-    image?: string
 }
 
-export const EnrollmentCard = ({ course_name, progress = 0, image = "/src/assets/microcontroller.png" }: EnrollmentCardProps) => (
+export const EnrollmentCard = ({ course_name, progress = 0 }: EnrollmentCardProps) => (
     <Card className="w-[300px]">
         <CardContent className="p-6">
             <div className="flex justify-between items-start mb-2">
@@ -20,12 +19,9 @@ export const EnrollmentCard = ({ course_name, progress = 0, image = "/src/assets
                 </div>
                 <div className="flex gap-1.5 mt-1">
                     <img
-                        src={image}
+                        src="https://static.bookmark.scnd.app/asset/fieldicon/microcontroller.png"
                         alt="Course icon"
                         className="w-12 h-12 object-contain opacity-80"
-                        onError={(e) => {
-                            e.currentTarget.src = "/src/assets/microcontroller.png"
-                        }}
                     />
                 </div>
             </div>

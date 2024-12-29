@@ -111,7 +111,6 @@ const Portal = () => {
                     key={enrollment.id || index}
                     course_name={enrollment.course_name || "Untitled Course"}
                     progress={enrollment.progress ?? 0}
-                    image="/src/assets/default-image.png"
                     id={enrollment.id}
                 />
             ))}

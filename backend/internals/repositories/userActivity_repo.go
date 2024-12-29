@@ -6,10 +6,6 @@ import (
 	"log"
 )
 
-type UserActivityRepository interface {
-	GetRecentActivitiesByUserID(userId *string) ([]models.UserActivity, error)
-}
-
 type userActivityRepository struct {
 	db *gorm.DB
 }
