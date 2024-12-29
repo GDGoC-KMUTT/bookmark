@@ -4,13 +4,14 @@ import Text from "../../components/course/text";
 import Module from "../../components/course/module";
 import { server } from "@/configs/server";
 import CourseCard from "../../components/coursecard/index";
-import { PayloadModuleResponse, PayloadModuleStepResponse, PayloadCoursePage, PayloadCoursePageContent } from "../../api/api";
+import { PayloadModuleResponse, PayloadModuleStepResponse, PayloadCoursePage, PayloadCoursePageContent, PayloadSuggestCourse } from "../../api/api";
 
 const Course = () => {
 	const [courseInfo, setCourseInfo] = useState<PayloadCoursePage | null>(null);
 	const [courseContent, setCourseContent] = useState<PayloadCoursePageContent[] | null>(null);
 	const [modules, setModules] = useState<PayloadModuleResponse[]>([]);
 	const [moduleSteps, setModuleSteps] = useState<Record<number, PayloadModuleStepResponse[]>>({});
+	const [suggestCourses, setSuggestCourses] = useState<PayloadSuggestCourse[] | undefined>(undefined)
 	const [error, setError] = useState<string | null>(null);
 
 	//! Don't forget to replace with dynamic courseId if needed
@@ -79,6 +80,17 @@ const Course = () => {
 				} else {
 					setError("Failed to fetch course content.");
 				}
+
+				//* Fetch suggest courses
+				if (courseInfoResponse.data?.fieldId) {
+					const suggestResponse = await server.coursePage.getSuggestCoursesByFieldId(courseInfoResponse.data.fieldId.toString());
+					// console.log("Suggest courses:", suggestResponse);
+					if (suggestResponse.data) {
+						setSuggestCourses(suggestResponse.data);
+					} else {
+						setError("Failed to fetch suggest courses. Please try again.");
+					}
+				}
 			} catch (err) {
 				console.error("Error fetching data:", err);
 				setError("An error occurred while fetching data. Please try again.");
@@ -93,8 +105,13 @@ const Course = () => {
 	}
 
 	return (
-		<div className="relative w-full mt-[50px] mb-[150px] flex flex-col overflow-y-auto">
-			<Hero key={courseId} courseName={courseInfo?.name ?? ""} courseField={courseInfo?.field ?? ""} courseId={courseInfo?.id ?? 0} />
+		<div className="relative w-full mt-[50px] mb-[150px] flex flex-col overflow-x-hidden overflow-y-auto">
+			<Hero
+				key={courseId}
+				courseName={courseInfo?.name ?? ""}
+				courseField={courseInfo?.field ?? ""}
+				courseId={courseInfo?.id ?? 0}
+			/>
 			<div className="w-full flex flex-col items-center justify-center space-y-10 mt-20">
 				{courseContent &&
 					courseContent.map((item, index) => {
@@ -117,23 +134,33 @@ const Course = () => {
 						}
 						return null;
 					})}
+			</div>
 
-			</div>
-			<p className="mt-20 text-2xl font-medium flex justify-center">What's next?</p>
-			<div className="flex justify-center mt-10 space-x-20">
-				<CourseCard
-					courseName="Introduction to React"
-					fieldName="Web Development"
-					imageUrl="/path/to/image.png"
-					courseId={1}
-				/>
-				<CourseCard
-					courseName="Advanced JavaScript"
-					fieldName="Programming"
-					imageUrl="/path/to/image2.png"
-					courseId={2}
-				/>
-			</div>
+			{Array.isArray(suggestCourses) && suggestCourses.length > 0 && (
+				<>
+					<div className="mt-20"></div>
+					<p className="mt-20 text-2xl font-medium flex justify-center">What's next?</p>
+					<div className="w-full flex justify-center mt-20">
+						<div className="w-full max-w-[95%] flex justify-center ">
+							<div className="overflow-x-auto overflow-y-hidden scrollbar-hide">
+								<div className="flex justify-start">
+									{suggestCourses.map((course, index) => (
+										<div key={index} className="mr-10 last:-mr-20">
+											<CourseCard
+												courseName={course.name || "Untitled Course"}
+												fieldName={course.fieldName || "Unknown Field"}
+												imageUrl={course.fieldImageUrl || "/default-image.png"}
+												courseId={course.id || 0}
+											/>
+										</div>
+									))}
+								</div>
+							</div>
+						</div>
+					</div>
+				</>
+			)}
+
 		</div>
 	);
 };

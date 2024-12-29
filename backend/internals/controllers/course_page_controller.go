@@ -6,7 +6,6 @@ import (
 	"backend/internals/services"
 	"github.com/gofiber/fiber/v2"
 	"fmt"
-	"strconv"
 )
 
 // CoursePageController handles course page-related endpoints
@@ -78,18 +77,20 @@ func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
 	})
 }
 
-// GetSuggestCourseByFieldId
-// @ID getSuggestCourseByFieldId
+// GetSuggestCoursesByFieldId
+// @ID getSuggestCoursesByFieldId
 // @Tags course_page
 // @Summary Get suggest courses by field ID
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.InfoResponse[[]payload.SuggestCourse]
 // @Failure 400 {object} response.GenericError
-// @Router /courses/suggest [get]
+// @Router /courses/suggest/{fieldId} [get]
 func (r *CoursePageController) GetSuggestCoursesByFieldId(c *fiber.Ctx) error {
-    fieldIdStr := c.Params("fieldId") // Get fieldId from the URL path parameter
+    // Get fieldId as a string from the URL path parameter
+    fieldIdStr := c.Params("fieldId")
 
+    // Check if the fieldId parameter is provided
     if fieldIdStr == "" {
         return c.Status(fiber.StatusBadRequest).JSON(response.GenericError{
             Err:     fmt.Errorf("missing fieldId parameter"),
@@ -97,19 +98,11 @@ func (r *CoursePageController) GetSuggestCoursesByFieldId(c *fiber.Ctx) error {
         })
     }
 
-    // Convert fieldId to uint64
-    fieldId, err := strconv.ParseUint(fieldIdStr, 10, 64)
-    if err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(response.GenericError{
-            Err:     fmt.Errorf("invalid fieldId format"),
-            Message: "fieldId must be a valid number",
-        })
-    }
-
+    // Optional: If the service expects fieldId as a string, no need for conversion.
     // Call the service to get the suggested courses by fieldId
-    suggestInfo, err := r.coursePageSvc.GetSuggestCourseByFieldId(fmt.Sprintf("%d", fieldId))
+    suggestInfo, err := r.coursePageSvc.GetSuggestCourseByFieldId(fieldIdStr) // Pass fieldId as a string
     if err != nil {
-        fmt.Printf("Failed to fetch suggest courses for fieldId %v: %v\n", fieldId, err)
+        fmt.Printf("Failed to fetch suggest courses for fieldId %v: %v\n", fieldIdStr, err)
         return c.Status(fiber.StatusInternalServerError).JSON(response.GenericError{
             Err:     err,
             Message: "Failed to fetch suggest course",
