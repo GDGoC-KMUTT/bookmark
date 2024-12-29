@@ -109,9 +109,9 @@ func SetupRoutes() {
 	stepEval.Get("/:stepId", stepController.GetStepEvaluate)
 
 	stepComment := step.Group("/comment")
-	stepComment.Get("/:stepId", stepController.GetStepComment)
 	stepComment.Post("/create", stepController.CommentOnStep)
 	stepComment.Post("/upvote", stepController.UpVoteStepComment)
+	stepComment.Get("/:stepId", stepController.GetStepComment)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {

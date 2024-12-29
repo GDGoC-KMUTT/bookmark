@@ -148,8 +148,7 @@ func (r *StepController) CommentOnStep(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(body); err != nil {
 		return &response.GenericError{
-			Err:     err,
-			Message: "invalid comment payload",
+			Err: err,
 		}
 	}
 
@@ -192,8 +191,7 @@ func (r *StepController) UpVoteStepComment(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(body); err != nil {
 		return &response.GenericError{
-			Err:     err,
-			Message: "invalid comment payload",
+			Err: err,
 		}
 	}
 
@@ -387,7 +385,6 @@ func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
 func (r *StepController) CheckStepEvalStatus(c *fiber.Ctx) error {
 	query := new(payload.UserEvalIdsBody)
 
-	// TODO
 	if err := c.QueryParser(query); err != nil {
 		return &response.GenericError{
 			Err:     err,
