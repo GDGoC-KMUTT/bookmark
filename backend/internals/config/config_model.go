@@ -21,4 +21,5 @@ type Config struct {
 	MinioS3AccessKey  *string   `yaml:"MINIO_S3_ACCESS_KEY" mapstructure:"MINIO_S3_ACCESS_KEY"`
 	MinioS3SecretKey  *string   `yaml:"MINIO_S3_SECRET_KEY" mapstructure:"MINIO_S3_SECRET_KEY"`
 	MinioS3BucketName *string   `yaml:"MINIO_S3_BUCKET_NAME" mapstructure:"MINIO_S3_BUCKET_NAME"`
+	OutlineToken      *string   `yaml:"OUTLINE_TOKEN" mapstructure:"OUTLINE_TOKEN"`
 }
