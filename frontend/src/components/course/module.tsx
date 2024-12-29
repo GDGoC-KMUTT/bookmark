@@ -11,7 +11,7 @@ type ModuleProps = {
 
 const Module: React.FC<ModuleProps> = ({ moduleTitle, moduleDescription, moduleImageUrl, steps }) => {
 	return (
-		<div className="relative sm:w-[70%] xl:w-[700px] bg-white border-2 border-gray-300 shadow-sm rounded-lg p-10 flex flex-col space-y-3">
+		<div className="relative sm:w-[70%] xl:w-[700px] bg-white border-2 border-gray-300 shadow-sm rounded-lg p-10 flex flex-col space-y-3 mb-10">
 			{/* Green Circle */}
 			<div className="absolute top-20 -left-2 mt-[-10px] ml-[-10px] w-10 h-10 bg-green-500 rounded-full"></div>
 

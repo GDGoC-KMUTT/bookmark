@@ -5,8 +5,10 @@ import Module from "../../components/course/module";
 import { server } from "@/configs/server";
 import CourseCard from "../../components/coursecard/index";
 import { PayloadModuleResponse, PayloadModuleStepResponse, PayloadCoursePage, PayloadCoursePageContent, PayloadSuggestCourse } from "../../api/api";
+import { useParams } from "react-router-dom";
 
 const Course = () => {
+	const { courseId } = useParams();
 	const [courseInfo, setCourseInfo] = useState<PayloadCoursePage | null>(null);
 	const [courseContent, setCourseContent] = useState<PayloadCoursePageContent[] | null>(null);
 	const [modules, setModules] = useState<PayloadModuleResponse[]>([]);
@@ -14,13 +16,16 @@ const Course = () => {
 	const [suggestCourses, setSuggestCourses] = useState<PayloadSuggestCourse[] | undefined>(undefined)
 	const [error, setError] = useState<string | null>(null);
 
-	//! Don't forget to replace with dynamic courseId if needed
-	const courseId = 1;
-
 	useEffect(() => {
+		// console.log("courseId:", courseId);
+
 		const fetchData = async () => {
 			try {
 				//* Fetch course information
+				if (!courseId) {
+					setError("Course ID is undefined.");
+					return;
+				}
 				const courseInfoResponse = await server.coursePage.getCoursePageInfo(courseId.toString());
 				if (courseInfoResponse.data) {
 					setCourseInfo(courseInfoResponse.data);
@@ -146,7 +151,10 @@ const Course = () => {
 							<div className="overflow-x-auto overflow-y-hidden scrollbar-hide">
 								<div className="flex justify-start">
 									{suggestCourses.map((course, index) => (
-										<div key={index} className="mr-10 last:-mr-20">
+										<div
+											key={index}
+											className={`mr-10 ${suggestCourses.length < 4 && index === suggestCourses.length - 1 ? 'last:mr-0' : 'last:-mr-20'}`}
+										>
 											<CourseCard
 												courseName={course.name || "Untitled Course"}
 												fieldName={course.fieldName || "Unknown Field"}
@@ -161,7 +169,6 @@ const Course = () => {
 					</div>
 				</>
 			)}
-
 		</div>
 	);
 };
