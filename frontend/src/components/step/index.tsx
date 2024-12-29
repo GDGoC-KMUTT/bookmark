@@ -20,7 +20,7 @@ import useCurrentUser from "@/hooks/userCurrentUser"
 import { useUpVote } from "@/hooks/useUpVote"
 import { useStepEval } from "@/hooks/useStepEval"
 import EvalTypeCard from "./eval-type"
-import MarkdownRenderer from "../ui/markdown-renderer"
+import MarkdownRenderer from "@/components/ui/markdown-renderer"
 import BadgeStep from "./badge-step"
 
 type StepProps = {

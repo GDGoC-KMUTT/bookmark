@@ -1,6 +1,6 @@
 import React, { FC } from "react"
-import { Badge } from "../ui/badge"
-import MarkdownRenderer from "../ui/markdown-renderer"
+import { Badge } from "@/components/ui/badge"
+import MarkdownRenderer from "@/components/ui/markdown-renderer"
 
 type BadgeStepProps = {
     badgeColor: string // Badge background color
