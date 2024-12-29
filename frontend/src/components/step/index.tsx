@@ -21,6 +21,7 @@ import { useUpVote } from "@/hooks/useUpVote"
 import { useStepEval } from "@/hooks/useStepEval"
 import EvalTypeCard from "./eval-type"
 import MarkdownRenderer from "../ui/markdown-renderer"
+import BadgeStep from "./badge-step"
 
 type StepProps = {
     stepId: number
@@ -243,33 +244,26 @@ const StepCard: React.FC<StepProps> = ({ stepId }) => {
                                                     {stepInfo.step?.content && <MarkdownRenderer content={stepInfo.step?.content} />}
                                                 </div>
                                             </div>
-                                            <div className="my-4">
-                                                <Badge className="bg-badge-outcome text-white gap-1 py-1 hover:bg-badge-outcome">
-                                                    <Gem size={"1rem"} />
-                                                    <p className="uppercase text-base">outcome</p>
-                                                </Badge>
-                                                <div className="h-2/4 w-full bg-white rounded-sm flex flex-col p-3 border-[1px] border-gray-400 mt-4">
-                                                    {stepInfo.step?.outcome && <MarkdownRenderer content={stepInfo.step?.outcome} />}
-                                                </div>
-                                            </div>
-                                            <div className="my-4">
-                                                <Badge className="bg-badge-check text-white gap-1 py-1 hover:bg-badge-check">
-                                                    <ShieldQuestion size={"1rem"} />
-                                                    <p className="uppercase text-base">check</p>
-                                                </Badge>
-                                                <div className="h-2/4 w-full bg-white rounded-sm flex flex-col p-3 border-[1px] border-gray-400 mt-4">
-                                                    {stepInfo.step?.check && <MarkdownRenderer content={stepInfo.step?.check} />}
-                                                </div>
-                                            </div>
-                                            <div className="my-4">
-                                                <Badge className="bg-badge-error text-white gap-1 py-1 hover:bg-badge-error">
-                                                    <CircleSlash size={"1rem"} />
-                                                    <p className="uppercase text-base">error</p>
-                                                </Badge>
-                                                <div className="h-2/4 w-full bg-white rounded-sm flex flex-col p-3 border-[1px] border-gray-400 mt-4">
-                                                    {stepInfo.step?.error && <MarkdownRenderer content={stepInfo.step?.error} />}
-                                                </div>
-                                            </div>
+                                            <BadgeStep
+                                                badgeColor="bg-badge-outcome"
+                                                label="outcome"
+                                                icon={<Gem size={"1rem"} />}
+                                                content={stepInfo.step?.outcome}
+                                            />
+
+                                            <BadgeStep
+                                                badgeColor="bg-badge-check"
+                                                icon={<ShieldQuestion size={"1rem"} />}
+                                                label="check"
+                                                content={stepInfo.step?.check}
+                                            />
+                                            <BadgeStep
+                                                badgeColor="bg-badge-error"
+                                                icon={<CircleSlash size={"1rem"} />}
+                                                label="error"
+                                                content={stepInfo.step?.error}
+                                            />
+
                                             <div className="my-4">
                                                 <Badge className="bg-badge-comment text-white gap-1 py-1 hover:bg-badge-comment">
                                                     <MessageSquare size={"1rem"} />
@@ -341,6 +335,7 @@ const StepCard: React.FC<StepProps> = ({ stepId }) => {
                                                     <BadgeCheck size={"1rem"} />
                                                     <p className="uppercase text-base">evaluate</p>
                                                 </Badge>
+
                                                 {errorGetStepEval !== null ? (
                                                     <div className="text-red-500">
                                                         <Label> {errorGetStepEval}</Label>

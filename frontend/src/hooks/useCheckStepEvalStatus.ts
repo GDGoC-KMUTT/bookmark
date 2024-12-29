@@ -1,9 +1,9 @@
-import { ModelsUserEvaluate } from "@/api/api"
+import { PayloadUserEvalResult } from "@/api/api"
 import { server } from "@/configs/server"
 import { useCallback, useState } from "react"
 
 export const useCheckStepEvalStatus = () => {
-    const [userEvalStatus, setUserEvalStatus] = useState<ModelsUserEvaluate | undefined>(undefined)
+    const [userEvalStatus, setUserEvalStatus] = useState<PayloadUserEvalResult | undefined>(undefined)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 

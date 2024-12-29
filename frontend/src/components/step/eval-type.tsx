@@ -27,7 +27,7 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
 
     const { createUserEvalRes, isLoading: isLoadingSubmitEval, error: errorSubmitEval, submitStepEval } = useSubmitStepEval()
     const { createUserEvalIdResCheck, error: errorSubmitTypeCheck, submitStepEvalTypeCheck } = useSubmitStepEvalTypeCheck()
-    const { userEvalStatus, isLoading: isLoadingStatus, error: errorStatus, fetchStepEvalStatus } = useCheckStepEvalStatus()
+    const { userEvalStatus, fetchStepEvalStatus } = useCheckStepEvalStatus()
 
     // Handle file input change
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,7 +200,9 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                 </div>
             )}
 
-            {type !== "check" && passStatus !== null && commentStatus !== null && <ResultCard pass={passStatus} comment={commentStatus} />}
+            {type !== "check" && passStatus !== null && passStatus !== undefined && commentStatus !== null && commentStatus !== undefined && (
+                <ResultCard pass={passStatus} comment={commentStatus} />
+            )}
         </>
     )
 }
