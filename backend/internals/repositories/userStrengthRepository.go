@@ -24,7 +24,6 @@ func NewUserStrengthRepository(db *gorm.DB) UserStrengthRepository {
 
 // GetStrengthDataByUserID ดึงคะแนน strength ตามแต่ละ field type ที่ผู้ใช้ตอบถูก
 func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]response.StrengthDataResponse, error) {
-	// สร้างแผนที่เพื่อเก็บคะแนนตาม FieldType
 	var strengthData []response.StrengthDataResponse
 
 	var evaluations []struct {
@@ -41,8 +40,8 @@ func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]respo
 		Joins("JOIN courses ON courses.id = course_contents.course_id").
 		Joins("JOIN field_types ON field_types.id = courses.field_id").
 		Where("user_evaluates.user_id = ? AND user_evaluates.pass = ?", userId, true).
-		Select("field_types.name AS field_name, modules.title AS module_name, SUM(steps.gems) AS total_gems").
-		Group("field_types.name, modules.title").
+		Select("field_types.name AS field_name, SUM(step_evaluates.gem) AS total_gems").
+		Group("field_types.name").
 		Find(&evaluations).Error
 
 	if err != nil {
@@ -50,7 +49,29 @@ func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]respo
 		return nil, err
 	}
 
-	// สร้าง slice ของ StrengthDataDTO จากผลลัพธ์ที่ได้
+	// If no evaluations found, fetch all default field types
+	if len(evaluations) == 0 {
+		var fieldTypes []models.FieldType
+		err := r.db.Find(&fieldTypes).Error
+		if err != nil {
+			log.Printf("Error fetching default field types: %v", err)
+			return nil, err
+		}
+
+		strengthData = make([]response.StrengthDataResponse, len(fieldTypes))
+		for i, fieldType := range fieldTypes {
+			strengthData[i] = response.StrengthDataResponse{
+				FieldName: *fieldType.Name,
+				TotalGems: 0,
+			}
+		}
+
+		log.Printf("No passed evaluations found for user %d. Returning %d default field types.", userId, len(strengthData))
+		return strengthData, nil
+	}
+
+	// Convert evaluations to response format
+	strengthData = make([]response.StrengthDataResponse, 0, len(evaluations))
 	for _, evaluation := range evaluations {
 		strengthData = append(strengthData, response.StrengthDataResponse{
 			FieldName: evaluation.FieldName,
@@ -61,14 +82,15 @@ func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]respo
 	return strengthData, nil
 }
 
+// GetSuggestionCourse returns random course suggestions
 func (r *userStrengthRepository) GetSuggestionCourse(userId uint64) ([]models.Course, error) {
 	log.Printf("Fetching random course suggestions for user ID: %d", userId)
 
 	var courses []models.Course
 	err := r.db.
-		Preload("Field").
-		Order("RANDOM()").
-		Limit(5).
+		Preload("Field"). // Preload the field relationship
+		Order("RANDOM()"). // Random order
+		Limit(5). // Limit to 5 courses
 		Find(&courses).Error
 
 	if err != nil {

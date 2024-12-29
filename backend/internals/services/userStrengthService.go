@@ -28,9 +28,13 @@ func (s *userStrengthService) GetStrengthDataByUserID(userId uint64) ([]response
 		return nil, err
 	}
 
+	if strengthData == nil {
+		log.Printf("No passing evaluations found for user %d", userId)
+		return []response.StrengthDataResponse{}, nil
+	}
+
 	return strengthData, nil
 }
-
 func (s *userStrengthService) GetSuggestionCourse(userId uint64) ([]response.CourseResponse, error) {
 	courses, err := s.repo.GetSuggestionCourse(userId)
 	if err != nil {
