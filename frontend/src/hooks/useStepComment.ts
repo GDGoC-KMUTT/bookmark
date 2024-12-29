@@ -21,7 +21,7 @@ export const useStepComment = (stepId: number) => {
         } finally {
             setIsLoading(false)
         }
-    }, [])
+    }, [stepId])
 
     useEffect(() => {
         fetchStepComment()

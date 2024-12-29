@@ -19,7 +19,7 @@ export const useStepInfo = (stepId: number) => {
         } finally {
             setIsLoading(false)
         }
-    }, [])
+    }, [stepId])
 
     useEffect(() => {
         fetchStepInfo()

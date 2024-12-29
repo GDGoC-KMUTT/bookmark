@@ -19,7 +19,7 @@ export const useGemEachStep = (stepId: number) => {
         } finally {
             setIsLoading(false)
         }
-    }, [])
+    }, [stepId])
 
     useEffect(() => {
         fetchGemEachStep()
