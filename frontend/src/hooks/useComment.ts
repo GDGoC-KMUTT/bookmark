@@ -4,7 +4,7 @@ import { useCallback, useState } from "react"
 export const useComment = () => {
     const [success, setSuccess] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
+    const [error, setError] = useState<string | null>(null)
 
     const commentOnStep = useCallback(async (stepId: number, comment: string) => {
         setIsLoading(true)
@@ -13,12 +13,11 @@ export const useComment = () => {
         try {
             const response = await server.step.commentOnStep({ stepId: stepId, content: comment })
             if (response.code === 201) {
-                console.log("201 ka")
                 setSuccess(true)
                 setIsLoading(false)
             }
         } catch (err) {
-            setError(err as Error)
+            setError(`failed to comment: ${err}`)
         } finally {
             setIsLoading(false)
         }
