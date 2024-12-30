@@ -5,17 +5,17 @@ import (
 	"backend/internals/repositories"
 )
 
-type ModuleService struct {
-	moduleRepo repositories.ModulesRepository
+type moduleService struct {
+	moduleRepo repositories.ModuleRepo
 }
 
-func NewModuleService(moduleRepo repositories.ModulesRepository) *ModuleService {
-	return &ModuleService{
+func NewModuleService(moduleRepo repositories.ModuleRepo) ModuleServices {
+	return &moduleService{
 		moduleRepo: moduleRepo,
 	}
 }
 
-func (s *ModuleService) GetModuleInfo(moduleId string) (*payload.ModuleResponse, error) {
+func (s *moduleService) GetModuleInfo(moduleId string) (*payload.ModuleResponse, error) {
 	// Fetch Module from the repository
 	moduleEntity, err := s.moduleRepo.FindModuleInfoByModuleID(moduleId)
 	if err != nil {

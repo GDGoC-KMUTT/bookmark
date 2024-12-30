@@ -6,14 +6,12 @@ import (
 	"gorm.io/gorm"
 )
 
-
-
-type stepRepo struct {
+type stepRepository struct {
 	db *gorm.DB
 }
 
-func NewStepRepository(db *gorm.DB) StepRepository {
-	return &stepRepo{
+func NewStepRepository(db *gorm.DB) StepRepo {
+	return &stepRepository{
 		db: db,
 	}
 }

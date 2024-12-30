@@ -2,12 +2,11 @@ package services_test
 
 import (
 	"backend/internals/db/models"
-	// "backend/internals/entities/payload"
 	"backend/internals/services"
-	mockRepositories "backend/mocks/repositories"
 	"backend/internals/utils"
-	"testing"
+	mockRepositories "backend/mocks/repositories"
 	"errors"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -15,6 +14,10 @@ import (
 
 type CoursePageServiceTestSuite struct {
 	suite.Suite
+}
+
+func TestCoursePageService(t *testing.T) {
+	suite.Run(t, new(CoursePageServiceTestSuite))
 }
 
 func (suite *CoursePageServiceTestSuite) TestGetCoursePageInfoSuccess() {
@@ -106,9 +109,9 @@ func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdSuccess() 
 		},
 	}
 	mockField := &models.FieldType{
-		Id:        utils.Ptr(uint64(2)),
-		Name:      utils.Ptr("Science"),
-		ImageUrl:  utils.Ptr("http://example.com/image.png"),
+		Id:       utils.Ptr(uint64(2)),
+		Name:     utils.Ptr("Science"),
+		ImageUrl: utils.Ptr("http://example.com/image.png"),
 	}
 
 	// Mock repository responses
@@ -128,10 +131,6 @@ func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdSuccess() 
 	is.Equal(*mockCourses[0].Name, result[0].Name)
 	is.Equal(*mockField.Name, *result[0].FieldName)
 	is.Equal(*mockField.ImageUrl, *result[0].FieldImageUrl)
-}
-
-func TestCoursePageService(t *testing.T) {
-	suite.Run(t, new(CoursePageServiceTestSuite))
 }
 
 func (suite *CoursePageServiceTestSuite) TestGetCoursePageInfoError() {
@@ -243,34 +242,34 @@ func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdFindFieldE
 }
 
 func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdFieldNil() {
-    is := assert.New(suite.T())
+	is := assert.New(suite.T())
 
-    mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
-    mockCourseRepo := new(mockRepositories.CourseRepository)
+	mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
+	mockCourseRepo := new(mockRepositories.CourseRepository)
 
-    // Mock data
-    fieldId := "1"
-    mockCourses := []models.Course{
-        {
-            Id:      utils.Ptr(uint64(1)),
-            Name:    utils.Ptr("Course 1"),
-            FieldId: utils.Ptr(uint64(2)), // This will be used to fetch the field
-        },
-    }
+	// Mock data
+	fieldId := "1"
+	mockCourses := []models.Course{
+		{
+			Id:      utils.Ptr(uint64(1)),
+			Name:    utils.Ptr("Course 1"),
+			FieldId: utils.Ptr(uint64(2)), // This will be used to fetch the field
+		},
+	}
 
-    // Mock repository responses
-    mockCourseRepo.On("FindCoursesByFieldId", uint64(1)).Return(mockCourses, nil)
-    mockCourseRepo.On("FindFieldByFieldId", mockCourses[0].FieldId).Return(nil, nil) // Mocking field as nil
+	// Mock repository responses
+	mockCourseRepo.On("FindCoursesByFieldId", uint64(1)).Return(mockCourses, nil)
+	mockCourseRepo.On("FindFieldByFieldId", mockCourses[0].FieldId).Return(nil, nil) // Mocking field as nil
 
-    // Service setup
-    service := services.NewCoursePageService(mockCoursePageRepo, mockCourseRepo)
+	// Service setup
+	service := services.NewCoursePageService(mockCoursePageRepo, mockCourseRepo)
 
-    // Execute
-    result, err := service.GetSuggestCourseByFieldId(fieldId)
+	// Execute
+	result, err := service.GetSuggestCourseByFieldId(fieldId)
 
-    // Assertions
-    is.Nil(err)
-    is.Len(result, 0)
+	// Assertions
+	is.Nil(err)
+	is.Len(result, 0)
 }
 
 func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdFieldNotNil() {
