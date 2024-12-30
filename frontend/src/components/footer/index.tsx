@@ -1,4 +1,4 @@
-import SITLogo from '../../assets/sitkmutt.png'
+import SITLogo from "@/assets/sitkmutt.png"
 
 const Footer = () => {
     return (

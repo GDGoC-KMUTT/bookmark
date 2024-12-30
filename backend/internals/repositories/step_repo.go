@@ -6,18 +6,32 @@ import (
 	"gorm.io/gorm"
 )
 
-type StepRepository struct {
-    db *gorm.DB
+
+
+type stepRepo struct {
+	db *gorm.DB
 }
 
 func NewStepRepository(db *gorm.DB) StepRepository {
-    return StepRepository{
-        db: db,
-    }
+	return &stepRepo{
+		db: db,
+	}
+}
+
+func (r *stepRepo) GetStepById(stepId *uint64) (*models.Step, error) {
+	step := new(models.Step)
+	result := r.db.First(&step, stepId)
+	return step, result.Error
+}
+
+func (r *stepRepo) GetModuleIdByStepId(stepId *uint64) (*uint64, error) {
+	step := new(models.Step)
+	result := r.db.First(&step, stepId)
+	return step.ModuleId, result.Error
 }
 
 // Use value receiver to match the StepRepo interface
-func (r StepRepository) FindStepsByModuleID(moduleId string) ([]models.Step, error) {
+func (r *stepRepo) FindStepsByModuleID(moduleId string) ([]models.Step, error) {
     var steps []models.Step
     err := r.db.Where("module_id = ?", moduleId).Find(&steps).Error
     if err != nil {
@@ -25,3 +39,4 @@ func (r StepRepository) FindStepsByModuleID(moduleId string) ([]models.Step, err
     }
     return steps, nil
 }
+

@@ -1,21 +1,24 @@
 package routes
 
 import (
+	_ "backend/docs"
 	"backend/internals/config"
 	"backend/internals/controllers"
 	"backend/internals/db"
 	"backend/internals/entities/response"
+	"backend/internals/minio"
 	"backend/internals/repositories"
 	"backend/internals/routes/handler"
 	"backend/internals/routes/middleware"
 	"backend/internals/services"
 	services2 "backend/internals/utils/services"
 	"fmt"
+	"path/filepath"
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
 	"github.com/sirupsen/logrus"
-	"path/filepath"
-	"strings"
 )
 
 func SetupRoutes() {
@@ -28,10 +31,18 @@ func SetupRoutes() {
 	var moduleRepo = repositories.NewModuleRepository(db.Gorm)
 	var moduleStepRepo = repositories.NewStepRepository(db.Gorm)
 	var enrollRepo = repositories.NewEnrollRepository(db.Gorm)
+	var stepEvalRepo = repositories.NewStepEvaluateRepository(db.Gorm)
+	var userEvalRepo = repositories.NewUserEvaluateRepo(db.Gorm)
+	var stepRepo = repositories.NewStepRepository(db.Gorm)
+	var stepCommentRepo = repositories.NewStepCommentRepository(db.Gorm)
+	var stepCommentUpVoteRepo = repositories.NewStepCommentUpVote(db.Gorm)
+	var stepAuthorRepo = repositories.NewStepAuthorRepository(db.Gorm)
+	var courseContentRepo = repositories.NewCourseContentRepository(db.Gorm)
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
 	var jwtService = services2.NewJwtService()
+	var minioService = services2.NewMinioService(minio.MinioClient)
 
 	// * Services
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
@@ -39,6 +50,16 @@ func SetupRoutes() {
 	var courseService = services.NewCourseService(courseRepo, fieldTypeRepo)
 	var coursePageService = services.NewCoursePageService(&coursePageRepo, courseRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
+	var stepService = services.NewStepService(
+		stepRepo,
+		stepEvalRepo,
+		stepCommentRepo,
+		stepCommentUpVoteRepo,
+		stepAuthorRepo,
+		userRepo,
+		userEvalRepo,
+		courseContentRepo,
+		moduleRepo)
 	var articleService = services.NewArticleService(articleRepo)
 	var moduleService = services.NewModuleService(&moduleRepo)
 	var moduleStepService = services.NewModuleStepService(&moduleStepRepo)
@@ -54,6 +75,7 @@ func SetupRoutes() {
 	var moduleController = controllers.NewModuleController(moduleService)
 	var moduleStepController = controllers.NewModuleStepController(moduleStepService)
 	var enrollController = controllers.NewEnrollController(enrollService)
+	var stepController = controllers.NewStepController(stepService, config.Env, minioService)
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
@@ -115,6 +137,21 @@ func SetupRoutes() {
 	// * Enroll routes
 	enroll := api.Group("/enroll", middleware.Jwt())
 	enroll.Post("/:courseId", enrollController.EnrollInCourse)
+	
+	step := api.Group("/step", middleware.Jwt())
+	step.Get("/:stepId", stepController.GetStepInfo)
+	step.Get("/gem/:stepId", stepController.GetGemEachStep)
+
+	stepEval := step.Group("/stepEval")
+	stepEval.Post("/submit", stepController.SubmitStepEval)
+	stepEval.Get("/status", stepController.CheckStepEvalStatus)
+	stepEval.Post("/submit-type-check", stepController.SubmitStepEvalTypCheck)
+	stepEval.Get("/:stepId", stepController.GetStepEvaluate)
+
+	stepComment := step.Group("/comment")
+	stepComment.Post("/create", stepController.CommentOnStep)
+	stepComment.Post("/upvote", stepController.UpVoteStepComment)
+	stepComment.Get("/:stepId", stepController.GetStepComment)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {
