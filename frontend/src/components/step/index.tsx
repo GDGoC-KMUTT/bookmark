@@ -126,7 +126,7 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, index }) => {
                     Step {index}: {title}
                 </Button>
             </SheetTrigger>
-            <SheetContent className="w-[95%]">
+            <SheetContent className="w-[85%]">
                 <ScrollArea className="h-full">
                     {errorStepInfo !== null ? (
                         <div className="text-2xl w-full h-screen flex justify-center items-center">
@@ -254,7 +254,11 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, index }) => {
                                             </div>
                                             <div>
                                                 <div className="h-2/4 w-full bg-white rounded-sm flex flex-col p-3 border-[1px] border-gray-400">
-                                                    {stepInfo.step?.content && <MarkdownRenderer content={stepInfo.step?.content} />}
+                                                    {stepInfo.step?.content && (
+                                                        <div className="markdown">
+                                                            <MarkdownRenderer content={stepInfo.step?.content} />
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                             <BadgeStep
