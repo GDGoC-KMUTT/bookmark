@@ -2,92 +2,78 @@ package services_test
 
 import (
 	"backend/internals/db/models"
-	"backend/internals/services"
-	"backend/internals/utils"
 	mockRepositories "backend/mocks/repositories"
-	"fmt"
-	"testing"
-
-	"github.com/stretchr/testify/assert"
+	"backend/internals/services"
+	"errors"
 	"github.com/stretchr/testify/suite"
+	"testing"
 )
 
 type ModuleStepServiceTestSuite struct {
 	suite.Suite
+	mockStepRepo     *mockRepositories.StepRepository
+	mockUserEvalRepo *mockRepositories.UserEvaluateRepository
+	service          services.ModuleStepServices
 }
 
-func (suite *ModuleStepServiceTestSuite) TestGetModuleStepsWhenSuccess() {
-	is := assert.New(suite.T())
+func (suite *ModuleStepServiceTestSuite) SetupTest() {
+	suite.mockStepRepo = mockRepositories.NewStepRepository(suite.T())
+	suite.mockUserEvalRepo = mockRepositories.NewUserEvaluateRepository(suite.T())
+	suite.service = services.NewModuleStepService(suite.mockStepRepo, suite.mockUserEvalRepo)
+}
 
-	// Arrange
-	mockRepo := new(mockRepositories.StepRepository)
-	mockModuleID := "123"
-	mockSteps := []models.Step{
-		{
-			Id:    utils.Ptr(uint64(1)),
-			Title: utils.Ptr("Step 1"),
-			Check: utils.Ptr("true"),
-		},
-		{
-			Id:    utils.Ptr(uint64(2)),
-			Title: utils.Ptr("Step 2"),
-			Check: utils.Ptr("false"),
-		},
+func (suite *ModuleStepServiceTestSuite) TestGetModuleStepsSuccess() {
+	moduleID := "module123"
+	steps := []*models.Step{
+		{Id: new(uint64), Title: new(string)},
 	}
+	*steps[0].Id = 1
+	*steps[0].Title = "Step 1"
 
-	mockRepo.On("FindStepsByModuleID", mockModuleID).Return(mockSteps, nil)
+	suite.mockStepRepo.EXPECT().FindStepsByModuleID(&moduleID).Return(steps, nil)
+	suite.mockUserEvalRepo.EXPECT().FindStepEvaluateIDsByStepID(uint64(1)).Return([]uint64{1, 2}, nil)
+	suite.mockUserEvalRepo.EXPECT().FindUserPassedEvaluateIDs(uint(1), uint64(1)).Return([]uint64{1, 2}, nil)
 
-	// Test
-	underTest := services.NewModuleStepService(mockRepo)
-	steps, err := underTest.GetModuleSteps(mockModuleID)
-
-	// Assert
-	is.NoError(err)
-	is.NotNil(steps)
-	is.Len(steps, 2)
-	is.Equal(uint64(1), steps[0].Id)
-	is.Equal("Step 1", steps[0].Title)
-	is.Equal("true", steps[0].Check)
-	is.Equal(uint64(2), steps[1].Id)
-	is.Equal("Step 2", steps[1].Title)
-	is.Equal("false", steps[1].Check)
+	result, err := suite.service.GetModuleSteps(1, moduleID)
+	suite.NoError(err)
+	suite.Len(result, 1)
+	suite.True(result[0].Check)
 }
 
-func (suite *ModuleStepServiceTestSuite) TestGetModuleStepsWhenRepoFails() {
-	is := assert.New(suite.T())
+func (suite *ModuleStepServiceTestSuite) TestGetModuleStepsNoStepsFound() {
+	moduleID := "module123"
+	suite.mockStepRepo.EXPECT().FindStepsByModuleID(&moduleID).Return(nil, nil)
 
-	// Arrange
-	mockRepo := new(mockRepositories.StepRepository)
-	mockModuleID := "123"
-
-	mockRepo.On("FindStepsByModuleID", mockModuleID).Return(nil, fmt.Errorf("repository error"))
-
-	// Test
-	underTest := services.NewModuleStepService(mockRepo)
-	steps, err := underTest.GetModuleSteps(mockModuleID)
-
-	// Assert
-	is.Nil(steps)
-	is.NotNil(err)
-	is.Equal("repository error", err.Error())
+	result, err := suite.service.GetModuleSteps(1, moduleID)
+	suite.Error(err)
+	suite.Nil(result)
 }
 
-func (suite *ModuleStepServiceTestSuite) TestGetModuleStepsWhenRepoReturnsNoSteps() {
-	is := assert.New(suite.T())
+func (suite *ModuleStepServiceTestSuite) TestGetModuleStepsEvaluationMismatch() {
+	moduleID := "module123"
+	steps := []*models.Step{
+		{Id: new(uint64), Title: new(string)},
+	}
+	*steps[0].Id = 1
+	*steps[0].Title = "Step 1"
 
-	// Arrange
-	mockRepo := new(mockRepositories.StepRepository)
-	mockModuleID := "123"
+	suite.mockStepRepo.EXPECT().FindStepsByModuleID(&moduleID).Return(steps, nil)
+	suite.mockUserEvalRepo.EXPECT().FindStepEvaluateIDsByStepID(uint64(1)).Return([]uint64{1, 2}, nil)
+	suite.mockUserEvalRepo.EXPECT().FindUserPassedEvaluateIDs(uint(1), uint64(1)).Return([]uint64{1}, nil)
 
-	mockRepo.On("FindStepsByModuleID", mockModuleID).Return([]models.Step{}, nil)
+	result, err := suite.service.GetModuleSteps(1, moduleID)
+	suite.NoError(err)
+	suite.Len(result, 1)
+	suite.False(result[0].Check)
+}
 
-	// Test
-	underTest := services.NewModuleStepService(mockRepo)
-	steps, err := underTest.GetModuleSteps(mockModuleID)
+func (suite *ModuleStepServiceTestSuite) TestGetModuleStepsRepoError() {
+	moduleID := "module123"
+	suite.mockStepRepo.EXPECT().FindStepsByModuleID(&moduleID).Return(nil, errors.New("repository error"))
 
-	// Assert
-	is.NoError(err)
-	is.Len(steps, 0)
+	result, err := suite.service.GetModuleSteps(1, moduleID)
+	suite.Error(err)
+	suite.Nil(result)
 }
 
 func TestModuleStepService(t *testing.T) {

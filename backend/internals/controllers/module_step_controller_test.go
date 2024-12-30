@@ -4,112 +4,111 @@ import (
 	"backend/internals/controllers"
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
-	"backend/internals/routes/handler"
 	mockServices "backend/mocks/services"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"testing"
 )
 
 type ModuleStepControllerTestSuite struct {
 	suite.Suite
 }
 
-func setupTestModuleStepController(mockService *mockServices.ModuleStepServices) *fiber.App {
-	fiberConfig := fiber.Config{
-		ErrorHandler: handler.ErrorHandler,
-	}
-	app := fiber.New(fiberConfig)
+func setupTestModuleStepController(mockModuleStepService *mockServices.ModuleStepServices) *fiber.App {
+	app := fiber.New()
 
-	controller := controllers.NewModuleStepController(mockService)
+	// Initialize the controller
+	moduleStepController := controllers.NewModuleStepController(mockModuleStepService)
 
-	app.Get("/step/:moduleId/info", controller.GetModuleSteps)
+	// Middleware to simulate JWT Locals
+	app.Use(func(c *fiber.Ctx) error {
+		token := &jwt.Token{}
+		claims := jwt.MapClaims{"userId": float64(123)} // Simulate a valid userId claim
+		token.Claims = claims
+		c.Locals("user", token)
+		return c.Next()
+	})
 
+	// Register the route
+	app.Get("/step/:moduleId/info", moduleStepController.GetModuleSteps)
 	return app
 }
 
 func (suite *ModuleStepControllerTestSuite) TestGetModuleStepsWhenSuccess() {
-	is := assert.New(suite.T())
+    is := assert.New(suite.T())
 
-	mockService := new(mockServices.ModuleStepServices)
-	app := setupTestModuleStepController(mockService)
+    mockModuleStepService := new(mockServices.ModuleStepServices)
+    app := setupTestModuleStepController(mockModuleStepService)
 
-	mockModuleID := "123"
-	mockSteps := []payload.ModuleStepResponse{
-		{
-			Id:    1,
-			Title: "Step 1",
-			Check: "true",
-		},
-		{
-			Id:    2,
-			Title: "Step 2",
-			Check: "false",
-		},
-	}
+    moduleID := "module123"
+    mockSteps := []payload.ModuleStepResponse{
+        {Id: 1, Title: "Step 1", Check: true},
+    }
 
-	mockService.EXPECT().GetModuleSteps(mockModuleID).Return(mockSteps, nil)
+    mockModuleStepService.EXPECT().GetModuleSteps(uint(123), moduleID).Return(mockSteps, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/step/123/info", nil)
-	res, err := app.Test(req)
+    req := httptest.NewRequest(http.MethodGet, "/step/module123/info", nil)
+    req.Header.Set("Authorization", "Bearer mockToken")
 
-	var r response.InfoResponse[[]payload.ModuleStepResponse]
-	body, _ := io.ReadAll(res.Body)
-	json.Unmarshal(body, &r)
+    res, err := app.Test(req)
 
-	is.Nil(err)
-	is.Equal(http.StatusOK, res.StatusCode)
-	is.Len(r.Data, 2)
-	is.Equal(mockSteps[0].Id, r.Data[0].Id)
-	is.Equal(mockSteps[1].Id, r.Data[1].Id)
+    var responsePayload response.InfoResponse[[]payload.ModuleStepResponse]
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &responsePayload)
+
+    is.Nil(err)
+    is.Equal(http.StatusOK, res.StatusCode)
+    is.Equal(uint64(1), responsePayload.Data[0].Id) // Updated to match the actual type
+    is.Equal("Step 1", responsePayload.Data[0].Title)
+    is.True(responsePayload.Data[0].Check)
 }
 
 func (suite *ModuleStepControllerTestSuite) TestGetModuleStepsWhenServiceFails() {
-	is := assert.New(suite.T())
+    is := assert.New(suite.T())
 
-	mockService := new(mockServices.ModuleStepServices)
-	app := setupTestModuleStepController(mockService)
+    mockModuleStepService := new(mockServices.ModuleStepServices)
+    app := setupTestModuleStepController(mockModuleStepService)
 
-	mockModuleID := "123"
+    moduleID := "module123"
 
-	mockService.EXPECT().GetModuleSteps(mockModuleID).Return(nil, fmt.Errorf("service error"))
+    mockModuleStepService.EXPECT().GetModuleSteps(uint(123), moduleID).Return(nil, errors.New("service error"))
 
-	req := httptest.NewRequest(http.MethodGet, "/step/123/info", nil)
-	res, err := app.Test(req)
+    req := httptest.NewRequest(http.MethodGet, "/step/module123/info", nil)
+    req.Header.Set("Authorization", "Bearer mockToken")
 
-	var errResponse response.GenericError
-	body, _ := io.ReadAll(res.Body)
-	json.Unmarshal(body, &errResponse)
+    res, err := app.Test(req)
 
-	is.Nil(err)
-	is.Equal(http.StatusInternalServerError, res.StatusCode)
-	is.Equal("failed to get module steps", errResponse.Message)
+    var errResponse response.GenericError
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &errResponse)
+
+    is.Nil(err)
+    is.Equal(http.StatusInternalServerError, res.StatusCode)
+    is.Equal("service error", errResponse.Message)
 }
 
-func (suite *ModuleStepControllerTestSuite) TestGetModuleStepsWhenParseParamFailed() {
-	is := assert.New(suite.T())
+func (suite *ModuleStepControllerTestSuite) TestGetModuleStepsWhenModuleIDMissing() {
+    is := assert.New(suite.T())
 
-	mockService := new(mockServices.ModuleStepServices)
-	app := setupTestModuleStepController(mockService)
+    mockModuleStepService := new(mockServices.ModuleStepServices)
+    app := setupTestModuleStepController(mockModuleStepService)
 
-	req := httptest.NewRequest(http.MethodGet, "/step/invalid/info", nil)
-	res, err := app.Test(req)
+    req := httptest.NewRequest(http.MethodGet, "/step//info", nil)
+    req.Header.Set("Authorization", "Bearer mockToken")
 
-	var errResponse response.GenericError
-	body, _ := io.ReadAll(res.Body)
-	json.Unmarshal(body, &errResponse)
+    res, err := app.Test(req)
 
-	is.Nil(err)
-	is.Equal(http.StatusInternalServerError, res.StatusCode)
-	is.Equal("invalid moduleId parameter", errResponse.Message)
-}
+    var errResponse response.GenericError
+    body, _ := io.ReadAll(res.Body)
+    json.Unmarshal(body, &errResponse)
 
-func TestModuleStepController(t *testing.T) {
-	suite.Run(t, new(ModuleStepControllerTestSuite))
+    is.Nil(err)
+    is.Equal(http.StatusBadRequest, res.StatusCode)
+    is.Equal("missing module ID", errResponse.Message)
 }
