@@ -3,6 +3,7 @@ import { PayloadModuleStepResponse } from "../../api/api";
 // import StepCard from "@/components/step/index";
 import { useState } from "react";
 
+
 type ModuleProps = {
 	moduleTitle: string;
 	moduleDescription: string;
@@ -112,9 +113,9 @@ const Module: React.FC<ModuleProps> = ({
 						onClick={(e) => e.stopPropagation()} // Prevent click inside StepCard from triggering the outer onClick
 					>
 						{/* <StepCard
-							stepId={activeStep.stepId}
-							title={activeStep.title}
-							index={activeStep.index}
+							stepId={activeStep.stepId} // Used to fetch step-specific data or perform actions
+							title={activeStep.title}  // Step title
+							index={activeStep.index}  // UI representation of step's order
 						/> */}
 					</div>
 				</div>
