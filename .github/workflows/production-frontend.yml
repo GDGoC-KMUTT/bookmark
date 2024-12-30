@@ -34,7 +34,7 @@ jobs:
           cd ./frontend
           npm i
           touch .env
-          echo '${{secrets.FRONTEND_STAGING_ENV}}' > .env
+          echo '${{secrets.FRONTEND_PROD_ENV}}' > .env
           yarn gen-api
           npm run build
       - name: Upload artifact
