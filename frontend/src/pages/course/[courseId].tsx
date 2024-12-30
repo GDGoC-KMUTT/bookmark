@@ -4,7 +4,7 @@ import Text from "../../components/course/text";
 import Module from "../../components/course/module";
 import { server } from "@/configs/server";
 import CourseCard from "../../components/coursecard/index";
-import NotFound from "@/configs/pages/NotFound";
+import AppLoading from "@/components/ui/app-loading";
 import { PayloadModuleResponse, PayloadModuleStepResponse, PayloadCoursePage, PayloadCoursePageContent, PayloadSuggestCourse } from "../../api/api";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -107,7 +107,7 @@ const Course = () => {
   if (!courseId || !courseInfo) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <NotFound />
+        <AppLoading />
       </div>
     );
   }
