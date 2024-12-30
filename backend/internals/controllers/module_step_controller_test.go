@@ -92,6 +92,24 @@ func (suite *ModuleStepControllerTestSuite) TestGetModuleStepsWhenServiceFails()
 	is.Equal("failed to get module steps", errResponse.Message)
 }
 
+func (suite *ModuleStepControllerTestSuite) TestGetModuleStepsWhenParseParamFailed() {
+	is := assert.New(suite.T())
+
+	mockService := new(mockServices.ModuleStepServices)
+	app := setupTestModuleStepController(mockService)
+
+	req := httptest.NewRequest(http.MethodGet, "/step/invalid/info", nil)
+	res, err := app.Test(req)
+
+	var errResponse response.GenericError
+	body, _ := io.ReadAll(res.Body)
+	json.Unmarshal(body, &errResponse)
+
+	is.Nil(err)
+	is.Equal(http.StatusInternalServerError, res.StatusCode)
+	is.Equal("invalid moduleId parameter", errResponse.Message)
+}
+
 func TestModuleStepController(t *testing.T) {
 	suite.Run(t, new(ModuleStepControllerTestSuite))
 }
