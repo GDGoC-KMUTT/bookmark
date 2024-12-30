@@ -1,18 +1,16 @@
 package controllers
 
 import (
-	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
 	"backend/internals/services"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-// ModuleStepController handles module step-related endpoints
 type ModuleStepController struct {
 	moduleStepSvc services.ModuleStepServices
 }
 
-// NewModuleStepController initializes a new ModuleStepController
 func NewModuleStepController(moduleStepSvc services.ModuleStepServices) *ModuleStepController {
 	return &ModuleStepController{
 		moduleStepSvc: moduleStepSvc,
@@ -22,7 +20,8 @@ func NewModuleStepController(moduleStepSvc services.ModuleStepServices) *ModuleS
 // GetModuleSteps
 // @ID getModuleSteps
 // @Tags moduleStep
-// @Summary Get all steps for a module
+// @Summary Get module steps with evaluation status
+// @Description Fetch steps for a module and calculate evaluation status for each step.
 // @Accept json
 // @Produce json
 // @Param moduleId path string true "Module ID"
@@ -31,19 +30,29 @@ func NewModuleStepController(moduleStepSvc services.ModuleStepServices) *ModuleS
 // @Failure 500 {object} response.GenericError
 // @Router /step/{moduleId}/info [get]
 func (c *ModuleStepController) GetModuleSteps(ctx *fiber.Ctx) error {
-	moduleId := ctx.Params("moduleId")
+	// Extract user from JWT token using ctx.Locals
+	user := ctx.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := uint(claims["userId"].(float64))
 
-	// Call service to get module steps
-	steps, err := c.moduleStepSvc.GetModuleSteps(moduleId)
-	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
-			Err:     err,
-			Message: "failed to get module steps",
-		})
+	// Extract moduleId from URL parameter
+	moduleId := ctx.Params("moduleId")
+	if moduleId == "" {
+		return &response.GenericError{
+			Err:     fiber.NewError(fiber.StatusBadRequest, "module ID is required"),
+			Message: "missing module ID",
+		}
 	}
 
-	// Return the response
-	return ctx.JSON(&response.InfoResponse[[]payload.ModuleStepResponse]{
-		Data: steps,
-	})
+	// Fetch steps from service
+	steps, err := c.moduleStepSvc.GetModuleSteps(userId, moduleId)
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to get module steps",
+		}
+	}
+
+	// Return the steps as a response
+	return response.Ok(ctx, steps)
 }

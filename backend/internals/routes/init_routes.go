@@ -29,7 +29,6 @@ func SetupRoutes() {
 	var fieldTypeRepo = repositories.NewFieldTypeRepository(db.Gorm)
 	var articleRepo = repositories.NewArticleRepository(db.Gorm)
 	var moduleRepo = repositories.NewModuleRepository(db.Gorm)
-	var moduleStepRepo = repositories.NewStepRepository(db.Gorm)
 	var enrollRepo = repositories.NewEnrollRepository(db.Gorm)
 	var stepEvalRepo = repositories.NewStepEvaluateRepository(db.Gorm)
 	var userEvalRepo = repositories.NewUserEvaluateRepo(db.Gorm)
@@ -62,7 +61,7 @@ func SetupRoutes() {
 		moduleRepo)
 	var articleService = services.NewArticleService(articleRepo)
 	var moduleService = services.NewModuleService(moduleRepo)
-	var moduleStepService = services.NewModuleStepService(moduleStepRepo)
+	var moduleStepService = services.NewModuleStepService(stepRepo, userEvalRepo)
 	var enrollService = services.NewEnrollService(enrollRepo)
 
 	// * Controller
@@ -135,8 +134,9 @@ func SetupRoutes() {
 	enroll.Post("/:courseId", enrollController.EnrollInCourse)
 
 	step := api.Group("/step", middleware.Jwt())
-	step.Get("/gem/:stepId", stepController.GetGemEachStep)
 	step.Get("/:moduleId/info", moduleStepController.GetModuleSteps)
+
+	step.Get("/gem/:stepId", stepController.GetGemEachStep)
 	step.Get("/:stepId", stepController.GetStepInfo)
 
 	stepEval := step.Group("/stepEval")

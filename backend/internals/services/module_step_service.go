@@ -3,54 +3,62 @@ package services
 import (
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
+	"fmt"
 )
 
-type ModuleStepService struct {
-	moduleStepRepo repositories.StepRepository // Use the interface here
+type moduleStepService struct {
+	stepRepo       repositories.StepRepository
+	userEvaluateRepo repositories.UserEvaluateRepository
 }
 
-func NewModuleStepService(moduleStepRepo repositories.StepRepository) *ModuleStepService { // Update the constructor
-	return &ModuleStepService{
-		moduleStepRepo: moduleStepRepo,
+func NewModuleStepService(stepRepo repositories.StepRepository, userEvaluateRepo repositories.UserEvaluateRepository) ModuleStepServices {
+	return &moduleStepService{
+		stepRepo:       stepRepo,
+		userEvaluateRepo: userEvaluateRepo,
 	}
 }
 
-func (s *ModuleStepService) GetModuleSteps(moduleId string) ([]payload.ModuleStepResponse, error) {
-	// Fetch Steps from the repository
-	stepEntities, err := s.moduleStepRepo.FindStepsByModuleID(moduleId)
+func (s *moduleStepService) GetModuleSteps(userID uint, moduleID string) ([]payload.ModuleStepResponse, error) {
+	// Fetch steps for the module
+	steps, err := s.stepRepo.FindStepsByModuleID(&moduleID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to fetch steps for module ID %s: %w", moduleID, err)
 	}
 
-	// Handle nil or empty result
-	if stepEntities == nil {
-		return []payload.ModuleStepResponse{}, nil
+	if len(steps) == 0 {
+		return nil, fmt.Errorf("no steps found for module ID %s", moduleID)
 	}
 
-	// Map to a slice of payload.ModuleStepResponse
-	var steps []payload.ModuleStepResponse
-	for _, step := range stepEntities {
-		steps = append(steps, payload.ModuleStepResponse{
-			Id:    derefUint64(step.Id),
-			Title: derefString(step.Title),
-			Check: derefString(step.Check),
+	// Prepare response
+	var stepResponses []payload.ModuleStepResponse
+	for _, step := range steps {
+		// Validate step data
+		if step.Id == nil || step.Title == nil {
+			return nil, fmt.Errorf("invalid step data: missing ID or Title")
+		}
+
+		// Get all step_evaluate IDs for the current step
+		stepEvaluateIDs, err := s.userEvaluateRepo.FindStepEvaluateIDsByStepID(*step.Id)
+		if err != nil {
+			return nil, fmt.Errorf("failed to fetch step evaluate IDs for step ID %d: %w", *step.Id, err)
+		}
+
+		// Get all step_evaluate IDs where user has passed
+		userPassedIDs, err := s.userEvaluateRepo.FindUserPassedEvaluateIDs(userID, *step.Id)
+		if err != nil {
+			return nil, fmt.Errorf("failed to fetch user evaluations for step ID %d: %w", *step.Id, err)
+		}
+
+		// Determine the 'Check' status
+		check := len(stepEvaluateIDs) > 0 && len(stepEvaluateIDs) == len(userPassedIDs)
+
+		// Append the step response
+		stepResponses = append(stepResponses, payload.ModuleStepResponse{
+			Id:    *step.Id,
+			Title: *step.Title,
+			Check: check,
 		})
 	}
 
-	return steps, nil
-}
-
-// Helper functions to safely dereference pointers
-func derefUint64(ptr *uint64) uint64 {
-	if ptr == nil {
-		return 0 // Default value if pointer is nil
-	}
-	return *ptr
-}
-
-func derefString(ptr *string) string {
-	if ptr == nil {
-		return "" // Default value if pointer is nil
-	}
-	return *ptr
+	return stepResponses, nil
 }
