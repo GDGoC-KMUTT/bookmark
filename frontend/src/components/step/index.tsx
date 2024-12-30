@@ -1,4 +1,4 @@
-import { ArrowBigUp, BadgeCheck, Blocks, CircleSlash, Gem, Loader2, MessageSquare, ShieldQuestion } from "lucide-react"
+import { ArrowBigUp, BadgeCheck, Blocks, Check, CircleSlash, Gem, Loader, Loader2, MessageSquare, ShieldQuestion } from "lucide-react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -26,10 +26,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 type StepProps = {
     stepId: number
     title: string
-    index: number
+    check: string
 }
 
-const StepCard: React.FC<StepProps> = ({ stepId, title, index }) => {
+const StepCard: React.FC<StepProps> = ({ stepId, title, check }) => {
     const [userComment, setUserComment] = useState<string>("")
     const [openStepSheet, setOpenStepSheet] = useState(false)
 
@@ -129,9 +129,12 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, index }) => {
         <Sheet>
             <SheetTrigger asChild>
                 {/* TODO put component that will use to navigate to 'step' here */}
-                <Button variant="outline" onClick={() => setOpenStepSheet(!openStepSheet)}>
-                    Step {index}: {title}
-                </Button>
+                <li className="flex items-center space-x-2 cursor-pointer" onClick={() => setOpenStepSheet(!openStepSheet)}>
+                    <div className={`flex items-center justify-center w-6 h-6 rounded-full ${check === "true" ? "bg-green-500" : "bg-gray-500"}`}>
+                        {check === "true" ? <Check className="text-white w-4 h-4" /> : <Loader className="text-white w-4 h-4" />}
+                    </div>
+                    <p className="pl-3 text-lg font-normal">{title || "No title available"}</p>
+                </li>
             </SheetTrigger>
             <SheetContent className="w-[85%]">
                 <ScrollArea className="h-full">

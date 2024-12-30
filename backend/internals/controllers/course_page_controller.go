@@ -4,10 +4,11 @@ import (
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
 	"backend/internals/services"
-	"github.com/gofiber/fiber/v2"
 	"fmt"
-	"strings"
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"strconv"
+	"strings"
 )
 
 // CoursePageController handles course page-related endpoints
@@ -41,9 +42,10 @@ func (c *CoursePageController) GetCoursePageInfo(ctx *fiber.Ctx) error {
 			Message: fmt.Sprintf("course page with ID %s not found", coursePageId),
 		})
 	}
+	user := ctx.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userID := claims["userId"].(float64)
 
-	// Validate the Authorization token
-	user := ctx.Locals("user")
 	if user == nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(&response.GenericError{
 			Message: "missing or invalid authorization token",
@@ -105,7 +107,6 @@ func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
 	})
 }
 
-
 // GetSuggestCoursesByFieldId
 // @ID getSuggestCoursesByFieldId
 // @Tags course_page
@@ -148,6 +149,8 @@ func (c *CoursePageController) GetSuggestCoursesByFieldId(ctx *fiber.Ctx) error 
 			Message: "failed to fetch suggested courses",
 		})
 	}
+
+	return response.Ok(ctx, suggestCourses)
 
 	return ctx.JSON(&response.InfoResponse[[]payload.SuggestCourse]{
 		Data: suggestCourses,

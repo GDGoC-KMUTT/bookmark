@@ -61,8 +61,8 @@ func SetupRoutes() {
 		courseContentRepo,
 		moduleRepo)
 	var articleService = services.NewArticleService(articleRepo)
-	var moduleService = services.NewModuleService(&moduleRepo)
-	var moduleStepService = services.NewModuleStepService(&moduleStepRepo)
+	var moduleService = services.NewModuleService(moduleRepo)
+	var moduleStepService = services.NewModuleStepService(moduleStepRepo)
 	var enrollService = services.NewEnrollService(enrollRepo)
 
 	// * Controller
@@ -122,10 +122,6 @@ func SetupRoutes() {
 	module := api.Group("/module", middleware.Jwt())
 	module.Get("/:moduleId/info", moduleController.GetModuleInfo)
 
-	// * Step routes
-	step := api.Group("/step", middleware.Jwt())
-	step.Get("/:moduleId/info", moduleStepController.GetModuleSteps)
-
 	// * Article routes
 	article := api.Group("/article", middleware.Jwt())
 	article.Get("", articleController.GetAllArticles)
@@ -137,10 +133,11 @@ func SetupRoutes() {
 	// * Enroll routes
 	enroll := api.Group("/enroll", middleware.Jwt())
 	enroll.Post("/:courseId", enrollController.EnrollInCourse)
-	
+
 	step := api.Group("/step", middleware.Jwt())
-	step.Get("/:stepId", stepController.GetStepInfo)
 	step.Get("/gem/:stepId", stepController.GetGemEachStep)
+	step.Get("/:moduleId/info", moduleStepController.GetModuleSteps)
+	step.Get("/:stepId", stepController.GetStepInfo)
 
 	stepEval := step.Group("/stepEval")
 	stepEval.Post("/submit", stepController.SubmitStepEval)

@@ -6,10 +6,10 @@ import (
 )
 
 type ModuleService struct {
-	moduleRepo repositories.ModuleRepo
+	moduleRepo repositories.ModulesRepository
 }
 
-func NewModuleService(moduleRepo repositories.ModuleRepo) *ModuleService {
+func NewModuleService(moduleRepo repositories.ModulesRepository) *ModuleService {
 	return &ModuleService{
 		moduleRepo: moduleRepo,
 	}
@@ -35,4 +35,3 @@ func (s *ModuleService) GetModuleInfo(moduleId string) (*payload.ModuleResponse,
 		ImageUrl:    moduleEntity.ImageUrl,
 	}, nil
 }
-

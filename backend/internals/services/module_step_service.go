@@ -6,10 +6,10 @@ import (
 )
 
 type ModuleStepService struct {
-	moduleStepRepo repositories.StepRepo // Use the interface here
+	moduleStepRepo repositories.StepRepository // Use the interface here
 }
 
-func NewModuleStepService(moduleStepRepo repositories.StepRepo) *ModuleStepService { // Update the constructor
+func NewModuleStepService(moduleStepRepo repositories.StepRepository) *ModuleStepService { // Update the constructor
 	return &ModuleStepService{
 		moduleStepRepo: moduleStepRepo,
 	}

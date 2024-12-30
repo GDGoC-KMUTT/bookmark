@@ -2,8 +2,8 @@ package services_test
 
 import (
 	"backend/internals/db/models"
-	"backend/internals/utils"
 	"backend/internals/services"
+	"backend/internals/utils"
 	mockRepositories "backend/mocks/repositories"
 	"fmt"
 	"testing"
@@ -20,7 +20,7 @@ func (suite *ModuleServiceTestSuite) TestGetModuleInfoWhenSuccess() {
 	is := assert.New(suite.T())
 
 	// Arrange
-	mockModuleRepo := new(mockRepositories.ModuleRepo)
+	mockModuleRepo := new(mockRepositories.ModulesRepository)
 	mockModuleID := "123"
 	mockModuleEntity := &models.Module{
 		Id:          utils.Ptr(uint64(123)),
@@ -48,7 +48,7 @@ func (suite *ModuleServiceTestSuite) TestGetModuleInfoWhenRepoFails() {
 	is := assert.New(suite.T())
 
 	// Arrange
-	mockModuleRepo := new(mockRepositories.ModuleRepo)
+	mockModuleRepo := new(mockRepositories.ModulesRepository)
 	mockModuleID := "123"
 
 	mockModuleRepo.On("FindModuleInfoByModuleID", mockModuleID).Return(nil, fmt.Errorf("repository error"))
@@ -67,7 +67,7 @@ func (suite *ModuleServiceTestSuite) TestGetModuleInfoWhenRepoReturnsNilEntity()
 	is := assert.New(suite.T())
 
 	// Arrange
-	mockModuleRepo := new(mockRepositories.ModuleRepo)
+	mockModuleRepo := new(mockRepositories.ModulesRepository)
 	mockModuleID := "123"
 
 	mockModuleRepo.On("FindModuleInfoByModuleID", mockModuleID).Return(nil, nil)

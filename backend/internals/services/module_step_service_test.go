@@ -2,8 +2,8 @@ package services_test
 
 import (
 	"backend/internals/db/models"
-	"backend/internals/utils"
 	"backend/internals/services"
+	"backend/internals/utils"
 	mockRepositories "backend/mocks/repositories"
 	"fmt"
 	"testing"
@@ -20,7 +20,7 @@ func (suite *ModuleStepServiceTestSuite) TestGetModuleStepsWhenSuccess() {
 	is := assert.New(suite.T())
 
 	// Arrange
-	mockRepo := new(mockRepositories.StepRepo)
+	mockRepo := new(mockRepositories.StepRepository)
 	mockModuleID := "123"
 	mockSteps := []models.Step{
 		{
@@ -57,7 +57,7 @@ func (suite *ModuleStepServiceTestSuite) TestGetModuleStepsWhenRepoFails() {
 	is := assert.New(suite.T())
 
 	// Arrange
-	mockRepo := new(mockRepositories.StepRepo)
+	mockRepo := new(mockRepositories.StepRepository)
 	mockModuleID := "123"
 
 	mockRepo.On("FindStepsByModuleID", mockModuleID).Return(nil, fmt.Errorf("repository error"))
@@ -76,7 +76,7 @@ func (suite *ModuleStepServiceTestSuite) TestGetModuleStepsWhenRepoReturnsNoStep
 	is := assert.New(suite.T())
 
 	// Arrange
-	mockRepo := new(mockRepositories.StepRepo)
+	mockRepo := new(mockRepositories.StepRepository)
 	mockModuleID := "123"
 
 	mockRepo.On("FindStepsByModuleID", mockModuleID).Return([]models.Step{}, nil)
