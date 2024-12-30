@@ -59,6 +59,7 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
     const stepEvalPassed = isSubmit || userEval?.pass === null
     const passStatus = userEvalStatus?.pass ?? userEval?.pass
     const commentStatus = userEvalStatus?.comment ?? userEval?.comment
+    const checkPassAndCommentStatus = passStatus !== null && passStatus !== undefined && commentStatus !== null && commentStatus !== undefined
 
     useEffect(() => {
         setFile(null)
@@ -197,9 +198,7 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                 </div>
             )}
 
-            {type !== "check" && passStatus !== null && passStatus !== undefined && commentStatus !== null && commentStatus !== undefined && (
-                <ResultCard pass={passStatus} comment={commentStatus} />
-            )}
+            {type !== "check" && checkPassAndCommentStatus && <ResultCard pass={passStatus} comment={commentStatus} />}
         </>
     )
 }
