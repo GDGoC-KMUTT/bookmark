@@ -141,10 +141,7 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                     {userEvalId && userSubmission && (
                         <Dialog>
                             <DialogTrigger asChild>
-                                <div
-                                    className="w-[450px] cursor-pointer pt-4 flex items-center justify-center overflow-hidden"
-                                    style={{ height: "auto" }}
-                                >
+                                <div className="w-[450px] cursor-pointer pt-4 flex items-center justify-center overflow-hidden h-auto">
                                     <img src={userSubmission} alt={`submissionId:${userEvalId}`} className="max-w-full max-h-full object-contain" />
                                 </div>
                             </DialogTrigger>
