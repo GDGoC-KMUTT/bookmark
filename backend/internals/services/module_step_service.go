@@ -31,26 +31,11 @@ func (s *moduleStepService) GetModuleSteps(moduleId string) ([]payload.ModuleSte
 	var steps []payload.ModuleStepResponse
 	for _, step := range stepEntities {
 		steps = append(steps, payload.ModuleStepResponse{
-			Id:    derefUint64(step.Id),
-			Title: derefString(step.Title),
-			Check: derefString(step.Check),
+			Id:    *step.Id,
+			Title: *step.Title,
+			Check: *step.Check,
 		})
 	}
 
 	return steps, nil
-}
-
-// Helper functions to safely dereference pointers
-func derefUint64(ptr *uint64) uint64 {
-	if ptr == nil {
-		return 0 // Default value if pointer is nil
-	}
-	return *ptr
-}
-
-func derefString(ptr *string) string {
-	if ptr == nil {
-		return "" // Default value if pointer is nil
-	}
-	return *ptr
 }
