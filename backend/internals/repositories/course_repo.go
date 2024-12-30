@@ -36,7 +36,7 @@ func (r *courseRepository) GetCurrentCourse(userID uint) (*models.Course, error)
 	var userActivity models.UserActivity
 	result := r.db.Where("user_id = ?", userID).Order("updated_at desc").First(&userActivity)
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, nil
 	}
 
 	var step models.Step
@@ -67,28 +67,28 @@ func (r *courseRepository) GetCurrentCourse(userID uint) (*models.Course, error)
 }
 
 func (r *courseRepository) GetAllCourseSteps(courseID uint) ([]models.Step, error) {
-    var courseContents []models.CourseContent
-    result := r.db.Where("course_id = ?", courseID).Find(&courseContents)
-    if result.Error != nil {
-        return nil, result.Error
-    }
+	var courseContents []models.CourseContent
+	result := r.db.Where("course_id = ?", courseID).Find(&courseContents)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 
-    if len(courseContents) == 0 {
-        return nil, nil
-    }
+	if len(courseContents) == 0 {
+		return nil, nil
+	}
 
-    var moduleIDs []uint64
-    for _, content := range courseContents {
-        if content.ModuleId != nil {
-            moduleIDs = append(moduleIDs, *content.ModuleId)
-        }
-    }
+	var moduleIDs []uint64
+	for _, content := range courseContents {
+		if content.ModuleId != nil {
+			moduleIDs = append(moduleIDs, *content.ModuleId)
+		}
+	}
 
-    var steps []models.Step
-    result = r.db.Where("module_id IN ?", moduleIDs).Find(&steps)
-    if result.Error != nil {
-        return nil, result.Error
-    }
+	var steps []models.Step
+	result = r.db.Where("module_id IN ?", moduleIDs).Find(&steps)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 
 	return steps, nil
 }
@@ -99,7 +99,7 @@ func (r *courseRepository) GetTotalStepsByCourseId(courseID uint) (int, error) {
 		return 0, err
 	}
 
-    return len(steps), nil
+	return len(steps), nil
 }
 
 func (r *courseRepository) FindEnrollCourseByUserId(userId int) ([]*models.Enroll, error) {
