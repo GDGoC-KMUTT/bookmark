@@ -165,7 +165,7 @@ func main() {
 		}
 
 		// 7. Replace attachments paths
-		description = replaceAttachmentPaths(content)
+		description = replaceAttachmentPaths(description)
 		content = replaceAttachmentPaths(content)
 		outcome = replaceAttachmentPaths(outcome)
 		check = replaceAttachmentPaths(check)
