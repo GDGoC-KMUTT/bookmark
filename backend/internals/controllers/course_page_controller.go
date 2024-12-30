@@ -93,6 +93,7 @@ func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
 	// Handle empty content case
 	if len(coursePageContent) == 0 {
 		return &response.GenericError{
+			Err:     fmt.Errorf("no content found for course"),
 			Message: fmt.Sprintf("no content found for course page ID %d", param.CourseId),
 		}
 	}
