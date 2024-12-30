@@ -37,12 +37,7 @@ const Navbar = () => {
                     setCurrentCourse("No active course")
                 }
             } catch (error) {
-                if (
-                    typeof error === "object" &&
-                    error !== null &&
-                    "response" in error &&
-                    typeof (error as any).response?.status === "number"
-                ) {
+                if (typeof error === "object" && error !== null && "response" in error && typeof (error as any).response?.status === "number") {
                     const responseError = error as { response: { status: number } }
                     if (responseError.response.status === 500) {
                         setCurrentCourse("No active course")
@@ -59,7 +54,7 @@ const Navbar = () => {
     return (
         <div className="w-full bg-white h-[3rem] fixed top-0 shadow-md flex items-center px-6 py-3 justify-between z-[99]">
             <div className="flex items-center space-x-8">
-                <Link to="/portal">
+                <Link to="/home">
                     <img src={BookmarkLogo} alt="bookmarkLogo" className="w-8 h-8" />
                 </Link>
                 <div className="flex space-x-8">
@@ -80,10 +75,7 @@ const Navbar = () => {
                     <div className="items-center justify-center space-y-1">
                         <div className="font text-sm">{course.length > 11 ? `${course.slice(0, 11)}...` : course}</div>
                         <div className="relative w-24 h-1 bg-border rounded-full">
-                            <div
-                                className="absolute h-1 bg-progressBar rounded-full"
-                                style={{ width: `${progress}%` }}
-                            ></div>
+                            <div className="absolute h-1 bg-progressBar rounded-full" style={{ width: `${progress}%` }}></div>
                         </div>
                     </div>
                 </div>
@@ -102,9 +94,7 @@ const Navbar = () => {
                             className="w-full h-full object-cover rounded-full"
                         />
                         {!userProfile?.photoUrl && userProfile && (
-                            <AvatarFallback>
-                                {getFallbackName(`${userProfile.firstname} ${userProfile.lastname}`)}
-                            </AvatarFallback>
+                            <AvatarFallback>{getFallbackName(`${userProfile.firstname} ${userProfile.lastname}`)}</AvatarFallback>
                         )}
                     </Avatar>
                 </div>
@@ -114,5 +104,4 @@ const Navbar = () => {
 }
 
 export default Navbar
-
 
