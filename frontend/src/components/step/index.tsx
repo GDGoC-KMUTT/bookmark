@@ -7,7 +7,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip"
 import { getFallbackName } from "@/utils/getFallbackName"
 import { useStepInfo } from "@/hooks/useStepInfo"
 import { useGemEachStep } from "@/hooks/useGemEachStep"
@@ -22,6 +21,7 @@ import { useStepEval } from "@/hooks/useStepEval"
 import EvalTypeCard from "./eval-type"
 import MarkdownRenderer from "@/components/ui/markdown-renderer"
 import BadgeStep from "./badge-step"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type StepProps = {
     stepId: number
