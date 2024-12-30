@@ -43,9 +43,9 @@ func (r *ProfileController) ProfileUserInfo(c *fiber.Ctx) error {
 	// Fetch user profile info
 	userProfile, err := r.profileSvc.GetUserInfo(utils.Ptr(strconv.Itoa(int(userId))))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(response.GenericError{
+		return c.Status(fiber.StatusInternalServerError).JSON(response.GenericError{
 			Err:     err,
-			Message: "Failed to get user profile",
+			Message: "failed to get user profile",
 		})
 	}
 
@@ -67,7 +67,7 @@ func (r *ProfileController) GetUserGems(c *fiber.Ctx) error {
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	userId := claims["userId"].(float64)
-	
+
 	// * get total gems for user
 	totalGems, err := r.profileSvc.GetTotalGems(uint(userId))
 	if err != nil {
