@@ -2,26 +2,43 @@ package controllers_test
 
 import (
 	"backend/internals/controllers"
+	"backend/internals/entities/response"
+	"backend/internals/routes/handler"
+	"backend/internals/utils"
 	mockServices "backend/mocks/services"
+	"encoding/json"
 	"fmt"
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/gofiber/fiber/v2"
-	// "github.com/golang-jwt/jwt/v5"
+	"github.com/stretchr/testify/suite"
+	"io"
 	"net/http"
 	"net/http/httptest"
+
 	"testing"
 )
 
+type EnrollControllerTestSuite struct {
+	suite.Suite
+}
+
 func setupTestEnrollController(mockEnrollService *mockServices.EnrollServices) *fiber.App {
-	app := fiber.New()
+	fiberConfig := fiber.Config{
+		ErrorHandler: handler.ErrorHandler,
+	}
+	app := fiber.New(fiberConfig)
 
 	// Initialize the controller
 	controller := controllers.NewEnrollController(mockEnrollService)
 
 	// Middleware to simulate JWT Locals
 	app.Use(func(c *fiber.Ctx) error {
-		// Simulate a missing JWT for unauthorized requests
+		token := jwt.New(jwt.SigningMethodHS256)
+		claims := token.Claims.(jwt.MapClaims)
+		claims["userId"] = float64(123)
+		c.Locals("user", token)
 		return c.Next()
 	})
 
@@ -30,25 +47,98 @@ func setupTestEnrollController(mockEnrollService *mockServices.EnrollServices) *
 	return app
 }
 
-func TestEnrollInCourseUnauthorized(t *testing.T) {
-	is := assert.New(t)
+func TestEnrollController(t *testing.T) {
+	suite.Run(t, new(EnrollControllerTestSuite))
+}
 
-	// Arrange
+func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenSuccess() {
+	is := assert.New(suite.T())
+
 	mockEnrollService := new(mockServices.EnrollServices)
+
 	app := setupTestEnrollController(mockEnrollService)
 
-	mockCourseId := "1"
+	mockCourseId := utils.Ptr(uint64(1))
 
-	// Create a request without a valid token (simulate unauthorized access)
-	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/enroll/%s", mockCourseId), nil)
+	mockEnrollService.EXPECT().EnrollUser(mock.Anything, mock.Anything).Return(nil)
 
-	// Test
-	res, err := app.Test(req, -1) // No timeout
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/enroll/%d", mockCourseId), nil)
+	req.Header.Set("Content-Type", "application/json")
+	res, err := app.Test(req)
 
-	// Assert
+	r := new(response.InfoResponse[string])
+	body, _ := io.ReadAll(res.Body)
+	json.Unmarshal(body, &r)
+
 	is.Nil(err)
-	is.Equal(http.StatusUnauthorized, res.StatusCode)
+	is.Equal(http.StatusOK, res.StatusCode)
+}
 
-	// Ensure the EnrollUser method is not called
-	mockEnrollService.AssertNotCalled(t, "EnrollUser", mock.Anything, mock.Anything)
+func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenInvalidParam() {
+	is := assert.New(suite.T())
+
+	mockEnrollService := new(mockServices.EnrollServices)
+
+	app := setupTestEnrollController(mockEnrollService)
+
+	req := httptest.NewRequest(http.MethodPost, "/enroll/invalid", nil)
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := app.Test(req)
+
+	r := new(response.GenericError)
+	body, _ := io.ReadAll(res.Body)
+	json.Unmarshal(body, &r)
+
+	is.Nil(err)
+	is.Equal(http.StatusInternalServerError, res.StatusCode)
+	is.Equal("invalid courseId parameter", r.Message)
+}
+
+func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenInternalError() {
+	is := assert.New(suite.T())
+
+	mockEnrollService := new(mockServices.EnrollServices)
+
+	app := setupTestEnrollController(mockEnrollService)
+
+	mockCourseId := utils.Ptr(uint64(1))
+
+	mockEnrollService.EXPECT().EnrollUser(mock.Anything, mock.Anything).Return(fmt.Errorf("failed to enroll"))
+
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/enroll/%d", mockCourseId), nil)
+	req.Header.Set("Content-Type", "application/json")
+	res, err := app.Test(req)
+
+	r := new(response.GenericError)
+	body, _ := io.ReadAll(res.Body)
+	json.Unmarshal(body, &r)
+
+	is.Nil(err)
+	is.Equal(http.StatusInternalServerError, res.StatusCode)
+	is.Equal("failed to enroll course", r.Message)
+}
+
+func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenAlreadyEnroll() {
+	is := assert.New(suite.T())
+
+	mockEnrollService := new(mockServices.EnrollServices)
+
+	app := setupTestEnrollController(mockEnrollService)
+
+	mockCourseId := utils.Ptr(uint64(1))
+
+	mockEnrollService.EXPECT().EnrollUser(mock.Anything, mock.Anything).Return(fmt.Errorf("user is already enrolled in this course"))
+
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/enroll/%d", mockCourseId), nil)
+	req.Header.Set("Content-Type", "application/json")
+	res, err := app.Test(req)
+
+	r := new(response.GenericError)
+	body, _ := io.ReadAll(res.Body)
+	json.Unmarshal(body, &r)
+
+	is.Nil(err)
+	is.Equal(http.StatusInternalServerError, res.StatusCode)
+	is.Equal("user already enrolled", r.Message)
 }
