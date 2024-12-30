@@ -37,12 +37,11 @@ func SetupRoutes() {
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
 	var courseService = services.NewCourseService(courseRepo, fieldTypeRepo)
-	// var coursePageService = services.NewCoursePageService(coursePageRepo, courseRepo)
 	var coursePageService = services.NewCoursePageService(&coursePageRepo, courseRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
 	var articleService = services.NewArticleService(articleRepo)
-	var moduleService = services.NewModuleService(moduleRepo)
-	var moduleStepService = services.NewModuleStepService(moduleStepRepo)
+	var moduleService = services.NewModuleService(&moduleRepo)
+	var moduleStepService = services.NewModuleStepService(&moduleStepRepo)
 	var enrollService = services.NewEnrollService(enrollRepo)
 
 	// * Controller
