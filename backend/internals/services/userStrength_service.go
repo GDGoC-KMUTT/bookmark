@@ -30,6 +30,7 @@ func (s *userStrengthService) GetStrengthDataByUserID(userId uint64) ([]payload.
 
 	return strengthData, nil
 }
+
 func (s *userStrengthService) GetSuggestionCourse(userId uint64) ([]payload.CourseResponse, error) {
 	courses, err := s.repo.GetSuggestionCourse(userId)
 	if err != nil {

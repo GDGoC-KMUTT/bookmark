@@ -53,7 +53,7 @@ const Portal = () => {
                     server.userStrength.getStrengthDataByUserId,
                     (data) => {
                         const radarData: RadarData = {
-                            labels: data.map((item: any) => item.field_name || "Unknown"),
+                            labels: data.map((item: any) => item.fieldName || "Unknown"),
                             datasets: [
                                 {
                                     label: "User Strength",
@@ -106,7 +106,7 @@ const Portal = () => {
     // Section Contents
     const enrollmentContent = (
         <div className="flex w-max space-x-4">
-            {data.enrollments.map((enrollment, index) => (
+            {data.enrollments?.map((enrollment, index) => (
                 <EnrollmentCard
                     key={enrollment.id || index}
                     course_name={enrollment.courseName || "Untitled Course"}
@@ -126,7 +126,7 @@ const Portal = () => {
     const recentContent = (
         <ScrollArea className="w-full">
             <div className="flex space-x-4 pb-4">
-                {data.recentActivity.length > 0 ? (
+                {data.recentActivity ? (
                     data.recentActivity.map((activity, index) => (
                         <div key={activity.stepId || index} className="w-80 flex-none">
                             <RecentCard moduleTitle={activity.moduleTitle || "Untitled Module"} stepTitle={activity.stepTitle || "Untitled Step"} />
