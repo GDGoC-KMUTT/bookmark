@@ -9,11 +9,11 @@ import (
 
 // ModuleController handles module-related endpoints
 type ModuleController struct {
-	moduleSvc *services.ModuleService
+	moduleSvc services.ModuleServices
 }
 
 // NewModuleController initializes a new ModuleController
-func NewModuleController(moduleSvc *services.ModuleService) *ModuleController {
+func NewModuleController(moduleSvc services.ModuleServices) *ModuleController {
 	return &ModuleController{
 		moduleSvc: moduleSvc,
 	}
@@ -31,19 +31,26 @@ func NewModuleController(moduleSvc *services.ModuleService) *ModuleController {
 // @Failure 500 {object} response.GenericError
 // @Router /module/{moduleId}/info [get]
 func (c *ModuleController) GetModuleInfo(ctx *fiber.Ctx) error {
-	moduleId := ctx.Params("moduleId")
+    moduleId := ctx.Params("moduleId")
 
-	// Call service to get module info
-	moduleInfo, err := c.moduleSvc.GetModuleInfo(moduleId)
-	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
-			Err:     err,
-			Message: "failed to get module info",
-		})
-	}
+    // Call service to get module info
+    moduleInfo, err := c.moduleSvc.GetModuleInfo(moduleId)
+    if err != nil {
+        return ctx.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
+            Err:     err,
+            Message: "failed to get module info",
+        })
+    }
 
-	// Dereference moduleInfo to pass the value to InfoResponse
-	return ctx.JSON(&response.InfoResponse[payload.ModuleResponse]{
-		Data: *moduleInfo, // Dereference the pointer here
-	})
+    if moduleInfo == nil {
+        return ctx.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
+            Message: "module info is not available",
+        })
+    }
+
+    // Dereference moduleInfo to pass the value to InfoResponse
+    return ctx.JSON(&response.InfoResponse[payload.ModuleResponse]{
+        Data: *moduleInfo, // Dereference the pointer here
+    })
 }
+

@@ -12,10 +12,10 @@ import (
 
 // CoursePageController handles course page-related endpoints
 type CoursePageController struct {
-	coursePageSvc services.CoursePageServiceInterface
+	coursePageSvc services.CoursePageServices
 }
 
-func NewCoursePageController(service services.CoursePageServiceInterface) *CoursePageController {
+func NewCoursePageController(service services.CoursePageServices) *CoursePageController {
 	return &CoursePageController{
 		coursePageSvc: service, // Assign the service parameter to the field
 	}

@@ -5,7 +5,6 @@ import (
 	"backend/internals/entities/payload"
 	"strconv"
 	"fmt"
-	// "errors"
 )
 
 type CoursePageRepositoryInterface interface {

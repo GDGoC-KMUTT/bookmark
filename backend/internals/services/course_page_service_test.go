@@ -20,7 +20,7 @@ type CoursePageServiceTestSuite struct {
 func (suite *CoursePageServiceTestSuite) TestGetCoursePageInfoSuccess() {
 	is := assert.New(suite.T())
 
-	mockCoursePageRepo := new(mockRepositories.CoursePageRepositoryInterface)
+	mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 
 	// Mock data
@@ -54,7 +54,7 @@ func (suite *CoursePageServiceTestSuite) TestGetCoursePageInfoSuccess() {
 func (suite *CoursePageServiceTestSuite) TestGetCoursePageContentSuccess() {
 	is := assert.New(suite.T())
 
-	mockCoursePageRepo := new(mockRepositories.CoursePageRepositoryInterface)
+	mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 
 	// Mock data
@@ -93,7 +93,7 @@ func (suite *CoursePageServiceTestSuite) TestGetCoursePageContentSuccess() {
 func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdSuccess() {
 	is := assert.New(suite.T())
 
-	mockCoursePageRepo := new(mockRepositories.CoursePageRepositoryInterface)
+	mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 
 	// Mock data
@@ -137,7 +137,7 @@ func TestCoursePageService(t *testing.T) {
 func (suite *CoursePageServiceTestSuite) TestGetCoursePageInfoError() {
 	is := assert.New(suite.T())
 
-	mockCoursePageRepo := new(mockRepositories.CoursePageRepositoryInterface)
+	mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 
 	// Mock data
@@ -158,7 +158,7 @@ func (suite *CoursePageServiceTestSuite) TestGetCoursePageInfoError() {
 func (suite *CoursePageServiceTestSuite) TestGetCoursePageContentError() {
 	is := assert.New(suite.T())
 
-	mockCoursePageRepo := new(mockRepositories.CoursePageRepositoryInterface)
+	mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 
 	// Mock data
@@ -179,7 +179,7 @@ func (suite *CoursePageServiceTestSuite) TestGetCoursePageContentError() {
 func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdParseUintError() {
 	is := assert.New(suite.T())
 
-	mockCoursePageRepo := new(mockRepositories.CoursePageRepositoryInterface)
+	mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 
 	// Invalid field ID
@@ -199,7 +199,7 @@ func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdParseUintE
 func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdFindCoursesError() {
 	is := assert.New(suite.T())
 
-	mockCoursePageRepo := new(mockRepositories.CoursePageRepositoryInterface)
+	mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 
 	// Mock data
@@ -220,7 +220,7 @@ func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdFindCourse
 func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdFindFieldError() {
 	is := assert.New(suite.T())
 
-	mockCoursePageRepo := new(mockRepositories.CoursePageRepositoryInterface)
+	mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 
 	// Mock data
@@ -245,7 +245,7 @@ func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdFindFieldE
 func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdFieldNil() {
     is := assert.New(suite.T())
 
-    mockCoursePageRepo := new(mockRepositories.CoursePageRepositoryInterface)
+    mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
     mockCourseRepo := new(mockRepositories.CourseRepository)
 
     // Mock data
@@ -276,7 +276,7 @@ func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdFieldNil()
 func (suite *CoursePageServiceTestSuite) TestGetSuggestCourseByFieldIdFieldNotNil() {
 	is := assert.New(suite.T())
 
-	mockCoursePageRepo := new(mockRepositories.CoursePageRepositoryInterface)
+	mockCoursePageRepo := new(mockRepositories.CoursePageRepo)
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 
 	// Mock data

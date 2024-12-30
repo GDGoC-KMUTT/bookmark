@@ -6,13 +6,13 @@ import (
 )
 
 type ModuleService struct {
-    moduleRepo repositories.ModuleRepository
+	moduleRepo repositories.ModuleRepo
 }
 
-func NewModuleService(moduleRepo repositories.ModuleRepository) *ModuleService {
-    return &ModuleService{
-        moduleRepo: moduleRepo,
-    }
+func NewModuleService(moduleRepo repositories.ModuleRepo) *ModuleService {
+	return &ModuleService{
+		moduleRepo: moduleRepo,
+	}
 }
 
 func (s *ModuleService) GetModuleInfo(moduleId string) (*payload.ModuleResponse, error) {
@@ -20,6 +20,11 @@ func (s *ModuleService) GetModuleInfo(moduleId string) (*payload.ModuleResponse,
 	moduleEntity, err := s.moduleRepo.FindModuleInfoByModuleID(moduleId)
 	if err != nil {
 		return nil, err
+	}
+
+	// Handle nil entity
+	if moduleEntity == nil {
+		return nil, nil
 	}
 
 	// Map to payload.ModuleResponse
@@ -30,3 +35,4 @@ func (s *ModuleService) GetModuleInfo(moduleId string) (*payload.ModuleResponse,
 		ImageUrl:    moduleEntity.ImageUrl,
 	}, nil
 }
+

@@ -22,7 +22,7 @@ type CoursePageControllerTestSuite struct {
 	suite.Suite
 }
 
-func setupTestCoursePageController(coursePageSvc services.CoursePageServiceInterface, withToken bool) *fiber.App {
+func setupTestCoursePageController(coursePageSvc services.CoursePageServices, withToken bool) *fiber.App {
 	fiberConfig := fiber.Config{
 		ErrorHandler: handler.ErrorHandler,
 	}
@@ -51,7 +51,7 @@ func setupTestCoursePageController(coursePageSvc services.CoursePageServiceInter
 func TestGetCoursePageInfoWhenSuccess(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "1"
@@ -86,7 +86,7 @@ func pointerToString(s string) *string {
 func TestGetCoursePageInfoWhenInvalidID(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "invalidID"
@@ -106,7 +106,7 @@ func TestGetCoursePageInfoWhenInvalidID(t *testing.T) {
 func TestGetCoursePageContentWhenSuccess(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "1"
@@ -152,7 +152,7 @@ func pointerToUint64(u uint64) *uint64 {
 func TestGetSuggestCoursesByFieldIdWhenNoSuggestions(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockFieldId := "3"
@@ -175,7 +175,7 @@ func TestGetSuggestCoursesByFieldIdWhenNoSuggestions(t *testing.T) {
 func TestGetCoursePageInfoWhenNonNumericID(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "abc"
@@ -194,7 +194,7 @@ func TestGetCoursePageInfoWhenNonNumericID(t *testing.T) {
 func TestGetSuggestCoursesByFieldIdWhenEmptyFieldId(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	req := httptest.NewRequest(http.MethodGet, "/courses/suggest", nil)
@@ -209,7 +209,7 @@ func TestGetSuggestCoursesByFieldIdWhenEmptyFieldId(t *testing.T) {
 func TestGetCoursePageContentWhenServiceFails(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "1"
@@ -229,7 +229,7 @@ func TestGetCoursePageContentWhenServiceFails(t *testing.T) {
 func TestGetCoursePageContentPartialResponse(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "1"
@@ -262,7 +262,7 @@ func TestGetCoursePageContentPartialResponse(t *testing.T) {
 func TestGetCoursePageInfoWhenServiceFails(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "1"
@@ -282,7 +282,7 @@ func TestGetCoursePageInfoWhenServiceFails(t *testing.T) {
 func TestGetCoursePageInfoWhenNotFound(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "1"
@@ -302,7 +302,7 @@ func TestGetCoursePageInfoWhenNotFound(t *testing.T) {
 func TestGetCoursePageContentWhenEmpty(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "1"
@@ -322,7 +322,7 @@ func TestGetSuggestCoursesByFieldIdWhenInvalidFieldId(t *testing.T) {
 	is := assert.New(t)
 
 	// Mock the service
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 
 	// Ensure the service is not called for invalid field IDs
 	mockCoursePageService.AssertNotCalled(t, "GetSuggestCourseByFieldId", "invalid")
@@ -349,7 +349,7 @@ func TestGetSuggestCoursesByFieldIdWhenInvalidFieldId(t *testing.T) {
 func TestGetSuggestCoursesByFieldIdWhenServiceFails(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	fieldIdStr := "2"
@@ -369,7 +369,7 @@ func TestGetSuggestCoursesByFieldIdWhenServiceFails(t *testing.T) {
 func TestGetCoursePageContentWhenFieldIdIsEmpty(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	req := httptest.NewRequest(http.MethodGet, "/courses//content", nil)
@@ -385,7 +385,7 @@ func TestGetCoursePageContentWhenFieldIdIsEmpty(t *testing.T) {
 func TestGetSuggestCoursesByFieldIdWhenNoToken(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, false) // No token
 
 	fieldIdStr := "2"
@@ -402,7 +402,7 @@ func TestGetSuggestCoursesByFieldIdWhenNoToken(t *testing.T) {
 func TestGetSuggestCoursesByFieldIdWhenFieldIdIsNumericButNotFound(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	fieldIdStr := "123" // Numeric fieldId
@@ -422,7 +422,7 @@ func TestGetSuggestCoursesByFieldIdWhenFieldIdIsNumericButNotFound(t *testing.T)
 func TestGetSuggestCoursesByFieldIdWhenServerErrorOccurs(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	fieldIdStr := "2"
@@ -442,7 +442,7 @@ func TestGetSuggestCoursesByFieldIdWhenServerErrorOccurs(t *testing.T) {
 func TestGetCoursePageInfoWhenTokenIsMalformed(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, false) // No token injection
 
 	mockCoursePageId := "1"
@@ -460,7 +460,7 @@ func TestGetCoursePageInfoWhenTokenIsMalformed(t *testing.T) {
 func TestGetCoursePageInfoWithMissingUserIdInToken(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, false) // No valid token
 
 	mockCoursePageId := "1"
@@ -478,7 +478,7 @@ func TestGetCoursePageInfoWithMissingUserIdInToken(t *testing.T) {
 func TestGetCoursePageInfoWhenMalformedFieldId(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "123abc" // Malformed fieldId
@@ -496,7 +496,7 @@ func TestGetCoursePageInfoWhenMalformedFieldId(t *testing.T) {
 func TestGetSuggestCoursesByFieldIdWhenInvalidToken(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, false) // No valid token
 
 	fieldIdStr := "2"
@@ -514,7 +514,7 @@ func TestGetSuggestCoursesByFieldIdWhenInvalidToken(t *testing.T) {
 func TestGetCoursePageContentWhenRequestMethodIsInvalid(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	mockCoursePageId := "1"
@@ -532,7 +532,7 @@ func TestGetCoursePageContentWhenRequestMethodIsInvalid(t *testing.T) {
 func TestGetEnrollCourseByUserIdWhenUserIdIsInvalid(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	invalidUserId := "abc" // Invalid userId
@@ -550,7 +550,7 @@ func TestGetEnrollCourseByUserIdWhenUserIdIsInvalid(t *testing.T) {
 func TestGetCoursePageContentWhenNoContent(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true)
 
 	mockCoursePageId := "1"
@@ -570,7 +570,7 @@ func TestGetCoursePageContentWhenNoContent(t *testing.T) {
 func TestGetSuggestCoursesByFieldIdWhenFieldIdIsNotNumeric(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true)
 
 	fieldIdStr := "non-numeric"
@@ -588,7 +588,7 @@ func TestGetSuggestCoursesByFieldIdWhenFieldIdIsNotNumeric(t *testing.T) {
 func TestGetSuggestCoursesByFieldIdWhenFieldIdIsEmpty(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
 	// Simulate a request with an empty fieldId
@@ -606,7 +606,7 @@ func TestGetSuggestCoursesByFieldIdWhenFieldIdIsEmpty(t *testing.T) {
 func TestGetCoursePageInfoWhenUnauthorized(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, false)
 
 	mockCoursePageId := "1"
@@ -623,7 +623,7 @@ func TestGetCoursePageInfoWhenUnauthorized(t *testing.T) {
 func TestGetCoursePageInfoWhenUnhandledError(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true)
 
 	mockCoursePageId := "1"
@@ -648,7 +648,7 @@ func TestGetCoursePageInfoWhenUnhandledError(t *testing.T) {
 func TestGetCoursePageContentWhenEmptyResponse(t *testing.T) {
 	is := assert.New(t)
 
-	mockCoursePageService := new(mockServices.CoursePageServiceInterface)
+	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true)
 
 	mockCoursePageId := "1"
