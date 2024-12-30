@@ -156,12 +156,14 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                     ) : (
                         <>{userEvalId && <p className="text-xs pt-2">submission Id: {userEvalId}</p>}</>
                     )}
-                    {stepEvalPassed && passStatus === null && commentStatus === null && (
-                        <div className="flex space-x-2 pt-3">
-                            <Loader2 className="animate-spin" />
-                            <p>Please wait, this may take a few minutes as we check your answer</p>
-                        </div>
-                    )}
+                    {stepEvalPassed &&
+                        (passStatus === null || passStatus === undefined) &&
+                        (commentStatus === null || commentStatus === undefined) && (
+                            <div className="flex space-x-2 pt-3">
+                                <Loader2 className="animate-spin" />
+                                <p>Please wait, this may take a few minutes as we check your answer</p>
+                            </div>
+                        )}
                 </div>
             )}
             {type === "text" && (
@@ -178,7 +180,7 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                         <Button
                             type="submit"
                             className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800 rounded-sm"
-                            disabled={userEval?.content !== null || userEval?.userEvalId !== null}
+                            disabled={answer === "" || !!userEvalId}
                             onClick={handleSubmit}
                         >
                             Submit
@@ -189,12 +191,14 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                     ) : (
                         <>{userEvalId && <p className="text-xs pt-2">submission Id: {userEvalId}</p>}</>
                     )}
-                    {stepEvalPassed && passStatus === null && commentStatus === null && (
-                        <div className="flex space-x-2 pt-3">
-                            <Loader2 className="animate-spin" />
-                            <p>Please wait, this may take a few minutes as we check your answer</p>
-                        </div>
-                    )}
+                    {stepEvalPassed &&
+                        (passStatus === null || passStatus === undefined) &&
+                        (commentStatus === null || commentStatus === undefined) && (
+                            <div className="flex space-x-2 pt-3">
+                                <Loader2 className="animate-spin" />
+                                <p>Please wait, this may take a few minutes as we check your answer</p>
+                            </div>
+                        )}
                 </div>
             )}
 
