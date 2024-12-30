@@ -6,6 +6,7 @@ import (
 	"backend/internals/controllers"
 	"backend/internals/db"
 	"backend/internals/entities/response"
+	"backend/internals/minio"
 	"backend/internals/repositories"
 	"backend/internals/routes/handler"
 	"backend/internals/routes/middleware"
@@ -38,7 +39,8 @@ func SetupRoutes() {
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
 	var jwtService = services2.NewJwtService()
-
+	var minioService = services2.NewMinioService(minio.MinioClient)
+	
 	// * Services
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
@@ -53,7 +55,7 @@ func SetupRoutes() {
 	var courseController = controllers.NewCourseController(courseService)
 	var articleController = controllers.NewArticleController(articleService)
 	var progressController = controllers.NewProgressController(progressService)
-	var stepController = controllers.NewStepController(stepService)
+	var stepController = controllers.NewStepController(stepService, config.Env, minioService)
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 

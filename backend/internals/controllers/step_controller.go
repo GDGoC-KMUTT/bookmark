@@ -4,25 +4,28 @@ import (
 	"backend/internals/config"
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
-	minio2 "backend/internals/minio"
 	"backend/internals/services"
 	"backend/internals/utils"
+	utilServices "backend/internals/utils/services"
 	"encoding/json"
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/minio/minio-go/v7"
 	"net/url"
 )
 
 type StepController struct {
-	stepSvc services.StepService
+	stepSvc      services.StepService
+	conf         *config.Config
+	minioService utilServices.MinioService
 }
 
-func NewStepController(stepSvc services.StepService) StepController {
+func NewStepController(stepSvc services.StepService, conf *config.Config, minioService utilServices.MinioService) StepController {
 	return StepController{
-		stepSvc: stepSvc,
+		stepSvc:      stepSvc,
+		conf:         conf,
+		minioService: minioService,
 	}
 }
 
@@ -271,8 +274,7 @@ func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
 	body := new(payload.SubmitStepEval)
 	if err := json.Unmarshal([]byte(jsonData), body); err != nil {
 		return &response.GenericError{
-			Err:     err,
-			Message: "Invalid JSON in form field 'data'",
+			Err: err,
 		}
 	}
 
@@ -342,20 +344,19 @@ func (r *StepController) SubmitStepEval(c *fiber.Ctx) error {
 		result.UserSubmission = &content
 
 		// * Upload file to minio
-		_, err = minio2.MinioClient.PutObject(
+		if err := r.minioService.PutObject(
 			c.Context(),
-			*config.Env.MinioS3BucketName,
+			*r.conf.MinioS3BucketName,
 			*filename,
 			file,
-			fileHeader.Size,
-			minio.PutObjectOptions{ContentType: fileHeader.Header.Get("Content-Type")},
-		)
-		if err != nil {
+			fileHeader,
+		); err != nil {
 			return &response.GenericError{
 				Err:     err,
-				Message: "Failed to upload file",
+				Message: "failed to upload file",
 			}
 		}
+
 	}
 
 	userStepEvalId, err := r.stepSvc.CreateUserEval(userEval)

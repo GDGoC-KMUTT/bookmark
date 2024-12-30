@@ -7,6 +7,7 @@ import (
 	"backend/internals/repositories"
 	"backend/internals/utils"
 	"fmt"
+	"io"
 	"net/url"
 	"sort"
 	"strconv"
@@ -374,4 +375,8 @@ func (r *stepService) SubmitStepEvalTypeCheck(stepEvalId *uint64, userId *uint64
 	}
 
 	return newUserEval.Id, nil
+}
+
+func (r *stepService) PutObjectToMinio(bucketName string, objectName string, reader io.Reader, objectSize int64) {
+
 }
