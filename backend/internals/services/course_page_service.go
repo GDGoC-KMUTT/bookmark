@@ -1,28 +1,28 @@
 package services
 
 import (
-	"backend/internals/db/models" // Import the models package
+	"backend/internals/db/models"
 	"backend/internals/entities/payload"
 	"strconv"
 	"fmt"
 )
 
-type CoursePageRepositoryInterface interface {
+type CoursePageRepo interface {
 	FindCoursePageInfoByCoursePageID(coursePageId string) (*models.Course, error)
 	FindCoursePageContentByCoursePageID(coursePageId string) ([]models.CourseContent, error)
 }
 
-type CourseRepositoryInterface interface {
+type CourseRepo interface {
 	FindCoursesByFieldId(fieldId uint64) ([]models.Course, error)
 	FindFieldByFieldId(fieldId *uint64) (*models.FieldType, error)
 }
 
 type CoursePageService struct {
-	coursePageRepo CoursePageRepositoryInterface
-	courseRepo     CourseRepositoryInterface
+	coursePageRepo CoursePageRepo
+	courseRepo     CourseRepo
 }
 
-func NewCoursePageService(coursePageRepo CoursePageRepositoryInterface, courseRepo CourseRepositoryInterface) *CoursePageService {
+func NewCoursePageService(coursePageRepo CoursePageRepo, courseRepo CourseRepo) *CoursePageService {
 	return &CoursePageService{
 		coursePageRepo: coursePageRepo,
 		courseRepo:     courseRepo,
