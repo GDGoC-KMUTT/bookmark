@@ -6,17 +6,18 @@ import (
 	"backend/internals/services"
 	"github.com/gofiber/fiber/v2"
 	"fmt"
+	"strings"
+	"strconv"
 )
 
 // CoursePageController handles course page-related endpoints
 type CoursePageController struct {
-	coursePageSvc *services.CoursePageService
+	coursePageSvc services.CoursePageServiceInterface
 }
 
-// NewCoursePageController initializes a new CoursePageController
-func NewCoursePageController(coursePageSvc *services.CoursePageService) *CoursePageController {
+func NewCoursePageController(service services.CoursePageServiceInterface) *CoursePageController {
 	return &CoursePageController{
-		coursePageSvc: coursePageSvc,
+		coursePageSvc: service, // Assign the service parameter to the field
 	}
 }
 
@@ -34,18 +35,38 @@ func NewCoursePageController(coursePageSvc *services.CoursePageService) *CourseP
 func (c *CoursePageController) GetCoursePageInfo(ctx *fiber.Ctx) error {
 	coursePageId := ctx.Params("coursePageId")
 
-	// Call service to get course page info
+	// Check if the coursePageId is numeric
+	if _, err := strconv.Atoi(coursePageId); err != nil {
+		return ctx.Status(fiber.StatusNotFound).JSON(&response.GenericError{
+			Message: fmt.Sprintf("course page with ID %s not found", coursePageId),
+		})
+	}
+
+	// Validate the Authorization token
+	user := ctx.Locals("user")
+	if user == nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(&response.GenericError{
+			Message: "missing or invalid authorization token",
+		})
+	}
+
+	// Call the service to get course page info
 	coursePageInfo, err := c.coursePageSvc.GetCoursePageInfo(coursePageId)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			return ctx.Status(fiber.StatusNotFound).JSON(&response.GenericError{
+				Err:     err,
+				Message: fmt.Sprintf("course page with ID %s not found", coursePageId),
+			})
+		}
 		return ctx.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
 			Err:     err,
 			Message: "failed to get course page info",
 		})
 	}
 
-	// Dereference coursePageInfo and pass as value to InfoResponse
 	return ctx.JSON(&response.InfoResponse[payload.CoursePage]{
-		Data: *coursePageInfo, // Dereference the pointer here
+		Data: *coursePageInfo,
 	})
 }
 
@@ -63,12 +84,19 @@ func (c *CoursePageController) GetCoursePageInfo(ctx *fiber.Ctx) error {
 func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
 	coursePageId := ctx.Params("coursePageId")
 
-	// Call service to get course page content
 	coursePageContent, err := c.coursePageSvc.GetCoursePageContent(coursePageId)
 	if err != nil {
+		// Handle other errors (e.g., internal server errors)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
 			Err:     err,
 			Message: "failed to get course page content",
+		})
+	}
+
+	// Handle empty content case
+	if len(coursePageContent) == 0 {
+		return ctx.Status(fiber.StatusNotFound).JSON(&response.GenericError{
+			Message: fmt.Sprintf("no content found for course page ID %s", coursePageId),
 		})
 	}
 
@@ -76,6 +104,7 @@ func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
 		Data: coursePageContent,
 	})
 }
+
 
 // GetSuggestCoursesByFieldId
 // @ID getSuggestCoursesByFieldId
@@ -86,31 +115,41 @@ func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
 // @Success 200 {object} response.InfoResponse[[]payload.SuggestCourse]
 // @Failure 400 {object} response.GenericError
 // @Router /courses/suggest/{fieldId} [get]
-func (r *CoursePageController) GetSuggestCoursesByFieldId(c *fiber.Ctx) error {
-    // Get fieldId as a string from the URL path parameter
-    fieldIdStr := c.Params("fieldId")
+func (c *CoursePageController) GetSuggestCoursesByFieldId(ctx *fiber.Ctx) error {
+	// Validate the Authorization token
+	user := ctx.Locals("user")
+	if user == nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(&response.GenericError{
+			Message: "missing or invalid authorization token",
+		})
+	}
 
-    // Check if the fieldId parameter is provided
-    if fieldIdStr == "" {
-        return c.Status(fiber.StatusBadRequest).JSON(response.GenericError{
-            Err:     fmt.Errorf("missing fieldId parameter"),
-            Message: "fieldId parameter is required",
-        })
-    }
+	fieldIdStr := ctx.Params("fieldId")
 
-    // Optional: If the service expects fieldId as a string, no need for conversion.
-    // Call the service to get the suggested courses by fieldId
-    suggestInfo, err := r.coursePageSvc.GetSuggestCourseByFieldId(fieldIdStr) // Pass fieldId as a string
-    if err != nil {
-        fmt.Printf("Failed to fetch suggest courses for fieldId %v: %v\n", fieldIdStr, err)
-        return c.Status(fiber.StatusInternalServerError).JSON(response.GenericError{
-            Err:     err,
-            Message: "Failed to fetch suggest course",
-        })
-    }
+	// Validate if fieldId is numeric
+	if _, err := strconv.Atoi(fieldIdStr); err != nil {
+		return ctx.Status(fiber.StatusNotFound).JSON(&response.GenericError{
+			Message: fmt.Sprintf("fieldId %s is invalid", fieldIdStr),
+		})
+	}
 
-    // Return successful response
-    return c.Status(fiber.StatusOK).JSON(response.InfoResponse[[]payload.SuggestCourse]{
-        Data: suggestInfo,
-    })
+	suggestCourses, err := c.coursePageSvc.GetSuggestCourseByFieldId(fieldIdStr)
+	if err != nil {
+		// Handle "not found" errors
+		if strings.Contains(err.Error(), "not found") {
+			return ctx.Status(fiber.StatusNotFound).JSON(&response.GenericError{
+				Err:     err,
+				Message: fmt.Sprintf("no suggestions found for field ID %s", fieldIdStr),
+			})
+		}
+		// Handle other errors
+		return ctx.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
+			Err:     err,
+			Message: "failed to fetch suggested courses",
+		})
+	}
+
+	return ctx.JSON(&response.InfoResponse[[]payload.SuggestCourse]{
+		Data: suggestCourses,
+	})
 }
