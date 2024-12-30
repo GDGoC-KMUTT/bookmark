@@ -25,6 +25,6 @@ export const useStepInfo = (stepId: number) => {
         fetchStepInfo()
     }, [fetchStepInfo])
 
-    return { stepInfo, isLoading, error, refetch: fetchStepInfo }
+    return { stepInfo, isLoading, error, fetchStepInfo }
 }
 

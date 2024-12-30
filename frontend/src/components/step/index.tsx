@@ -31,8 +31,9 @@ type StepProps = {
 
 const StepCard: React.FC<StepProps> = ({ stepId, title, index }) => {
     const [userComment, setUserComment] = useState<string>("")
+    const [openStepSheet, setOpenStepSheet] = useState(false)
 
-    const { stepInfo, error: errorStepInfo, isLoading: isLoadingStepInfo } = useStepInfo(stepId)
+    const { stepInfo, error: errorStepInfo, isLoading: isLoadingStepInfo, fetchStepInfo } = useStepInfo(stepId)
 
     const {
         gemEachStep,
@@ -41,7 +42,7 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, index }) => {
         fetchGemEachStep: refetchGemEachStep,
     } = useGemEachStep(stepId)
     const { stepComments, setStepComments, error: errorGetStepComment, fetchStepComment: refetchStepComment } = useStepComment(stepId)
-    const { stepEval, error: errorGetStepEval } = useStepEval(stepId)
+    const { stepEval, error: errorGetStepEval, fetchStepEval, isLoading: isLoadingGetStepEval } = useStepEval(stepId)
 
     const { isLoading: isLoadingCommentOnStep, commentOnStep } = useComment()
     const { currentUser } = useCurrentUser()
@@ -118,11 +119,17 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, index }) => {
         return () => clearInterval(commentIntervalId)
     }, [refetchStepComment])
 
+    useEffect(() => {
+        fetchStepInfo()
+        refetchStepComment()
+        fetchStepEval()
+    }, [fetchStepEval, fetchStepInfo, openStepSheet, refetchStepComment])
+
     return (
         <Sheet>
             <SheetTrigger asChild>
                 {/* TODO put component that will use to navigate to 'step' here */}
-                <Button variant="outline">
+                <Button variant="outline" onClick={() => setOpenStepSheet(!openStepSheet)}>
                     Step {index}: {title}
                 </Button>
             </SheetTrigger>
@@ -340,7 +347,7 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, index }) => {
                                                                 onClick={submitComment}
                                                             >
                                                                 {isLoadingCommentOnStep && <Loader2 className="animate-spin" />}
-                                                                {isLoadingCommentOnStep ? "Please wait" : "Comment"}
+                                                                {isLoadingCommentOnStep ? "Commenting..." : "Comment"}
                                                             </Button>
                                                         </div>
                                                     </>
@@ -359,21 +366,27 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, index }) => {
                                                     </div>
                                                 ) : (
                                                     <>
-                                                        {stepEval && (
+                                                        {isLoadingGetStepEval ? (
+                                                            <div>Loading</div>
+                                                        ) : (
                                                             <>
-                                                                {stepEval.map((el) => {
-                                                                    return (
-                                                                        <EvalTypeCard
-                                                                            stepEvalId={el.stepEvalId}
-                                                                            stepId={el.stepId}
-                                                                            question={el.question}
-                                                                            key={el.stepEvalId}
-                                                                            type={el.type}
-                                                                            userEval={el.userEval}
-                                                                            refetchGetGem={refetchGemEachStep}
-                                                                        />
-                                                                    )
-                                                                })}
+                                                                {stepEval && (
+                                                                    <>
+                                                                        {stepEval.map((el) => {
+                                                                            return (
+                                                                                <EvalTypeCard
+                                                                                    stepEvalId={el.stepEvalId}
+                                                                                    stepId={el.stepId}
+                                                                                    question={el.question}
+                                                                                    key={el.stepEvalId}
+                                                                                    type={el.type}
+                                                                                    userEval={el.userEval}
+                                                                                    refetchGetGem={refetchGemEachStep}
+                                                                                />
+                                                                            )
+                                                                        })}
+                                                                    </>
+                                                                )}
                                                             </>
                                                         )}
                                                     </>

@@ -25,6 +25,6 @@ export const useStepEval = (stepId: number) => {
         fetchStepEval()
     }, [fetchStepEval])
 
-    return { stepEval, isLoading, error, refetch: fetchStepEval }
+    return { stepEval, isLoading, error, fetchStepEval }
 }
 

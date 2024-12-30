@@ -131,7 +131,7 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                             <Button
                                 type="submit"
                                 className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800 rounded-sm"
-                                disabled={!file}
+                                disabled={!file || isLoadingSubmitEval}
                                 onClick={handleSubmit}
                             >
                                 {isLoadingSubmitEval ? <Loader2 className="animate-spin" /> : <></>}
@@ -177,14 +177,17 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                             disabled={!!userEvalId}
                             onChange={(e) => setAnswer(e.target.value)}
                         />
-                        <Button
-                            type="submit"
-                            className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800 rounded-sm"
-                            disabled={answer === "" || !!userEvalId}
-                            onClick={handleSubmit}
-                        >
-                            Submit
-                        </Button>
+                        {!userEvalId && (
+                            <Button
+                                type="submit"
+                                className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800 rounded-sm"
+                                disabled={answer === "" || !!userEvalId || isLoadingSubmitEval}
+                                onClick={handleSubmit}
+                            >
+                                {isLoadingSubmitEval ? <Loader2 className="animate-spin" /> : <></>}
+                                {isLoadingSubmitEval ? "Submitting..." : "Submit"}
+                            </Button>
+                        )}
                     </div>
                     {errorSubmitEval !== null ? (
                         <Label className="text-red-500">{errorSubmitEval}</Label>
