@@ -60,4 +60,3 @@ const AppLoading: React.FC<PropsWithChildren> = ({ children }) => {
 }
 
 export default AppLoading
-
