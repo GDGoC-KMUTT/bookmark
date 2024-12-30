@@ -50,21 +50,55 @@ func main() {
 	}
 
 	// parse flags
-	documentId := flag.String("documentId", "", "Outline document ID")
+	parentDocumentId := flag.String("parentDocumentId", "", "Outline document ID")
 	flag.Parse()
 
 	// validate flags
-	if *documentId == "" {
-		gut.Fatal("missing required flag: documentId", nil)
+	if *parentDocumentId == "" {
+		gut.Fatal("missing required flag: parentDocumentId", nil)
 	}
 
+	// initialize Resty client
+	client := resty.New()
+	resp, err := client.R().
+		SetAuthToken(*config.Env.OutlineToken).
+		SetBody(map[string]any{
+			"id": *parentDocumentId,
+		}).
+		SetResult(map[string]any{}).
+		Post("https://outline.cscms.me/api/documents.info")
+	if err != nil {
+		gut.Fatal("failed to call outline api", err)
+	}
+
+	*parentDocumentId = (*resp.Result().(*map[string]any))["data"].(map[string]any)["id"].(string)
+
+	resp, err = client.R().
+		SetAuthToken(*config.Env.OutlineToken).
+		SetBody(map[string]any{
+			"parentDocumentId": *parentDocumentId,
+		}).
+		SetResult(map[string]any{}).
+		Post("https://outline.cscms.me/api/documents.list")
+	if err != nil {
+		gut.Fatal("failed to call outline api", err)
+	}
+
+	// get markdown content
+	documents := (*resp.Result().(*map[string]any))["data"].([]any)
+	for _, document := range documents {
+		documentId := document.(map[string]any)["id"].(string)
+		documentProcess(db, &documentId)
+	}
+}
+
+func documentProcess(db *gorm.DB, documentId *string) {
 	// call outline api
 	client := resty.New()
 	resp, err := client.R().
 		SetAuthToken(*config.Env.OutlineToken).
-		SetHeader("Accept", "*/*").
-		SetBody(map[string]string{
-			"id": *documentId,
+		SetBody(map[string]any{
+			"id": documentId,
 		}).
 		SetResult(map[string]any{}).
 		Post("https://outline.cscms.me/api/documents.export")
@@ -73,10 +107,10 @@ func main() {
 	}
 
 	// get markdown content
-	markdown := (*resp.Result().(*map[string]interface{}))["data"].(string)
+	markdown := (*resp.Result().(*map[string]any))["data"].(string)
 
 	// split content into sections
-	sections := strings.Split(markdown, "\n# ")
+	sections := strings.Split(markdown, "\n# Step")
 	if len(sections) < 2 {
 		gut.Fatal("malformed markdown: missing module", nil)
 	}
@@ -173,7 +207,7 @@ func main() {
 
 		// Verify required sections
 		if description == "" || content == "" || outcome == "" || check == "" || errorable == "" {
-			gut.Fatal("malformed markdown: missing required sections", nil)
+			gut.Fatal("malformed markdown: missing required sections, documentTitle: "+stepTitle, nil)
 		}
 
 		// Update step
@@ -194,7 +228,7 @@ func main() {
 
 			evalType := evalBuffer[i+1]
 			if evalType != "check" && evalType != "text" && evalType != "image" {
-				gut.Fatal("malformed markdown: invalid evaluation type", nil)
+				gut.Fatal("malformed markdown: invalid evaluation type; evalType: "+evalType, nil)
 			}
 
 			instruction := evalBuffer[i+2]
@@ -235,7 +269,6 @@ func main() {
 		}
 	}
 }
-
 func replaceAttachmentPaths(content string) string {
 	re := regexp.MustCompile(`attachments/([^)]+\.png)`)
 	content = strings.TrimSpace(content)
