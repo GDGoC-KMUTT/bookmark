@@ -12,7 +12,7 @@ const Callback = () => {
         await toast.promise(server.login.loginCallBack({ code: code ?? "" }), {
             loading: "callback...",
             success: () => {
-                navigate("/portal")
+                navigate("/home")
                 return "Successfully callback"
             },
             error: () => {

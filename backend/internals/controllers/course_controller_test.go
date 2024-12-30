@@ -250,7 +250,7 @@ func (suite *CourseControllerTestSuit) TestGetAllFieldTypesWhenSuccess() {
 
 }
 
-func (suite *CourseControllerTestSuit) TestGetAllFieldTypesWheFailedToGetAllFieldTypes() {
+func (suite *CourseControllerTestSuit) TestGetAllFieldTypesWhenFailedToGetAllFieldTypes() {
 	is := assert.New(suite.T())
 
 	mockCourseService := new(mockServices.CourseService)
@@ -332,4 +332,7 @@ func TestGetEnrollCourseByUserIdWhenServiceError(t *testing.T) {
 	is.Equal(http.StatusInternalServerError, res.StatusCode)
 	// is.Equal("Failed to fetch enrollments", errResponse.Message)
 
+}
+func TestCourseController(t *testing.T) {
+	suite.Run(t, new(CourseControllerTestSuit))
 }
