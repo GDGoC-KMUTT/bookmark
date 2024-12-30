@@ -7,7 +7,6 @@ import (
 	"backend/internals/repositories"
 	"backend/internals/utils"
 	"fmt"
-	"io"
 	"net/url"
 	"sort"
 	"strconv"
@@ -15,19 +14,27 @@ import (
 )
 
 type stepService struct {
+	stepRepo              repositories.StepRepository
 	stepEvalRepo          repositories.StepEvaluateRepository
-	userEvalRepo          repositories.UserEvaluateRepository
-	userRepo              repositories.UserRepository
 	stepCommentRepo       repositories.StepCommentRepository
 	stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository
-	stepRepo              repositories.StepRepository
-	userPassedRepo        repositories.UserPassedRepository
 	stepAuthorRepo        repositories.StepAuthorRepository
+	userRepo              repositories.UserRepository
+	userEvalRepo          repositories.UserEvaluateRepository
 	courseContentRepo     repositories.CourseContentRepository
 	moduleRepo            repositories.ModulesRepository
 }
 
-func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository, stepCommentRepo repositories.StepCommentRepository, stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository, stepRepo repositories.StepRepository, userPassedRepo repositories.UserPassedRepository, stepAuthorRepo repositories.StepAuthorRepository, courseContentRepo repositories.CourseContentRepository, moduleRepo repositories.ModulesRepository) StepService {
+func NewStepService(
+	stepRepo repositories.StepRepository,
+	stepEvalRepo repositories.StepEvaluateRepository,
+	stepCommentRepo repositories.StepCommentRepository,
+	stepCommentUpVoteRepo repositories.StepCommentUpVoteRepository,
+	stepAuthorRepo repositories.StepAuthorRepository,
+	userRepo repositories.UserRepository,
+	userEvalRepo repositories.UserEvaluateRepository,
+	courseContentRepo repositories.CourseContentRepository,
+	moduleRepo repositories.ModulesRepository) StepService {
 	return &stepService{
 		stepEvalRepo:          stepEvalRepo,
 		userEvalRepo:          userEvalRepo,
@@ -35,7 +42,6 @@ func NewStepService(stepEvalRepo repositories.StepEvaluateRepository, userEvalRe
 		stepCommentRepo:       stepCommentRepo,
 		stepCommentUpVoteRepo: stepCommentUpVoteRepo,
 		stepRepo:              stepRepo,
-		userPassedRepo:        userPassedRepo,
 		stepAuthorRepo:        stepAuthorRepo,
 		courseContentRepo:     courseContentRepo,
 		moduleRepo:            moduleRepo,
@@ -52,20 +58,20 @@ func (r *stepService) GetGems(stepId *uint64, userId *float64) (*int, *int, erro
 	currentGems := 0
 	for _, eval := range stepEvals {
 		totalGems += *eval.Gem
-		userEvals, err2 := r.userEvalRepo.GetUserEvalByStepEvalIdUserId(eval.Id, userId)
+		userEval, err2 := r.userEvalRepo.GetUserEvalByStepEvalIdUserId(eval.Id, userId)
 		if err2 != nil {
 			return nil, nil, err2
 		}
 
-		if userEvals == nil {
+		if userEval == nil {
 			continue
 		}
 
-		if userEvals.Pass == nil {
+		if userEval.Pass == nil {
 			continue
 		}
 
-		if *userEvals.Pass == true {
+		if *userEval.Pass == true {
 			currentGems += *eval.Gem
 		}
 
@@ -116,7 +122,7 @@ func (r *stepService) GetStepComment(stepId *uint64, userId *uint64) ([]payload.
 	return stepCommentInfo, nil
 }
 
-func (r *stepService) CreteStpComment(stepId *uint64, userId *float64, content *string) error {
+func (r *stepService) CreateStpComment(stepId *uint64, userId *float64, content *string) error {
 	stepComment := &models.StepComment{
 		Content: content,
 		StepId:  stepId,
@@ -165,7 +171,7 @@ func (r *stepService) GetStepInfo(stepId *uint64) (*payload.StepInfo, error) {
 		return nil, err
 	}
 
-	stepAuthor, err := r.stepAuthorRepo.GetStepAuthorByStepId(stepId)
+	stepAuthors, err := r.stepAuthorRepo.GetStepAuthorByStepId(stepId)
 	if err != nil {
 		return nil, err
 	}
@@ -192,7 +198,7 @@ func (r *stepService) GetStepInfo(stepId *uint64) (*payload.StepInfo, error) {
 	}
 
 	authors := make([]*payload.UserInfo, 0)
-	for _, author := range stepAuthor {
+	for _, author := range stepAuthors {
 		user, err := r.userRepo.FindUserByID(utils.Ptr(strconv.FormatUint(*author.UserId, 10)))
 		if err != nil {
 			return nil, err
@@ -236,7 +242,7 @@ func (r *stepService) GetStepInfo(stepId *uint64) (*payload.StepInfo, error) {
 	for _, userId := range passedUsers {
 		user, err := r.userRepo.FindUserByID(utils.Ptr(strconv.FormatUint(userId, 10)))
 		if err != nil {
-			return nil, fmt.Errorf("failed to fetch user by ID: %w", err)
+			return nil, err
 		}
 		newUser := &payload.UserInfo{
 			UserId:    user.Id,
@@ -343,7 +349,7 @@ func (r *stepService) CheckStepEvalStatus(userEvalId *uint64, userId *uint64) (*
 	}
 
 	if userEvalInfo == nil {
-		return nil, err
+		return nil, nil
 	}
 
 	if userEvalInfo.Pass != nil && userEvalInfo.Comment != nil {
@@ -375,8 +381,4 @@ func (r *stepService) SubmitStepEvalTypeCheck(stepEvalId *uint64, userId *uint64
 	}
 
 	return newUserEval.Id, nil
-}
-
-func (r *stepService) PutObjectToMinio(bucketName string, objectName string, reader io.Reader, objectSize int64) {
-
 }

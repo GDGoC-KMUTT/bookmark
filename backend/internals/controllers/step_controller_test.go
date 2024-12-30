@@ -326,7 +326,7 @@ func (suite *StepControllerTestSuit) TestCommentOnStepWhenSuccess() {
 		Content: utils.Ptr("content"),
 	}
 
-	mockStepService.EXPECT().CreteStpComment(mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	mockStepService.EXPECT().CreateStpComment(mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	jsonBody, _ := json.Marshal(mockBodyReq)
 	req := httptest.NewRequest(http.MethodPost, "/step/comment/create", strings.NewReader(string(jsonBody)))
@@ -376,7 +376,7 @@ func (suite *StepControllerTestSuit) TestCommentOnStepWhenValidationFailed() {
 		StepId: utils.Ptr(uint64(2)),
 	}
 
-	mockStepService.EXPECT().CreteStpComment(mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	mockStepService.EXPECT().CreateStpComment(mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	jsonBody, _ := json.Marshal(mockBodyReq)
 	req := httptest.NewRequest(http.MethodPost, "/step/comment/create", strings.NewReader(string(jsonBody)))
@@ -405,7 +405,7 @@ func (suite *StepControllerTestSuit) TestCommentOnStepWhenFailedToCreateStepComm
 		Content: utils.Ptr("content"),
 	}
 
-	mockStepService.EXPECT().CreteStpComment(mock.Anything, mock.Anything, mock.Anything).Return(fmt.Errorf("failed to createStepComment"))
+	mockStepService.EXPECT().CreateStpComment(mock.Anything, mock.Anything, mock.Anything).Return(fmt.Errorf("failed to createStepComment"))
 
 	jsonBody, _ := json.Marshal(mockBodyReq)
 	req := httptest.NewRequest(http.MethodPost, "/step/comment/create", strings.NewReader(string(jsonBody)))

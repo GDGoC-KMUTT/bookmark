@@ -169,7 +169,7 @@ func (r *StepController) CommentOnStep(c *fiber.Ctx) error {
 	claims := user.Claims.(jwt.MapClaims)
 	userId := claims["userId"].(float64)
 
-	if err := r.stepSvc.CreteStpComment(body.StepId, &userId, body.Content); err != nil {
+	if err := r.stepSvc.CreateStpComment(body.StepId, &userId, body.Content); err != nil {
 		return &response.GenericError{
 			Err:     err,
 			Message: "failed to create stepComment",

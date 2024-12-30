@@ -30,7 +30,6 @@ func SetupRoutes() {
 	var stepCommentRepo = repositories.NewStepCommentRepository(db.Gorm)
 	var stepCommentUpVoteRepo = repositories.NewStepCommentUpVote(db.Gorm)
 	var stepAuthorRepo = repositories.NewStepAuthorRepository(db.Gorm)
-	var userPassedRepo = repositories.NewUserPassedRepository(db.Gorm)
 	var courseContentRepo = repositories.NewCourseContentRepository(db.Gorm)
 	var fieldTypeRepo = repositories.NewFieldTypeRepository(db.Gorm)
 	var articleRepo = repositories.NewArticleRepository(db.Gorm)
@@ -40,13 +39,22 @@ func SetupRoutes() {
 	var oauthService = services2.NewOAuthService(config.Env)
 	var jwtService = services2.NewJwtService()
 	var minioService = services2.NewMinioService(minio.MinioClient)
-	
+
 	// * Services
 	var loginService = services.NewLoginService(userRepo, oauthService, jwtService)
 	var profileService = services.NewProfileService(userRepo)
 	var courseService = services.NewCourseService(courseRepo, fieldTypeRepo)
 	var progressService = services.NewProgressService(userRepo, courseRepo)
-	var stepService = services.NewStepService(stepEvalRepo, userEvalRepo, userRepo, stepCommentRepo, stepCommentUpVoteRepo, stepRepo, userPassedRepo, stepAuthorRepo, courseContentRepo, moduleRepo)
+	var stepService = services.NewStepService(
+		stepRepo,
+		stepEvalRepo,
+		stepCommentRepo,
+		stepCommentUpVoteRepo,
+		stepAuthorRepo,
+		userRepo,
+		userEvalRepo,
+		courseContentRepo,
+		moduleRepo)
 	var articleService = services.NewArticleService(articleRepo)
 
 	// * Controller
