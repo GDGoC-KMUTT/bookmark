@@ -6,10 +6,10 @@ import (
 )
 
 type ModuleStepService struct {
-	moduleStepRepo repositories.StepRepository
+	moduleStepRepo repositories.StepRepo // Use the interface here
 }
 
-func NewModuleStepService(moduleStepRepo repositories.StepRepository) *ModuleStepService {
+func NewModuleStepService(moduleStepRepo repositories.StepRepo) *ModuleStepService { // Update the constructor
 	return &ModuleStepService{
 		moduleStepRepo: moduleStepRepo,
 	}
@@ -20,6 +20,11 @@ func (s *ModuleStepService) GetModuleSteps(moduleId string) ([]payload.ModuleSte
 	stepEntities, err := s.moduleStepRepo.FindStepsByModuleID(moduleId)
 	if err != nil {
 		return nil, err
+	}
+
+	// Handle nil or empty result
+	if stepEntities == nil {
+		return []payload.ModuleStepResponse{}, nil
 	}
 
 	// Map to a slice of payload.ModuleStepResponse

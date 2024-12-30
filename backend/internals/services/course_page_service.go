@@ -4,7 +4,6 @@ import (
 	"backend/internals/db/models"
 	"backend/internals/entities/payload"
 	"strconv"
-	"fmt"
 )
 
 type CoursePageRepo interface {
@@ -64,40 +63,40 @@ func (s *CoursePageService) GetCoursePageContent(coursePageId string) ([]payload
 }
 
 func (r *CoursePageService) GetSuggestCourseByFieldId(fieldId string) ([]payload.SuggestCourse, error) {
-    fmt.Printf("Starting GetSuggestCourseByFieldId with fieldId: %s\n", fieldId)
+    // fmt.Printf("Starting GetSuggestCourseByFieldId with fieldId: %s\n", fieldId)
 
     fieldIdUint64, err := strconv.ParseUint(fieldId, 10, 64)
     if err != nil {
-        fmt.Printf("Error parsing fieldId: %s, error: %v\n", fieldId, err)
+        // fmt.Printf("Error parsing fieldId: %s, error: %v\n", fieldId, err)
         return nil, err
     }
 
-    fmt.Printf("Parsed fieldId to uint64: %d\n", fieldIdUint64)
+    // fmt.Printf("Parsed fieldId to uint64: %d\n", fieldIdUint64)
 
     suggestCourses, err := r.courseRepo.FindCoursesByFieldId(fieldIdUint64)
     if err != nil {
-        fmt.Printf("Error fetching courses for fieldId %d: %v\n", fieldIdUint64, err)
+        // fmt.Printf("Error fetching courses for fieldId %d: %v\n", fieldIdUint64, err)
         return nil, err
     }
 
-    fmt.Printf("Fetched %d courses for fieldId %d\n", len(suggestCourses), fieldIdUint64)
+    // fmt.Printf("Fetched %d courses for fieldId %d\n", len(suggestCourses), fieldIdUint64)
 
     var result []payload.SuggestCourse
     for _, course := range suggestCourses {
-        fmt.Printf("Processing course: %+v\n", course)
+        // fmt.Printf("Processing course: %+v\n", course)
 
         field, err := r.courseRepo.FindFieldByFieldId(course.FieldId)
         if err != nil {
-            fmt.Printf("Error fetching field for course FieldId %d: %v\n", *course.FieldId, err)
+            // fmt.Printf("Error fetching field for course FieldId %d: %v\n", *course.FieldId, err)
             return nil, err
         }
 
         if field == nil {
-            fmt.Printf("Field is nil for FieldId: %d. Skipping course.\n", *course.FieldId)
+            // fmt.Printf("Field is nil for FieldId: %d. Skipping course.\n", *course.FieldId)
             continue
         }
 
-        fmt.Printf("Field fetched for FieldId %d: %+v\n", *course.FieldId, field)
+        // fmt.Printf("Field fetched for FieldId %d: %+v\n", *course.FieldId, field)
 
         result = append(result, payload.SuggestCourse{
             Id:           *course.Id,
@@ -108,6 +107,6 @@ func (r *CoursePageService) GetSuggestCourseByFieldId(fieldId string) ([]payload
         })
     }
 
-    fmt.Printf("Returning %d suggested courses\n", len(result))
+    // fmt.Printf("Returning %d suggested courses\n", len(result))
     return result, nil
 }

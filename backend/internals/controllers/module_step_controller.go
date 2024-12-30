@@ -9,11 +9,11 @@ import (
 
 // ModuleStepController handles module step-related endpoints
 type ModuleStepController struct {
-	moduleStepSvc *services.ModuleStepService
+	moduleStepSvc services.ModuleStepServices
 }
 
 // NewModuleStepController initializes a new ModuleStepController
-func NewModuleStepController(moduleStepSvc *services.ModuleStepService) *ModuleStepController {
+func NewModuleStepController(moduleStepSvc services.ModuleStepServices) *ModuleStepController {
 	return &ModuleStepController{
 		moduleStepSvc: moduleStepSvc,
 	}

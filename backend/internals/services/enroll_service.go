@@ -5,13 +5,13 @@ import (
 )
 
 type EnrollService struct {
-    enrollRepo *repositories.EnrollRepository // pointer to EnrollRepository
+	enrollRepo repositories.EnrollRepo // Use the interface here
 }
 
-func NewEnrollService(enrollRepo *repositories.EnrollRepository) *EnrollService {
-    return &EnrollService{
-        enrollRepo: enrollRepo,
-    }
+func NewEnrollService(enrollRepo repositories.EnrollRepo) *EnrollService { // Accept the interface
+	return &EnrollService{
+		enrollRepo: enrollRepo,
+	}
 }
 
 // EnrollUser enrolls a user in a course

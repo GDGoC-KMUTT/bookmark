@@ -7,11 +7,11 @@ import (
 )
 
 type EnrollController struct {
-	enrollService *services.EnrollService
+	enrollService services.EnrollServices // Use the interface here
 }
 
-// NewCourseEnrollmentController creates a new controller instance
-func NewEnrollController(enrollService *services.EnrollService) *EnrollController {
+// NewEnrollController creates a new controller instance
+func NewEnrollController(enrollService services.EnrollServices) *EnrollController { // Accept the interface
 	return &EnrollController{enrollService: enrollService}
 }
 
