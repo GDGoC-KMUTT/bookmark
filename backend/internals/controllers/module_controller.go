@@ -4,6 +4,7 @@ import (
 	"backend/internals/entities/payload"
 	"backend/internals/entities/response"
 	"backend/internals/services"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"strconv"
 )
@@ -52,6 +53,7 @@ func (c *ModuleController) GetModuleInfo(ctx *fiber.Ctx) error {
 
 	if moduleInfo == nil {
 		return &response.GenericError{
+			Err:     fmt.Errorf("module info is not available"),
 			Message: "module info is not available",
 		}
 	}
