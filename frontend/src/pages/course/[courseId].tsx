@@ -4,7 +4,7 @@ import Text from "../../components/course/text";
 import Module from "../../components/course/module";
 import { server } from "@/configs/server";
 import CourseCard from "../../components/coursecard/index";
-import NotFound from "@/configs/pages/notfound";
+import NotFound from "@/configs/pages/NotFound";
 import { PayloadModuleResponse, PayloadModuleStepResponse, PayloadCoursePage, PayloadCoursePageContent, PayloadSuggestCourse } from "../../api/api";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
