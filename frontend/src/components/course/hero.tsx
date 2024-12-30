@@ -11,22 +11,19 @@ type HeroProps = {
 }
 
 const Hero: React.FC<HeroProps> = ({ courseName, courseField, courseId}) => {
-	const userId = 1; //! Replace with actual user ID from your authentication system
 
 	const handleEnroll = useCallback(async () => {
 		try {
-			const response = await server.enroll.enrollCreate(userId, courseId);
-
+			const response = await server.enroll.enrollCreate(courseId);
+			// console.log('Enrollment response:', response);
 			if (response) {
 				toast.success('Enrolled successfully!');
 			} else {
 				toast.error('Enrollment failed. Please try again.');
 			}
 		} catch (error: any) {
-			// Log detailed error for debugging
 			console.error('Enrollment error:', error);
 
-			// Handle specific error code for 409 Conflict
 			if (error.response?.status === 409) {
 				toast.error('User already enrolled.');
 			} else {
@@ -35,7 +32,7 @@ const Hero: React.FC<HeroProps> = ({ courseName, courseField, courseId}) => {
 				toast.error(errorMessage);
 			}
 		}
-	}, [userId, courseId]);
+	}, [courseId]);
 
 
 	return (

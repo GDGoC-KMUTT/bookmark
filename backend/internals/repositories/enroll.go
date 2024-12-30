@@ -1,5 +1,5 @@
 package repositories
 
 type EnrollRepo interface {
-	EnrollUser(userId, courseId uint64) error
+	EnrollUser(userId uint, courseId uint64) error
 }

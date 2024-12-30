@@ -18,7 +18,7 @@ func NewEnrollRepository(db *gorm.DB) *EnrollRepository {
 }
 
 // EnrollUser enrolls a user in a course
-func (repo *EnrollRepository) EnrollUser(userId, courseId uint64) error {
+func (repo *EnrollRepository) EnrollUser(userId uint, courseId uint64) error {
 	// Check if the user is already enrolled
 	var existingEnrollment models.Enroll
 	result := repo.db.Where("user_id = ? AND course_id = ?", userId, courseId).First(&existingEnrollment)
@@ -28,12 +28,12 @@ func (repo *EnrollRepository) EnrollUser(userId, courseId uint64) error {
 	}
 
 	// If no enrollment found, create a new enrollment record
-	if result.Error == gorm.ErrRecordNotFound {
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		enrollment := models.Enroll{
-			UserId:   &userId,
+			UserId:   uint64Ptr(uint64(userId)),
 			CourseId: &courseId,
-			CreatedAt: &time.Time{},
-			UpdatedAt: &time.Time{},
+			CreatedAt: timePtr(time.Now()),
+			UpdatedAt: timePtr(time.Now()),
 		}
 
 		if err := repo.db.Create(&enrollment).Error; err != nil {
@@ -45,4 +45,14 @@ func (repo *EnrollRepository) EnrollUser(userId, courseId uint64) error {
 
 	// If the user is already enrolled, return an error
 	return errors.New("user is already enrolled in this course")
+}
+
+// Helper function to create a pointer to a uint64 value
+func uint64Ptr(v uint64) *uint64 {
+	return &v
+}
+
+// Helper function to create a pointer to a time.Time value
+func timePtr(t time.Time) *time.Time {
+	return &t
 }

@@ -114,7 +114,7 @@ func SetupRoutes() {
 
 	// * Enroll routes
 	enroll := api.Group("/enroll", middleware.Jwt())
-	enroll.Post("/:userId/:courseId", enrollController.EnrollInCourse)
+	enroll.Post("/:courseId", enrollController.EnrollInCourse)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {
