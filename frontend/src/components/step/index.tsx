@@ -13,7 +13,7 @@ import { useStepInfo } from "@/hooks/useStepInfo"
 import { useGemEachStep } from "@/hooks/useGemEachStep"
 import { useStepComment } from "@/hooks/useStepComment"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useComment } from "@/hooks/useComment"
 import { PayloadStepCommentInfo } from "@/api/api"
 import useCurrentUser from "@/hooks/userCurrentUser"
@@ -25,12 +25,15 @@ import BadgeStep from "./badge-step"
 
 type StepProps = {
     stepId: number
+    title: string
+    index: number
 }
 
-const StepCard: React.FC<StepProps> = ({ stepId }) => {
+const StepCard: React.FC<StepProps> = ({ stepId, title, index }) => {
     const [userComment, setUserComment] = useState<string>("")
 
     const { stepInfo, error: errorStepInfo, isLoading: isLoadingStepInfo } = useStepInfo(stepId)
+
     const {
         gemEachStep,
         error: errorGetGemEachStep,
@@ -106,12 +109,22 @@ const StepCard: React.FC<StepProps> = ({ stepId }) => {
             )
         }
     }
-    console.log(errorStepInfo === null)
+
+    useEffect(() => {
+        const commentIntervalId = setInterval(() => {
+            refetchStepComment()
+        }, 5000)
+
+        return () => clearInterval(commentIntervalId)
+    }, [refetchStepComment])
 
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <Button variant="outline">Open</Button>
+                {/* TODO put component that will use to navigate to 'step' here */}
+                <Button variant="outline">
+                    Step {index}: {title}
+                </Button>
             </SheetTrigger>
             <SheetContent className="w-[95%]">
                 <ScrollArea className="h-full">
@@ -280,7 +293,7 @@ const StepCard: React.FC<StepProps> = ({ stepId }) => {
                                                                 return (
                                                                     <div className="flex items-start pb-6 justify-between">
                                                                         <div className="flex">
-                                                                            <Avatar>
+                                                                            <Avatar className="bg-slate-200">
                                                                                 <AvatarImage
                                                                                     alt={`${cm.userInfo?.firstName} ${cm.userInfo?.lastname}`}
                                                                                     src={cm.userInfo?.photoUrl}
