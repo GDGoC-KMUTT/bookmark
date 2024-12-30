@@ -5,17 +5,17 @@ import (
 	"backend/internals/repositories"
 )
 
-type ModuleStepService struct {
+type moduleStepService struct {
 	moduleStepRepo repositories.StepRepo // Use the interface here
 }
 
-func NewModuleStepService(moduleStepRepo repositories.StepRepo) *ModuleStepService { // Update the constructor
-	return &ModuleStepService{
+func NewModuleStepService(moduleStepRepo repositories.StepRepo) ModuleStepServices { // Update the constructor
+	return &moduleStepService{
 		moduleStepRepo: moduleStepRepo,
 	}
 }
 
-func (s *ModuleStepService) GetModuleSteps(moduleId string) ([]payload.ModuleStepResponse, error) {
+func (s *moduleStepService) GetModuleSteps(moduleId string) ([]payload.ModuleStepResponse, error) {
 	// Fetch Steps from the repository
 	stepEntities, err := s.moduleStepRepo.FindStepsByModuleID(moduleId)
 	if err != nil {

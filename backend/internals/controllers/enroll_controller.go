@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"backend/internals/entities/payload"
+	"backend/internals/entities/response"
 	"backend/internals/services"
-	"strconv"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -17,56 +17,47 @@ func NewEnrollController(enrollService services.EnrollServices) *EnrollControlle
 	return &EnrollController{enrollService: enrollService}
 }
 
+// EnrollInCourse
 // @Summary Enroll a user in a course
 // @Description Enroll a user in a specified course by course ID. User ID is extracted from the JWT.
 // @Tags Enroll
 // @Accept json
 // @Produce json
 // @Param courseId path uint64 true "Course ID" example(456)
-// @Success 200 {object} map[string]string
-// @Failure 400 {object} map[string]string
-// @Failure 401 {object} map[string]string
-// @Failure 409 {object} map[string]string
-// @Failure 500 {object} map[string]string
+// @Success 200 {object} response.InfoResponse[string]
+// @Failure 400 {object} response.GenericError
+// @Failure 500 {object} response.GenericError
 // @Router /enroll/{courseId} [post]
 func (c *EnrollController) EnrollInCourse(ctx *fiber.Ctx) error {
-	// Extract user from context
-	user := ctx.Locals("user")
-	if user == nil {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "unauthorized"})
+	param := new(payload.CourseIdParam)
+
+	if err := ctx.ParamsParser(param); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "invalid courseId parameter",
+		}
 	}
 
-	token, ok := user.(*jwt.Token)
-	if !ok {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "unauthorized"})
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "unauthorized"})
-	}
-
-	userId, ok := claims["userId"].(float64)
-	if !ok {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "unauthorized"})
-	}
-
-	// Parse courseId from the request path
-	courseId, err := strconv.ParseUint(ctx.Params("courseId"), 10, 64)
-	if err != nil || courseId <= 0 {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid course ID"})
-	}
+	user := ctx.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["userId"].(float64)
 
 	// Call the EnrollUser service method
-	err = c.enrollService.EnrollUser(uint(userId), courseId)
+	err := c.enrollService.EnrollUser(uint(userId), uint64(param.CourseId))
 	if err != nil {
 		// Handle user already enrolled scenario (409 Conflict)
 		if err.Error() == "user is already enrolled in this course" {
-			return ctx.Status(fiber.StatusConflict).JSON(fiber.Map{"error": "user already enrolled"})
+			return &response.GenericError{
+				Err:     err,
+				Message: "user already enrolled",
+			}
 		}
 		// Handle other errors (internal server error)
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal server error"})
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to enroll course",
+		}
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "user enrolled successfully"})
+	return response.Ok(ctx, "user enrolled successfully")
 }

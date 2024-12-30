@@ -7,18 +7,18 @@ import (
 	"time"
 )
 
-type EnrollRepository struct {
+type enrollRepository struct {
 	db *gorm.DB
 }
 
-func NewEnrollRepository(db *gorm.DB) *EnrollRepository {
-	return &EnrollRepository{
+func NewEnrollRepository(db *gorm.DB) EnrollRepo {
+	return &enrollRepository{
 		db: db,
 	}
 }
 
 // EnrollUser enrolls a user in a course
-func (repo *EnrollRepository) EnrollUser(userId uint, courseId uint64) error {
+func (repo *enrollRepository) EnrollUser(userId uint, courseId uint64) error {
 	// Check if the user is already enrolled
 	var existingEnrollment models.Enroll
 	result := repo.db.Where("user_id = ? AND course_id = ?", userId, courseId).First(&existingEnrollment)
@@ -30,8 +30,8 @@ func (repo *EnrollRepository) EnrollUser(userId uint, courseId uint64) error {
 	// If no enrollment found, create a new enrollment record
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		enrollment := models.Enroll{
-			UserId:   uint64Ptr(uint64(userId)),
-			CourseId: &courseId,
+			UserId:    uint64Ptr(uint64(userId)),
+			CourseId:  &courseId,
 			CreatedAt: timePtr(time.Now()),
 			UpdatedAt: timePtr(time.Now()),
 		}

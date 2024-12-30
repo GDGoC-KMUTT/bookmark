@@ -5,6 +5,7 @@ import (
 	"backend/internals/entities/response"
 	"backend/internals/services"
 	"github.com/gofiber/fiber/v2"
+	"strconv"
 )
 
 // ModuleStepController handles module step-related endpoints
@@ -31,19 +32,23 @@ func NewModuleStepController(moduleStepSvc services.ModuleStepServices) *ModuleS
 // @Failure 500 {object} response.GenericError
 // @Router /step/{moduleId}/info [get]
 func (c *ModuleStepController) GetModuleSteps(ctx *fiber.Ctx) error {
-	moduleId := ctx.Params("moduleId")
+	param := new(payload.ModuleIdParam)
 
-	// Call service to get module steps
-	steps, err := c.moduleStepSvc.GetModuleSteps(moduleId)
-	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
+	if err := ctx.ParamsParser(param); err != nil {
+		return &response.GenericError{
 			Err:     err,
-			Message: "failed to get module steps",
-		})
+			Message: "invalid moduleId parameter",
+		}
 	}
 
-	// Return the response
-	return ctx.JSON(&response.InfoResponse[[]payload.ModuleStepResponse]{
-		Data: steps,
-	})
+	// Call service to get module steps
+	steps, err := c.moduleStepSvc.GetModuleSteps(strconv.FormatUint(*param.ModuleId, 10))
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to get module steps",
+		}
+	}
+
+	return response.Ok(ctx, steps)
 }

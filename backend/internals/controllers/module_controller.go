@@ -5,6 +5,7 @@ import (
 	"backend/internals/entities/response"
 	"backend/internals/services"
 	"github.com/gofiber/fiber/v2"
+	"strconv"
 )
 
 // ModuleController handles module-related endpoints
@@ -31,26 +32,29 @@ func NewModuleController(moduleSvc services.ModuleServices) *ModuleController {
 // @Failure 500 {object} response.GenericError
 // @Router /module/{moduleId}/info [get]
 func (c *ModuleController) GetModuleInfo(ctx *fiber.Ctx) error {
-    moduleId := ctx.Params("moduleId")
+	param := new(payload.ModuleIdParam)
 
-    // Call service to get module info
-    moduleInfo, err := c.moduleSvc.GetModuleInfo(moduleId)
-    if err != nil {
-        return ctx.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
-            Err:     err,
-            Message: "failed to get module info",
-        })
-    }
+	if err := ctx.ParamsParser(param); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "invalid moduleId parameter",
+		}
+	}
 
-    if moduleInfo == nil {
-        return ctx.Status(fiber.StatusInternalServerError).JSON(&response.GenericError{
-            Message: "module info is not available",
-        })
-    }
+	// Call service to get module info
+	moduleInfo, err := c.moduleSvc.GetModuleInfo(strconv.FormatUint(*param.ModuleId, 10))
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to get module info",
+		}
+	}
 
-    // Dereference moduleInfo to pass the value to InfoResponse
-    return ctx.JSON(&response.InfoResponse[payload.ModuleResponse]{
-        Data: *moduleInfo, // Dereference the pointer here
-    })
+	if moduleInfo == nil {
+		return &response.GenericError{
+			Message: "module info is not available",
+		}
+	}
+
+	return response.Ok(ctx, moduleInfo)
 }
-

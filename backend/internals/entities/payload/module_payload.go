@@ -6,3 +6,7 @@ type ModuleResponse struct {
 	Description *string `json:"description,omitempty"`
 	ImageUrl    *string `json:"imageUrl,omitempty"`
 }
+
+type ModuleIdParam struct {
+	ModuleId *uint64 `param:"moduleId" json:"moduleId"`
+}
