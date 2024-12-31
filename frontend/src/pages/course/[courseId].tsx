@@ -104,6 +104,10 @@ const Course = () => {
     fetchData();
   }, [courseId]);
 
+//   useEffect(() => {
+// 	console.log("moduleSteps", moduleSteps);
+//   });
+
   if (!courseId || !courseInfo) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">

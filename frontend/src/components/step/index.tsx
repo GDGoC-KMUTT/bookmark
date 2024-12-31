@@ -26,7 +26,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 type StepProps = {
     stepId: number
     title: string
-    check: string
+    check: boolean
 }
 
 const StepCard: React.FC<StepProps> = ({ stepId, title, check }) => {
@@ -130,8 +130,8 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check }) => {
             <SheetTrigger asChild>
                 {/* TODO put component that will use to navigate to 'step' here */}
                 <li className="flex items-center space-x-2 cursor-pointer" onClick={() => setOpenStepSheet(!openStepSheet)}>
-                    <div className={`flex items-center justify-center w-6 h-6 rounded-full ${check === "true" ? "bg-green-500" : "bg-gray-500"}`}>
-                        {check === "true" ? <Check className="text-white w-4 h-4" /> : <Loader className="text-white w-4 h-4" />}
+                    <div className={`flex items-center justify-center w-6 h-6 rounded-full ${check === true ? "bg-green-500" : "bg-gray-500"}`}>
+                        {check === true ? <Check className="text-white w-4 h-4" /> : <Loader className="text-white w-4 h-4" />}
                     </div>
                     <p className="pl-3 text-lg font-normal">{title || "No title available"}</p>
                 </li>
@@ -408,4 +408,3 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check }) => {
 }
 
 export default StepCard
-
