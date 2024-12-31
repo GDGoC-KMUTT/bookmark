@@ -4,7 +4,6 @@ import (
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
 	"strconv"
-	"fmt"
 )
 
 type coursePageService struct {
