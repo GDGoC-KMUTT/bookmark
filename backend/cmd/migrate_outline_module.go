@@ -123,8 +123,7 @@ func documentProcess(db *gorm.DB, documentId *string) {
 	var module *models.Module
 
 	// find or create module
-	tx := db.Where("title = ?", moduleTitle).First(&module)
-	if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+	if tx := db.Where("title = ?", moduleTitle).First(&module); errors.Is(tx.Error, gorm.ErrRecordNotFound) {
 		module = &models.Module{
 			Title:       &moduleTitle,
 			ImageUrl:    new(string),
@@ -133,6 +132,20 @@ func documentProcess(db *gorm.DB, documentId *string) {
 		if err := db.Create(&module).Error; err != nil {
 			gut.Fatal("failed to create module", err)
 		}
+	}
+
+	// update module metadata
+	meta := strings.Split(sections[0], "\n")[1:]
+	for i, line := range meta {
+		if strings.Contains(line, "Image") {
+			module.ImageUrl = gut.Ptr(strings.TrimPrefix(strings.TrimSuffix(meta[i+2], ">"), "<"))
+		}
+		if strings.Contains(line, "Description") {
+			module.Description = gut.Ptr(strings.TrimSpace(meta[i+2]))
+		}
+	}
+	if tx := db.Save(module); tx.Error != nil {
+		gut.Fatal("failed to update module", tx.Error)
 	}
 
 	// process each step section
@@ -168,7 +181,7 @@ func documentProcess(db *gorm.DB, documentId *string) {
 			}
 		}
 
-		// 6. Update step content
+		// update step content
 		var description, content, outcome, check, errorable string
 
 		currentSection := ""
@@ -198,19 +211,19 @@ func documentProcess(db *gorm.DB, documentId *string) {
 			}
 		}
 
-		// 7. Replace attachments paths
+		// replace attachments paths
 		description = replaceAttachmentPaths(description)
 		content = replaceAttachmentPaths(content)
 		outcome = replaceAttachmentPaths(outcome)
 		check = replaceAttachmentPaths(check)
 		errorable = replaceAttachmentPaths(errorable)
 
-		// Verify required sections
+		// verify required sections
 		if description == "" || content == "" || outcome == "" || check == "" || errorable == "" {
 			gut.Fatal("malformed markdown: missing required sections, documentTitle: "+stepTitle, nil)
 		}
 
-		// Update step
+		// update step
 		step.Description = &description
 		step.Content = &content
 		step.Outcome = &outcome
@@ -236,10 +249,10 @@ func documentProcess(db *gorm.DB, documentId *string) {
 
 			order := i/4 + 1
 
-			// Check if an entry with the same Order exists
+			// check if an entry with the same Order exists
 			var existingEvaluation models.StepEvaluate
 			if err := db.Where("step_id = ? AND \"order\" = ?", step.Id, order).First(&existingEvaluation).Error; err == nil {
-				// Update the existing entry
+				// update the existing entry
 				existingEvaluation.Question = &evalBuffer[i]
 				existingEvaluation.Type = &evalType
 				existingEvaluation.Instruction = &instruction
@@ -248,7 +261,7 @@ func documentProcess(db *gorm.DB, documentId *string) {
 					gut.Fatal("failed to update evaluation", err)
 				}
 			} else {
-				// Create a new entry
+				// create a new entry
 				evaluation := &models.StepEvaluate{
 					Id:          nil,
 					StepId:      step.Id,
