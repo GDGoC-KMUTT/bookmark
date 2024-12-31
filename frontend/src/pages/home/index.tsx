@@ -60,7 +60,7 @@ const Home = () => {
                         <div>
                             {steps
                                 .filter((step) => step.moduleId === module.moduleId)
-                                .map((step, index) => (
+                                .map((step) => (
                                     <StepCard key={step.stepId} stepId={step.stepId} title={step.title} check={false} />
                                 ))}
                         </div>
