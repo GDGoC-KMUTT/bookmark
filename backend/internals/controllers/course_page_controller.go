@@ -28,39 +28,46 @@ func NewCoursePageController(service services.CoursePageServices) *CoursePageCon
 // @Accept json
 // @Produce json
 // @Param coursePageId path string true "Course Page ID"
-// @Success 200 {object} response.InfoResponse[payload.CoursePage]
+// @Success 200 {object} response.InfoResponse[payload.CoursePageIDParam ]
 // @Failure 400 {object} response.GenericError
 // @Failure 500 {object} response.GenericError
 // @Router /courses/{coursePageId}/info [get]
 func (c *CoursePageController) GetCoursePageInfo(ctx *fiber.Ctx) error {
-	param := new(payload.CoursePage)
+    param := new(payload.CoursePageIDParam)
 
-	if err := ctx.ParamsParser(param); err != nil || param.Id == 0 {
-		return &response.GenericError{
-			Err:     fmt.Errorf("invalid courseId parameter: %v", err),
-			Message: "invalid courseId parameter",
-		}
-	}
-	fmt.Printf("Parsed Course ID infoooo: %v\n", param.Id)
+    // Parse URL parameters
+    if err := ctx.ParamsParser(param); err != nil || param.CoursePageId == "" {
+        return &response.GenericError{
+            Err:     fmt.Errorf("invalid coursePageId parameter: %v", err),
+            Message: "invalid coursePageId parameter",
+        }
+    }
 
-	// Call the service to get course page info
-	coursePageInfo, err := c.coursePageSvc.GetCoursePageInfo(strconv.Itoa(int(param.Id)))
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			return &response.GenericError{
-				Err:     err,
-				Message: fmt.Sprintf("course page with ID %d not found", param.Id),
-			}
-		}
-		return &response.GenericError{
-			Err:     err,
-			Message: "failed to get course page info",
-		}
-	}
+    coursePageIdInt, err := strconv.Atoi(param.CoursePageId)
+    if err != nil {
+        return &response.GenericError{
+            Err:     fmt.Errorf("invalid coursePageId parameter: %v", err),
+            Message: "invalid coursePageId parameter",
+        }
+    }
 
-	return response.Ok(ctx, coursePageInfo)
+    // Call the service to get course page info
+    coursePageInfo, err := c.coursePageSvc.GetCoursePageInfo(strconv.Itoa(coursePageIdInt))
+    if err != nil {
+        if strings.Contains(err.Error(), "not found") {
+            return &response.GenericError{
+                Err:     err,
+                Message: fmt.Sprintf("course page with ID %d not found", coursePageIdInt),
+            }
+        }
+        return &response.GenericError{
+            Err:     err,
+            Message: "failed to get course page info",
+        }
+    }
+
+    return response.Ok(ctx, coursePageInfo)
 }
-
 
 // GetCoursePageContent
 // @ID getCoursePageContent
@@ -82,7 +89,6 @@ func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
 			Message: "invalid courseId parameter",
 		}
 	}
-	fmt.Printf("Parsed Course ID contentttt: %v\n", param.CoursePageId)
 
 	coursePageContent, err := c.coursePageSvc.GetCoursePageContent(strconv.Itoa(int(param.CoursePageId)))
 	if err != nil {

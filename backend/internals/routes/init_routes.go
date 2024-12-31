@@ -106,6 +106,11 @@ func SetupRoutes() {
 	profile.Get("/info", profileController.ProfileUserInfo)
 	profile.Get("/totalgems", profileController.GetUserGems)
 
+	step := api.Group("/step", middleware.Jwt())
+	step.Get("/gem/:stepId", stepController.GetGemEachStep)
+	step.Get("/:moduleId/info", moduleStepController.GetModuleSteps)
+	step.Get("/:stepId", stepController.GetStepInfo)
+
 	// * Course routes
 	course := api.Group("/courses", middleware.Jwt())
 	course.Get("/field/:fieldId", courseController.GetCoursesByFieldId)
@@ -113,9 +118,9 @@ func SetupRoutes() {
 	course.Get("/current", courseController.GetCurrentCourse)
 	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
 	course.Get("/enrolled", courseController.GetEnrollCourseByUserId)
+	course.Get("/suggest/:fieldId", coursePageController.GetSuggestCoursesByFieldId)
 	course.Get("/:coursePageId/info", coursePageController.GetCoursePageInfo)
 	course.Get("/:coursePageId/content", coursePageController.GetCoursePageContent)
-	course.Get("/suggest/:fieldId", coursePageController.GetSuggestCoursesByFieldId)
 
 	// * Module routes
 	module := api.Group("/module", middleware.Jwt())
@@ -132,12 +137,6 @@ func SetupRoutes() {
 	// * Enroll routes
 	enroll := api.Group("/enroll", middleware.Jwt())
 	enroll.Post("/:courseId", enrollController.EnrollInCourse)
-
-	step := api.Group("/step", middleware.Jwt())
-	step.Get("/:moduleId/info", moduleStepController.GetModuleSteps)
-
-	step.Get("/gem/:stepId", stepController.GetGemEachStep)
-	step.Get("/:stepId", stepController.GetStepInfo)
 
 	stepEval := step.Group("/stepEval")
 	stepEval.Post("/submit", stepController.SubmitStepEval)

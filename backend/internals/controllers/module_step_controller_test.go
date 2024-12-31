@@ -14,6 +14,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"context"
 )
 
 type ModuleStepControllerTestSuite struct {
@@ -43,28 +44,44 @@ func setupTestModuleStepController(mockModuleStepService *mockServices.ModuleSte
 func (suite *ModuleStepControllerTestSuite) TestGetModuleStepsWhenSuccess() {
     is := assert.New(suite.T())
 
+    // Mock the ModuleStepService
     mockModuleStepService := new(mockServices.ModuleStepServices)
     app := setupTestModuleStepController(mockModuleStepService)
 
-    moduleID := "module123"
+    // Define the test parameters
+    userId := uint(123)
+    moduleId := "123" // Simulating the parsed and converted string moduleId
     mockSteps := []payload.ModuleStepResponse{
         {Id: 1, Title: "Step 1", Check: true},
     }
 
-    mockModuleStepService.EXPECT().GetModuleSteps(uint(123), moduleID).Return(mockSteps, nil)
+    // Set up the mock expectation
+    mockModuleStepService.EXPECT().GetModuleSteps(userId, moduleId).Return(mockSteps, nil)
 
-    req := httptest.NewRequest(http.MethodGet, "/step/module123/info", nil)
+    // Create the HTTP request
+    req := httptest.NewRequest(http.MethodGet, "/step/123/info", nil)
     req.Header.Set("Authorization", "Bearer mockToken")
 
+    // Simulate JWT extraction in Locals
+    req = req.WithContext(context.WithValue(req.Context(), "user", &jwt.Token{
+        Claims: jwt.MapClaims{
+            "userId": float64(userId), // Ensure type matches claims parsing
+        },
+    }))
+
+    // Send the request to the app
     res, err := app.Test(req)
 
+    // Read and unmarshal the response payload
     var responsePayload response.InfoResponse[[]payload.ModuleStepResponse]
     body, _ := io.ReadAll(res.Body)
     json.Unmarshal(body, &responsePayload)
 
+    // Assertions
     is.Nil(err)
     is.Equal(http.StatusOK, res.StatusCode)
-    is.Equal(uint64(1), responsePayload.Data[0].Id) // Updated to match the actual type
+    is.Len(responsePayload.Data, 1)
+    is.Equal(uint64(1), responsePayload.Data[0].Id)
     is.Equal("Step 1", responsePayload.Data[0].Title)
     is.True(responsePayload.Data[0].Check)
 }
