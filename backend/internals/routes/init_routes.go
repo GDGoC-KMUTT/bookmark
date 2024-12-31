@@ -116,9 +116,9 @@ func SetupRoutes() {
 	course.Get("/field/:fieldId", courseController.GetCoursesByFieldId)
 	course.Get("/field-types", courseController.GetAllFieldTypes)
 	course.Get("/current", courseController.GetCurrentCourse)
-	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
 	course.Get("/enrolled", courseController.GetEnrollCourseByUserId)
 	course.Get("/suggest/:fieldId", coursePageController.GetSuggestCoursesByFieldId)
+	course.Get("/:courseId/total-steps", courseController.GetTotalStepsByCourseId)
 	course.Get("/:coursePageId/info", coursePageController.GetCoursePageInfo)
 	course.Get("/:coursePageId/content", coursePageController.GetCoursePageContent)
 
