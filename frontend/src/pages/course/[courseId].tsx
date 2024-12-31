@@ -16,7 +16,6 @@ const Course = () => {
 	const [modules, setModules] = useState<PayloadModuleResponse[]>([]);
 	const [moduleSteps, setModuleSteps] = useState<Record<number, PayloadModuleStepResponse[]>>({});
 	const [suggestCourses, setSuggestCourses] = useState<PayloadSuggestCourse[] | undefined>(undefined);
-	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -27,12 +26,10 @@ const Course = () => {
 				setModules([]);
 				setModuleSteps({});
 				setSuggestCourses(undefined);
-				setError(null);
 
 				//* Validate courseId
 				if (!courseId) {
 					toast.error("Invalid Course ID");
-					setError("Course ID is undefined.");
 					return;
 				}
 
@@ -42,7 +39,6 @@ const Course = () => {
 					setCourseInfo(courseInfoResponse.data);
 				} else {
 					toast.error("Course not found");
-					setError("Failed to fetch course info.");
 					return;
 				}
 
@@ -89,7 +85,6 @@ const Course = () => {
 					setModuleSteps(stepsMap);
 				} else {
 					toast.error("Course content not found");
-					setError("Failed to fetch course content.");
 				}
 
 				//* Fetch suggest courses
@@ -102,13 +97,11 @@ const Course = () => {
 						setSuggestCourses(filteredCourses);
 					} else {
 						toast.error("Failed to fetch suggested courses");
-						setError("Failed to fetch suggest courses. Please try again.");
 					}
 				}
 			} catch (err) {
 				console.error("Error fetching data:", err);
 				toast.error("An error occurred while fetching data.");
-				setError("An error occurred while fetching data. Please try again.");
 			}
 		};
 
