@@ -14,7 +14,6 @@ const Course = () => {
 	const [courseInfo, setCourseInfo] = useState<PayloadCoursePage | null>(null);
 	const [courseContent, setCourseContent] = useState<PayloadCoursePageContent[] | null>(null);
 	const [modules, setModules] = useState<PayloadModuleResponse[]>([]);
-	const [moduleSteps, setModuleSteps] = useState<Record<number, PayloadModuleStepResponse[]>>({});
 	const [suggestCourses, setSuggestCourses] = useState<PayloadSuggestCourse[] | undefined>(undefined);
 
 	useEffect(() => {
@@ -24,7 +23,6 @@ const Course = () => {
 				setCourseInfo(null);
 				setCourseContent(null);
 				setModules([]);
-				setModuleSteps({});
 				setSuggestCourses(undefined);
 
 				//* Validate courseId
@@ -70,19 +68,6 @@ const Course = () => {
 					const fetchedModules = await Promise.all(modulePromises);
 					const validModules = fetchedModules.filter((m): m is { module: PayloadModuleResponse; moduleId: number } => !!m);
 					setModules(validModules.map((m) => m.module));
-
-					//* Fetch steps for each module
-					const stepsPromises = validModules.map(async ({ moduleId }) => {
-						const stepsResponse = await server.moduleStep.getModuleSteps(moduleId.toString());
-						return { moduleId, steps: stepsResponse.data || [] };
-					});
-
-					const fetchedSteps = await Promise.all(stepsPromises);
-					const stepsMap = fetchedSteps.reduce(
-						(acc, { moduleId, steps }) => ({ ...acc, [moduleId]: steps }),
-						{} as Record<number, PayloadModuleStepResponse[]>
-					);
-					setModuleSteps(stepsMap);
 				} else {
 					toast.error("Course content not found");
 				}
@@ -136,10 +121,10 @@ const Course = () => {
 								return (
 									<Module
 										key={index}
+										moduleId={item.moduleId || 0}
 										moduleTitle={moduleData.title || "Untitled Module"}
 										moduleDescription={moduleData.description || "No description available."}
 										moduleImageUrl={moduleData.imageUrl || "/default-image.png"}
-										steps={moduleSteps[item.moduleId || 0] || []}
 									/>
 								);
 							}
