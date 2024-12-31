@@ -1,6 +1,6 @@
 package payload
 
-type ModuleStepResponse struct {
+type ModuleStep struct {
 	Id    uint64 `json:"id"`
 	Title string `json:"title"`
 	Check bool   `json:"check"`

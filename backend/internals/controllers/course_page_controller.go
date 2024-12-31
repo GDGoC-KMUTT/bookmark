@@ -28,9 +28,10 @@ func NewCoursePageController(service services.CoursePageServices) *CoursePageCon
 // @Accept json
 // @Produce json
 // @Param coursePageId path string true "Course Page ID"
-// @Success 200 {object} response.InfoResponse[payload.CoursePageIDParam ]
-// @Failure 400 {object} response.GenericError
-// @Failure 500 {object} response.GenericError
+// @Success 200 {object} response.InfoResponse[payload.CoursePage] "Successful response with course page information"
+// @Failure 400 {object} response.GenericError "Invalid coursePageId parameter"
+// @Failure 404 {object} response.GenericError "Course page not found"
+// @Failure 500 {object} response.GenericError "Internal server error"
 // @Router /courses/{coursePageId}/info [get]
 func (c *CoursePageController) GetCoursePageInfo(ctx *fiber.Ctx) error {
     param := new(payload.CoursePageIDParam)

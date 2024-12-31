@@ -51,7 +51,7 @@ func (suite *ModuleStepControllerTestSuite) TestGetModuleStepsWhenSuccess() {
     // Define the test parameters
     userId := uint(123)
     moduleId := "123" // Simulating the parsed and converted string moduleId
-    mockSteps := []payload.ModuleStepResponse{
+    mockSteps := []payload.ModuleStep{
         {Id: 1, Title: "Step 1", Check: true},
     }
 
@@ -73,7 +73,7 @@ func (suite *ModuleStepControllerTestSuite) TestGetModuleStepsWhenSuccess() {
     res, err := app.Test(req)
 
     // Read and unmarshal the response payload
-    var responsePayload response.InfoResponse[[]payload.ModuleStepResponse]
+    var responsePayload response.InfoResponse[[]payload.ModuleStep]
     body, _ := io.ReadAll(res.Body)
     json.Unmarshal(body, &responsePayload)
 

@@ -18,7 +18,7 @@ func NewModuleStepService(stepRepo repositories.StepRepository, userEvaluateRepo
 	}
 }
 
-func (s *moduleStepService) GetModuleSteps(userID uint, moduleID string) ([]payload.ModuleStepResponse, error) {
+func (s *moduleStepService) GetModuleSteps(userID uint, moduleID string) ([]payload.ModuleStep, error) {
 	// Fetch steps for the module
 	steps, err := s.stepRepo.FindStepsByModuleID(&moduleID)
 	if err != nil {
@@ -30,7 +30,7 @@ func (s *moduleStepService) GetModuleSteps(userID uint, moduleID string) ([]payl
 	}
 
 	// Prepare response
-	var stepResponses []payload.ModuleStepResponse
+	var stepResponses []payload.ModuleStep
 	for _, step := range steps {
 		// Validate step data
 		if step.Id == nil || step.Title == nil {
@@ -53,7 +53,7 @@ func (s *moduleStepService) GetModuleSteps(userID uint, moduleID string) ([]payl
 		check := len(stepEvaluateIDs) > 0 && len(stepEvaluateIDs) == len(userPassedIDs)
 
 		// Append the step response
-		stepResponses = append(stepResponses, payload.ModuleStepResponse{
+		stepResponses = append(stepResponses, payload.ModuleStep{
 			Id:    *step.Id,
 			Title: *step.Title,
 			Check: check,

@@ -1,5 +1,5 @@
 import { Blocks, SquareSquare } from "lucide-react";
-import { PayloadModuleStepResponse } from "../../api/api";
+import { PayloadModuleStep } from "../../api/api";
 import StepCard from "../step";
 import { useEffect, useState, useCallback } from "react";
 import { server } from "@/configs/server";
@@ -13,7 +13,7 @@ type ModuleProps = {
 };
 
 const Module: React.FC<ModuleProps> = ({ moduleId, moduleTitle, moduleDescription, moduleImageUrl }) => {
-	const [steps, setSteps] = useState<PayloadModuleStepResponse[]>([]);
+	const [steps, setSteps] = useState<PayloadModuleStep[]>([]);
 
 	// Function to fetch steps for the module
 	const fetchSteps = useCallback(async () => {
