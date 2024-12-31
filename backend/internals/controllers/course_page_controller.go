@@ -33,22 +33,23 @@ func NewCoursePageController(service services.CoursePageServices) *CoursePageCon
 // @Failure 500 {object} response.GenericError
 // @Router /courses/{coursePageId}/info [get]
 func (c *CoursePageController) GetCoursePageInfo(ctx *fiber.Ctx) error {
-	param := new(payload.CourseIdParam)
+	param := new(payload.CoursePage)
 
-	if err := ctx.ParamsParser(param); err != nil {
+	if err := ctx.ParamsParser(param); err != nil || param.Id == 0 {
 		return &response.GenericError{
-			Err:     err,
+			Err:     fmt.Errorf("invalid courseId parameter: %v", err),
 			Message: "invalid courseId parameter",
 		}
 	}
+	fmt.Printf("Parsed Course ID infoooo: %v\n", param.Id)
 
 	// Call the service to get course page info
-	coursePageInfo, err := c.coursePageSvc.GetCoursePageInfo(strconv.Itoa(int(param.CourseId)))
+	coursePageInfo, err := c.coursePageSvc.GetCoursePageInfo(strconv.Itoa(int(param.Id)))
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			return &response.GenericError{
 				Err:     err,
-				Message: fmt.Sprintf("course page with ID %d not found", param.CourseId),
+				Message: fmt.Sprintf("course page with ID %d not found", param.Id),
 			}
 		}
 		return &response.GenericError{
@@ -59,6 +60,7 @@ func (c *CoursePageController) GetCoursePageInfo(ctx *fiber.Ctx) error {
 
 	return response.Ok(ctx, coursePageInfo)
 }
+
 
 // GetCoursePageContent
 // @ID getCoursePageContent
@@ -72,7 +74,7 @@ func (c *CoursePageController) GetCoursePageInfo(ctx *fiber.Ctx) error {
 // @Failure 500 {object} response.GenericError
 // @Router /courses/{coursePageId}/content [get]
 func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
-	param := new(payload.CourseIdParam)
+	param := new(payload.CoursePageContent)
 
 	if err := ctx.ParamsParser(param); err != nil {
 		return &response.GenericError{
@@ -80,8 +82,9 @@ func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
 			Message: "invalid courseId parameter",
 		}
 	}
+	fmt.Printf("Parsed Course ID contentttt: %v\n", param.CoursePageId)
 
-	coursePageContent, err := c.coursePageSvc.GetCoursePageContent(strconv.Itoa(int(param.CourseId)))
+	coursePageContent, err := c.coursePageSvc.GetCoursePageContent(strconv.Itoa(int(param.CoursePageId)))
 	if err != nil {
 		// Handle other errors (e.g., internal server errors)
 		return &response.GenericError{
@@ -94,7 +97,7 @@ func (c *CoursePageController) GetCoursePageContent(ctx *fiber.Ctx) error {
 	if len(coursePageContent) == 0 {
 		return &response.GenericError{
 			Err:     fmt.Errorf("no content found for course"),
-			Message: fmt.Sprintf("no content found for course page ID %d", param.CourseId),
+			Message: fmt.Sprintf("no content found for course page ID %d", param.CoursePageId),
 		}
 	}
 

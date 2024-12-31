@@ -60,7 +60,7 @@ func (suite *CoursePageControllerTestSuite) TestGetCoursePageInfoWhenSuccess() {
 	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
-	mockCoursePageId := "1"
+	mockCoursePageId := "3"
 	expectedCoursePageInfo := payload.CoursePage{
 		Id:      1,
 		Name:    "Test Course Page",
@@ -114,7 +114,7 @@ func (suite *CoursePageControllerTestSuite) TestGetCoursePageContentWhenSuccess(
 	mockCoursePageService := new(mockServices.CoursePageServices)
 	app := setupTestCoursePageController(mockCoursePageService, true) // Inject token
 
-	mockCoursePageId := "1"
+	mockCoursePageId := "2"
 	mockCourseContents := []payload.CoursePageContent{
 		{
 			CoursePageId: 1,

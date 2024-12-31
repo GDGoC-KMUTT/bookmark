@@ -4,6 +4,7 @@ import (
 	"backend/internals/entities/payload"
 	"backend/internals/repositories"
 	"strconv"
+	"fmt"
 )
 
 type coursePageService struct {
@@ -19,18 +20,37 @@ func NewCoursePageService(coursePageRepo repositories.CoursePageRepo, courseRepo
 }
 
 func (s *coursePageService) GetCoursePageInfo(coursePageId string) (*payload.CoursePage, error) {
-	coursePageEntity, err := s.coursePageRepo.FindCoursePageInfoByCoursePageID(coursePageId)
-	if err != nil {
-		return nil, err
+    // fmt.Printf("Service: Fetching course page info for ID: %s\n", coursePageId)
+    coursePageEntity, err := s.coursePageRepo.FindCoursePageInfoByCoursePageID(coursePageId)
+    if err != nil {
+        // fmt.Printf("Service: Error fetching course page info: %v\n", err)
+        return nil, err
+    }
+	// fmt.Printf("Service: coursePageEntity before dereferencing: %+v\n", coursePageEntity)
+
+	result := &payload.CoursePage{}
+
+	if coursePageEntity.Id != nil {
+		result.Id = *coursePageEntity.Id
 	}
 
-	return &payload.CoursePage{
-		Id:      *coursePageEntity.Id,
-		Name:    *coursePageEntity.Name,
-		FieldId: *coursePageEntity.FieldId,
-		Field:   coursePageEntity.Field.Name,
-	}, nil
+	if coursePageEntity.Name != nil {
+		result.Name = *coursePageEntity.Name
+	}
+
+	if coursePageEntity.FieldId != nil {
+		result.FieldId = *coursePageEntity.FieldId
+	}
+
+	if coursePageEntity.Field != nil && coursePageEntity.Field.Name != nil {
+		name := *coursePageEntity.Field.Name // Dereference the **string to get *string
+		result.Field = &name                 // Assign the *string value to result.Field
+	}
+
+    // fmt.Printf("Service: Successfully fetched course page info: %+v\n", result)
+    return result, nil
 }
+
 
 func (s *coursePageService) GetCoursePageContent(coursePageId string) ([]payload.CoursePageContent, error) {
 	contentEntities, err := s.coursePageRepo.FindCoursePageContentByCoursePageID(coursePageId)

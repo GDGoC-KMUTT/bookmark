@@ -1,7 +1,7 @@
 package payload
 
 type CoursePage struct {
-	Id      uint64  `json:"id"`
+	Id      uint64  `json:"id" params:"coursePageId"`
 	Name    string  `json:"name"`
 	FieldId uint64  `json:"fieldId"`
 	Field   *string `json:"field"`

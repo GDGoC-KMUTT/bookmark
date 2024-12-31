@@ -3,6 +3,7 @@ package repositories
 import (
 	"backend/internals/db/models"
 	"gorm.io/gorm"
+	"fmt"
 )
 
 type coursePageRepository struct {
@@ -16,15 +17,19 @@ func NewCoursePageRepository(db *gorm.DB) CoursePageRepo {
 }
 
 func (r *coursePageRepository) FindCoursePageInfoByCoursePageID(coursePageId string) (*models.Course, error) {
-	var coursePage models.Course
-	err := r.db.Preload("Field"). // Preload the associated FieldType
-					Where("id = ?", coursePageId).
-					First(&coursePage).Error
-	if err != nil {
-		return nil, err
-	}
-	return &coursePage, nil
+    // fmt.Printf("Repository: Querying course page info for ID: %s\n", coursePageId)
+    var coursePage models.Course
+    err := r.db.Preload("Field").
+                Where("id = ?", coursePageId).
+                First(&coursePage).Error
+    if err != nil {
+        // fmt.Printf("Repository: Error fetching course page info: %v\n", err)
+        return nil, err
+    }
+    // fmt.Printf("Repository: Successfully fetched course page: %+v\n", coursePage)
+    return &coursePage, nil
 }
+
 
 func (r *coursePageRepository) FindCoursePageContentByCoursePageID(coursePageId string) ([]models.CourseContent, error) {
 	var contents []models.CourseContent

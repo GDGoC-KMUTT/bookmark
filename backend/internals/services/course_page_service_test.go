@@ -27,9 +27,9 @@ func (suite *CoursePageServiceTestSuite) TestGetCoursePageInfoSuccess() {
 	mockCourseRepo := new(mockRepositories.CourseRepository)
 
 	// Mock data
-	coursePageId := "1"
+	coursePageId := "4"
 	mockCoursePage := models.Course{
-		Id:      utils.Ptr(uint64(1)),
+		Id:      utils.Ptr(uint64(4)),
 		Name:    utils.Ptr("Sample Course"),
 		FieldId: utils.Ptr(uint64(2)),
 		Field: &models.FieldType{
