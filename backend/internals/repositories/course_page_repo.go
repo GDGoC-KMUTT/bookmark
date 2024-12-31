@@ -3,7 +3,6 @@ package repositories
 import (
 	"backend/internals/db/models"
 	"gorm.io/gorm"
-	"fmt"
 )
 
 type coursePageRepository struct {
