@@ -76,7 +76,7 @@ const Module: React.FC<ModuleProps> = ({ moduleId, moduleTitle, moduleDescriptio
 								stepId={step.id}
 								title={step.title}
 								check={step?.check ?? false}
-								onSheetClose={fetchSteps} // Trigger fetchSteps when Sheet is closed
+								onSheetClose={fetchSteps}
 							/>
 						) : null
 					)

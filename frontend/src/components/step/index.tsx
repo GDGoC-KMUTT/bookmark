@@ -24,11 +24,11 @@ import BadgeStep from "./badge-step"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type StepProps = {
-	stepId: number
-	title: string
-	check: boolean
-	onSheetClose: () => void;
-}
+	stepId: number;
+	title: string;
+	check: boolean;
+	onSheetClose?: () => void | Promise<void> | undefined;
+};
 
 const StepCard: React.FC<StepProps> = ({ stepId, title, check, onSheetClose }) => {
 	const [userComment, setUserComment] = useState<string>("")
@@ -47,7 +47,7 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check, onSheetClose }) =
 
 	const { isLoading: isLoadingCommentOnStep, commentOnStep } = useComment()
 	const { currentUser } = useCurrentUser()
-	const { upvoteComment } = useUpVote()
+	const { upvoteComment, isLoading: isLoadingUpvote } = useUpVote()
 
 	const submitComment = async () => {
 		if (userComment !== "") {
@@ -131,7 +131,7 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check, onSheetClose }) =
 			onOpenChange={(isOpen) => {
 				setOpenStepSheet(isOpen);
 				if (!isOpen) {
-					onSheetClose();
+					onSheetClose?.();
 				}
 			}}
 		>
@@ -332,11 +332,13 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check, onSheetClose }) =
 																			</div>
 																		</div>
 																		<div
-																			className="flex items-center cursor-pointer"
-																			onClick={() => upVote(cm.stepCommentId ?? 0)}
+																			className={`flex items-center ${isLoadingUpvote ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+																			aria-disabled={isLoadingUpvote}
+																			onClick={() => {upVote(cm.stepCommentId ?? 0)}}
 																		>
-																			{/* TODO add upvote comment */}
-																			<ArrowBigUp className="text-explore-foreground" />
+																			<ArrowBigUp
+																				className={isLoadingUpvote ? "text-gray-400" : "text-explore-foreground"}
+																			/>
 																			<p className="ps-2 text-explore-foreground">{cm.upVote}</p>
 																		</div>
 																	</div>

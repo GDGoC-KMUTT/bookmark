@@ -14,26 +14,28 @@ const Text = ({ content, backgroundIndex }: { content: string; backgroundIndex: 
     const textRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const element = textRef.current;
+		const element = textRef.current;
 
-        if (element) {
-            gsap.fromTo(
-                element,
-                { opacity: 0 },
-                {
-                    opacity: 1,
-                    duration: 1.5, // Smooth animation
-                    scrollTrigger: {
-                        trigger: element,
-                        start: 'top 60%', // Start fade-in before the component's center reaches viewport center
-                        end: 'top 30%', // Fade out as the component's top moves past 40% of the viewport height
-                        toggleActions: 'play reverse play reverse',
-                        scrub: 1, // Synchronizes with scroll
-                    },
-                }
-            );
-        }
-    }, []);
+		if (element) {
+			gsap.fromTo(
+				element,
+				{ opacity: 0, y: 50 }, // Start with opacity 0 and move slightly down
+				{
+					opacity: 1,
+					y: 0,
+					duration: 3,
+					ease: "power3.out",
+					scrollTrigger: {
+						trigger: element,
+						start: "top 60%",
+						end: "top 40%",
+						toggleActions: "play none none reverse",
+						scrub: 10,
+					},
+				}
+			);
+		}
+	}, []);
 
     return (
         <div

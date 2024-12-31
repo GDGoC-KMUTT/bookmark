@@ -5,7 +5,7 @@ import Module from "../../components/course/module";
 import { server } from "@/configs/server";
 import CourseCard from "../../components/coursecard/index";
 import AppLoading from "@/components/ui/app-loading";
-import { PayloadModuleResponse, PayloadModuleStepResponse, PayloadCoursePage, PayloadCoursePageContent, PayloadSuggestCourse } from "../../api/api";
+import { PayloadModuleResponse, PayloadCoursePage, PayloadCoursePageContent, PayloadSuggestCourse } from "../../api/api";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
