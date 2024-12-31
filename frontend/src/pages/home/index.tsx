@@ -61,7 +61,7 @@ const Home = () => {
                             {steps
                                 .filter((step) => step.moduleId === module.moduleId)
                                 .map((step, index) => (
-                                    <StepCard key={step.stepId} stepId={step.stepId} title={step.title} index={index + 1} />
+                                    <StepCard key={step.stepId} stepId={step.stepId} title={step.title} check={false} />
                                 ))}
                         </div>
                     </div>
