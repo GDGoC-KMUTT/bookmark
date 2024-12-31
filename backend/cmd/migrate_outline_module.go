@@ -13,6 +13,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
+	"net/http"
 	"os"
 	"regexp"
 	"strconv"
@@ -283,7 +284,26 @@ func documentProcess(db *gorm.DB, documentId *string) {
 	}
 }
 func replaceAttachmentPaths(content string) string {
-	re := regexp.MustCompile(`attachments/([^)]+\.png)`)
-	content = strings.TrimSpace(content)
-	return re.ReplaceAllString(content, "/prefix/$1")
+	re := regexp.MustCompile(`!\[]\(/api/attachments\.redirect\?id=([^\)]+)\)`)
+	return re.ReplaceAllStringFunc(content, func(match string) string {
+		attachmentId := re.FindStringSubmatch(match)[1]
+		attachmentId = strings.Split(attachmentId, " ")[0]
+
+		client := resty.New().
+			SetRedirectPolicy(resty.NoRedirectPolicy())
+
+		resp, err := client.R().
+			SetAuthToken(*config.Env.OutlineToken).
+			Get(fmt.Sprintf("https://outline.cscms.me/api/attachments.redirect?id=%s", attachmentId))
+
+		if err != nil {
+			if resp != nil && resp.StatusCode() == http.StatusFound {
+				location := strings.Split(resp.Header().Get("Location"), "?")[0]
+				return fmt.Sprintf("![](%s)", location)
+			}
+			gut.Fatal("failed to get attachment location", err)
+		}
+
+		return match
+	})
 }
