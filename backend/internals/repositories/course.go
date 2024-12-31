@@ -10,4 +10,5 @@ type CourseRepository interface {
 	FindEnrollCourseByUserId(userId int) ([]*models.Enroll, error)
 	FindCourseByCourseId(courseId *uint64) (*models.Course, error)
 	FindFieldByFieldId(fieldId *uint64) (*models.FieldType, error)
+	FindCoursesByFieldId(fieldId uint64) ([]models.Course, error)
 }

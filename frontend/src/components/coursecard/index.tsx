@@ -10,7 +10,7 @@ type CourseCardProps = {
 
 const CourseCard: React.FC<CourseCardProps> = ({ courseName, fieldName, imageUrl, courseId }) => {
     return (
-        <Link to={`/courses/${courseId}`} className="block">
+        <Link to={`/course/${courseId}`} className="block">
             <div className="border p-5 pb-2 w-[350px] h-[200px] pr-10 rounded-sm flex flex-col space-y-2">
                 <div className="flex items-center space-x-2">
                 <Bookmark className="stroke-2 w-5 h-5 text-gray-500" />

@@ -141,7 +141,7 @@ func (r *CourseController) GetEnrollCourseByUserId(c *fiber.Ctx) error {
     user := c.Locals("user").(*jwt.Token)
     claims := user.Claims.(jwt.MapClaims)
     userId := claims["userId"].(float64)
-    
+
     // * query the enroll table using the userId
     enrollInfo, err := r.courseSvc.GetEnrollCourseByUserId(int(userId))
     if err != nil {
