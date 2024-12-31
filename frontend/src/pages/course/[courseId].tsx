@@ -21,6 +21,14 @@ const Course = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
+				//* Reset state to avoid stale data
+				setCourseInfo(null);
+				setCourseContent(null);
+				setModules([]);
+				setModuleSteps({});
+				setSuggestCourses(undefined);
+				setError(null);
+
 				//* Validate courseId
 				if (!courseId) {
 					toast.error("Invalid Course ID");
@@ -88,7 +96,6 @@ const Course = () => {
 				if (courseInfoResponse.data?.fieldId) {
 					const suggestResponse = await server.coursePage.getSuggestCoursesByFieldId(courseInfoResponse.data.fieldId.toString());
 					if (suggestResponse.data) {
-						// Filter out the current course by ID
 						const filteredCourses = suggestResponse.data.filter(
 							(course) => course.id !== parseInt(courseId, 10) // Exclude current courseId
 						);
@@ -107,10 +114,6 @@ const Course = () => {
 
 		fetchData();
 	}, [courseId]);
-
-	useEffect(() => {
-		console.log("SuggestCourses", suggestCourses);
-	});
 
 	if (!courseId || !courseInfo) {
 		return (
