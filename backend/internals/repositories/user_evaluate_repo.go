@@ -101,7 +101,7 @@ func (r *userEvaluateRepo) FindUserPassedEvaluateIDs(userID uint, stepID uint64)
 	// Query the user_evaluates table to get IDs where pass is not null for the given user and step_id
 	err := r.db.Table("user_evaluates").
 		Select("step_evaluate_id").
-		Where("user_id = ? AND step_evaluate_id IN (?) AND pass IS NOT NULL", userID,
+		Where("user_id = ? AND step_evaluate_id IN (?) AND pass=TRUE", userID,
 			r.db.Table("step_evaluates").Select("id").Where("step_id = ?", stepID),
 		).
 		Scan(&userPassedIDs).Error
