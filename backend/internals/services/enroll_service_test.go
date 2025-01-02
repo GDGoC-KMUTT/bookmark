@@ -22,7 +22,7 @@ func (suite *EnrollServiceTestSuite) TestEnrollUserWhenSuccess() {
 	is := assert.New(suite.T())
 
 	// Arrange
-	mockRepo := new(mockRepositories.EnrollRepo)
+	mockRepo := new(mockRepositories.EnrollRepository)
 	mockUserId := uint(123)
 	mockCourseId := uint64(456)
 
@@ -41,7 +41,7 @@ func (suite *EnrollServiceTestSuite) TestEnrollUserWhenRepoFails() {
 	is := assert.New(suite.T())
 
 	// Arrange
-	mockRepo := new(mockRepositories.EnrollRepo)
+	mockRepo := new(mockRepositories.EnrollRepository)
 	mockUserId := uint(123)
 	mockCourseId := uint64(456)
 

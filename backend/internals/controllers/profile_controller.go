@@ -32,7 +32,7 @@ func NewProfileController(profileSvc services.ProfileService) ProfileController 
 func (r *ProfileController) ProfileUserInfo(c *fiber.Ctx) error {
 	// Extract userId from JWT claims
 	user := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
-	userId := user["userId"].(int64)
+	userId := user["userId"].(float64)
 
 	// Fetch user profile info
 	userProfile, err := r.profileSvc.GetUserInfo(utils.Ptr(strconv.Itoa(int(userId))))

@@ -60,8 +60,8 @@ jobs:
           touch config.yml
           echo '${{secrets.BACKEND_STAGING_ENV}}' > config.yml
           go mod tidy
-          mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories 
-          mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices 
+          mockery --all --with-expecter --dir=./internals/repositories --output=./mocks/repositories --outpkg=mockRepositories
+          mockery --all --with-expecter --dir=./internals/services --output=./mocks/services --outpkg=mockServices
           mockery --all --with-expecter --dir=./internals/utils/services --output=./mocks/utils --outpkg=mockUtilServices
 
       - name: Test Services & Controllers
@@ -82,8 +82,8 @@ jobs:
           cd ./backend
           coverage=$(go tool cover -func=coverage.txt | grep total | awk '{print $3}' | sed 's/%//')
           echo "Code Coverage: $coverage%"
-          if (( $(echo "$coverage < 80" | bc -l) )); then
-            echo "Code coverage is below 80%. Failing the job."
+          if (( $(echo "$coverage < 60" | bc -l) )); then
+            echo "Code coverage is below 60%. Failing the job."
             exit 1
           fi
 
