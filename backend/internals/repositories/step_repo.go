@@ -36,7 +36,7 @@ func (r *stepRepo) FindStepsByModuleID(moduleId *string) ([]*models.Step, error)
 	}
 
 	var steps []*models.Step
-	result := r.db.Where("module_id = ?", moduleId).Find(&steps)
+	result := r.db.Where("module_id = ?", moduleId).Order("id ASC").Find(&steps)
 	if result.Error != nil {
 		return nil, result.Error
 	}
