@@ -13,7 +13,7 @@ export const EnrollmentCard = ({ course_name, progress = 0 }: EnrollmentCardProp
             <div className="flex justify-between items-start mb-2">
                 <div>
                     <div className="text-gray-500 font-medium text-sm mb-2">CONTINUE</div>
-                    <div className="text-gray-900 font-medium text-base mb-4" style={{ minHeight: "3rem" }}>
+                    <div className="text-gray-900 font-medium text-base mb-4 min-h-[3rem]">
                         {course_name}
                     </div>
                 </div>

@@ -17,7 +17,7 @@ export const RecentCard = ({ moduleTitle, stepTitle }: RecentCardProps) => (
                     </span>
                 </div>
 
-                <div className="text-gray-900 font-medium text-base mb-4" style={{ minHeight: "3rem" }}>
+                <div className="text-gray-900 font-medium text-base mb-4 min-h-[3rem]">
                     {moduleTitle}
                     <p className="text-sm text-gray-600">{stepTitle}</p>
                 </div>
