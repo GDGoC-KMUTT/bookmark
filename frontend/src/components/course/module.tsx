@@ -30,6 +30,23 @@ const Module: React.FC<ModuleProps> = ({ moduleId, moduleTitle, moduleDescriptio
 		}
 	}, [moduleId]);
 
+	// Function to handle step card click and update user activity
+	const handleStepClick = useCallback(
+		async (stepId: number) => {
+			try {
+				const response = await server.userActivity.userActivityCreate(stepId);
+				if (response) {
+					console.log("Step activity updated successfully!");
+				} else {
+					console.log("Failed to update step activity. Please try again.");
+				}
+			} catch (error: any) {
+				console.error("Error updating user activity:", error);
+			}
+		},
+		[fetchSteps]
+	);
+
 	// Fetch steps on component mount
 	useEffect(() => {
 		fetchSteps();
@@ -57,7 +74,11 @@ const Module: React.FC<ModuleProps> = ({ moduleId, moduleTitle, moduleDescriptio
 				{/* Image content */}
 				{moduleImageUrl && (
 					<div className="w-full sm:w-1/3 sm:flex sm:justify-center">
-						<img src={moduleImageUrl} alt={moduleTitle} className="w-[200px] h-[120px] rounded-sm object-cover" />
+						<img
+							src={moduleImageUrl}
+							alt={moduleTitle}
+							className="w-[200px] h-[120px] rounded-sm object-cover"
+						/>
 					</div>
 				)}
 			</div>
@@ -71,19 +92,25 @@ const Module: React.FC<ModuleProps> = ({ moduleId, moduleTitle, moduleDescriptio
 				{steps.length > 0 ? (
 					steps.map((step) =>
 						step.id && step.title ? (
-							<StepCard
+							<div
 								key={step.id}
-								stepId={step.id}
-								title={step.title}
-								check={step?.check ?? false}
-								onSheetClose={fetchSteps}
-							/>
+								onClick={() => handleStepClick(step.id || 0)}
+								className="cursor-pointer"
+							>
+								<StepCard
+									stepId={step.id}
+									title={step.title}
+									check={step?.check ?? false}
+									onSheetClose={fetchSteps}
+								/>
+							</div>
 						) : null
 					)
 				) : (
 					<p className="text-gray-500">No steps for this module.</p>
 				)}
 			</ul>
+
 		</div>
 	);
 };
