@@ -9,7 +9,7 @@ const Callback = () => {
     const code = searchParams.get("code")
 
     const handleUserCallBack = async () => {
-        await toast.promise(server.login.loginCallBack({ code: code ?? "" }), {
+        toast.promise(server.login.loginCallBack({ code: code ?? "" }), {
             loading: "callback...",
             success: () => {
                 navigate("/home")

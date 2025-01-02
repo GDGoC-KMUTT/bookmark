@@ -27,7 +27,7 @@ const AppLoading: React.FC<PropsWithChildren> = ({ children }) => {
         // Redirect based on login state and root path
         if (currentUser) {
             if (location.pathname === "/welcome" || location.pathname === "/") {
-                navigate("/home", { replace: true }) // Redirect to portal
+                navigate("/home", { replace: true }) // Redirect to home
             } else {
                 setIsLoaded(true) // Allow navigation for other paths
             }
