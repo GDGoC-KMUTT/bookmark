@@ -1,7 +1,6 @@
 package routes
 
 import (
-	_ "backend/docs"
 	"backend/internals/config"
 	"backend/internals/controllers"
 	"backend/internals/db"
@@ -17,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
 	"github.com/sirupsen/logrus"
 )
@@ -38,6 +38,8 @@ func SetupRoutes() {
 	var stepCommentUpVoteRepo = repositories.NewStepCommentUpVote(db.Gorm)
 	var stepAuthorRepo = repositories.NewStepAuthorRepository(db.Gorm)
 	var courseContentRepo = repositories.NewCourseContentRepository(db.Gorm)
+	var userActivityRepo = repositories.NewUserActivityRepository(db.Gorm)
+	var userStrengthRepo = repositories.NewUserStrengthRepository(db.Gorm) // Add UserStrengthRepo
 
 	// * third party
 	var oauthService = services2.NewOAuthService(config.Env)
@@ -61,10 +63,12 @@ func SetupRoutes() {
 		courseContentRepo,
 		moduleRepo)
 	var articleService = services.NewArticleService(articleRepo)
+	var enrollService = services.NewEnrollService(enrollRepo)
 	var moduleService = services.NewModuleService(moduleRepo)
 	var moduleStepService = services.NewModuleStepService(stepRepo, userEvalRepo)
 	var enrollService = services.NewEnrollService(enrollRepo)
 	var userActivityService = services.NewUserActivityService(userActivityRepo)
+	var userStrengthService = services.NewUserStrengthService(userStrengthRepo) // Add UserStrengthService
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
@@ -78,6 +82,8 @@ func SetupRoutes() {
 	var enrollController = controllers.NewEnrollController(enrollService)
 	var userActivityController = controllers.NewUserActivityController(userActivityService)
 	var stepController = controllers.NewStepController(stepService, config.Env, minioService)
+	var userActivityController = controllers.NewUserActivityController(userActivityService)
+	var userStrengthController = controllers.NewUserStrengthController(userStrengthService) // Add UserStrengthController
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
 
@@ -94,6 +100,7 @@ func SetupRoutes() {
 
 	// * cores
 	app.Use(middleware.Cors)
+	app.Use(logger.New())
 
 	// * Recover
 	app.Use(Recover())
@@ -155,6 +162,16 @@ func SetupRoutes() {
 	stepComment.Post("/create", stepController.CommentOnStep)
 	stepComment.Post("/upvote", stepController.UpVoteStepComment)
 	stepComment.Get("/:stepId", stepController.GetStepComment)
+
+	enrollments := api.Group("/enrollments", middleware.Jwt())
+	enrollments.Get("/enroll", enrollController.GetUserEnrollments)
+
+	userActivity := api.Group("/user", middleware.Jwt())
+	userActivity.Get("/recent-activities", userActivityController.GetRecentActivity)
+
+	userStrength := api.Group("/strength", middleware.Jwt())
+	userStrength.Get("/strength-info", userStrengthController.GetStrengthDataByUserID)
+	userStrength.Get("/suggestions", userStrengthController.GetSuggestionCourse)
 
 	// Custom handler to set Content-Type header based on file extension
 	api.Use("/static", func(c *fiber.Ctx) error {

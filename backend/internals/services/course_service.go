@@ -61,6 +61,10 @@ func (r *courseService) GetCurrentCourse(userID uint) (*payload.Course, error) {
 		return nil, err
 	}
 
+	if course == nil {
+		return nil, nil
+	}
+
 	courseDetails := &payload.Course{
 		Id:   course.Id,
 		Name: course.Name,
@@ -118,8 +122,8 @@ func (r *courseService) GetEnrollCourseByUserId(userId int) ([]*payload.Enrollwi
 			UserId:   enroll.UserId,
 			CourseId: enroll.CourseId,
 			CourseName: &payload.Course{
-				Id:   course.Id,
-				Name: course.Name,
+				Id:      course.Id,
+				Name:    course.Name,
 				FieldId: course.FieldId,
 			},
 			FieldImageURL: field.ImageUrl,

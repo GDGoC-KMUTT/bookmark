@@ -13,6 +13,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
+	"net/http"
 	"os"
 	"regexp"
 	"strconv"
@@ -50,21 +51,55 @@ func main() {
 	}
 
 	// parse flags
-	documentId := flag.String("documentId", "", "Outline document ID")
+	parentDocumentId := flag.String("parentDocumentId", "", "Outline document ID")
 	flag.Parse()
 
 	// validate flags
-	if *documentId == "" {
-		gut.Fatal("missing required flag: documentId", nil)
+	if *parentDocumentId == "" {
+		gut.Fatal("missing required flag: parentDocumentId", nil)
 	}
 
+	// initialize Resty client
+	client := resty.New()
+	resp, err := client.R().
+		SetAuthToken(*config.Env.OutlineToken).
+		SetBody(map[string]any{
+			"id": *parentDocumentId,
+		}).
+		SetResult(map[string]any{}).
+		Post("https://outline.cscms.me/api/documents.info")
+	if err != nil {
+		gut.Fatal("failed to call outline api", err)
+	}
+
+	*parentDocumentId = (*resp.Result().(*map[string]any))["data"].(map[string]any)["id"].(string)
+
+	resp, err = client.R().
+		SetAuthToken(*config.Env.OutlineToken).
+		SetBody(map[string]any{
+			"parentDocumentId": *parentDocumentId,
+		}).
+		SetResult(map[string]any{}).
+		Post("https://outline.cscms.me/api/documents.list")
+	if err != nil {
+		gut.Fatal("failed to call outline api", err)
+	}
+
+	// get markdown content
+	documents := (*resp.Result().(*map[string]any))["data"].([]any)
+	for _, document := range documents {
+		documentId := document.(map[string]any)["id"].(string)
+		documentProcess(db, &documentId)
+	}
+}
+
+func documentProcess(db *gorm.DB, documentId *string) {
 	// call outline api
 	client := resty.New()
 	resp, err := client.R().
 		SetAuthToken(*config.Env.OutlineToken).
-		SetHeader("Accept", "*/*").
-		SetBody(map[string]string{
-			"id": *documentId,
+		SetBody(map[string]any{
+			"id": documentId,
 		}).
 		SetResult(map[string]any{}).
 		Post("https://outline.cscms.me/api/documents.export")
@@ -73,10 +108,10 @@ func main() {
 	}
 
 	// get markdown content
-	markdown := (*resp.Result().(*map[string]interface{}))["data"].(string)
+	markdown := (*resp.Result().(*map[string]any))["data"].(string)
 
 	// split content into sections
-	sections := strings.Split(markdown, "\n# ")
+	sections := strings.Split(markdown, "\n# Step")
 	if len(sections) < 2 {
 		gut.Fatal("malformed markdown: missing module", nil)
 	}
@@ -89,8 +124,7 @@ func main() {
 	var module *models.Module
 
 	// find or create module
-	tx := db.Where("title = ?", moduleTitle).First(&module)
-	if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+	if tx := db.Where("title = ?", moduleTitle).First(&module); errors.Is(tx.Error, gorm.ErrRecordNotFound) {
 		module = &models.Module{
 			Title:       &moduleTitle,
 			ImageUrl:    new(string),
@@ -99,6 +133,20 @@ func main() {
 		if err := db.Create(&module).Error; err != nil {
 			gut.Fatal("failed to create module", err)
 		}
+	}
+
+	// update module metadata
+	meta := strings.Split(sections[0], "\n")[1:]
+	for i, line := range meta {
+		if strings.Contains(line, "Image") {
+			module.ImageUrl = gut.Ptr(strings.TrimPrefix(strings.TrimSuffix(meta[i+2], ">"), "<"))
+		}
+		if strings.Contains(line, "Description") {
+			module.Description = gut.Ptr(strings.TrimSpace(meta[i+2]))
+		}
+	}
+	if tx := db.Save(module); tx.Error != nil {
+		gut.Fatal("failed to update module", tx.Error)
 	}
 
 	// process each step section
@@ -134,7 +182,7 @@ func main() {
 			}
 		}
 
-		// 6. Update step content
+		// update step content
 		var description, content, outcome, check, errorable string
 
 		currentSection := ""
@@ -164,19 +212,19 @@ func main() {
 			}
 		}
 
-		// 7. Replace attachments paths
+		// replace attachments paths
 		description = replaceAttachmentPaths(description)
 		content = replaceAttachmentPaths(content)
 		outcome = replaceAttachmentPaths(outcome)
 		check = replaceAttachmentPaths(check)
 		errorable = replaceAttachmentPaths(errorable)
 
-		// Verify required sections
+		// verify required sections
 		if description == "" || content == "" || outcome == "" || check == "" || errorable == "" {
-			gut.Fatal("malformed markdown: missing required sections", nil)
+			gut.Fatal("malformed markdown: missing required sections, documentTitle: "+stepTitle, nil)
 		}
 
-		// Update step
+		// update step
 		step.Description = &description
 		step.Content = &content
 		step.Outcome = &outcome
@@ -194,7 +242,7 @@ func main() {
 
 			evalType := evalBuffer[i+1]
 			if evalType != "check" && evalType != "text" && evalType != "image" {
-				gut.Fatal("malformed markdown: invalid evaluation type", nil)
+				gut.Fatal("malformed markdown: invalid evaluation type; evalType: "+evalType, nil)
 			}
 
 			instruction := evalBuffer[i+2]
@@ -202,10 +250,10 @@ func main() {
 
 			order := i/4 + 1
 
-			// Check if an entry with the same Order exists
+			// check if an entry with the same Order exists
 			var existingEvaluation models.StepEvaluate
 			if err := db.Where("step_id = ? AND \"order\" = ?", step.Id, order).First(&existingEvaluation).Error; err == nil {
-				// Update the existing entry
+				// update the existing entry
 				existingEvaluation.Question = &evalBuffer[i]
 				existingEvaluation.Type = &evalType
 				existingEvaluation.Instruction = &instruction
@@ -214,7 +262,7 @@ func main() {
 					gut.Fatal("failed to update evaluation", err)
 				}
 			} else {
-				// Create a new entry
+				// create a new entry
 				evaluation := &models.StepEvaluate{
 					Id:          nil,
 					StepId:      step.Id,
@@ -235,9 +283,27 @@ func main() {
 		}
 	}
 }
-
 func replaceAttachmentPaths(content string) string {
-	re := regexp.MustCompile(`attachments/([^)]+\.png)`)
-	content = strings.TrimSpace(content)
-	return re.ReplaceAllString(content, "/prefix/$1")
+	re := regexp.MustCompile(`!\[]\(/api/attachments\.redirect\?id=([^\)]+)\)`)
+	return re.ReplaceAllStringFunc(content, func(match string) string {
+		attachmentId := re.FindStringSubmatch(match)[1]
+		attachmentId = strings.Split(attachmentId, " ")[0]
+
+		client := resty.New().
+			SetRedirectPolicy(resty.NoRedirectPolicy())
+
+		resp, err := client.R().
+			SetAuthToken(*config.Env.OutlineToken).
+			Get(fmt.Sprintf("https://outline.cscms.me/api/attachments.redirect?id=%s", attachmentId))
+
+		if err != nil {
+			if resp != nil && resp.StatusCode() == http.StatusFound {
+				location := strings.Split(resp.Header().Get("Location"), "?")[0]
+				return fmt.Sprintf("![](%s)", location)
+			}
+			gut.Fatal("failed to get attachment location", err)
+		}
+
+		return match
+	})
 }

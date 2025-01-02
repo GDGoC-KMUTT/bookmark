@@ -30,12 +30,11 @@ func NewProfileController(profileSvc services.ProfileService) ProfileController 
 // @Failure 400 {object} response.GenericError
 // @Router /profile/info [get]
 func (r *ProfileController) ProfileUserInfo(c *fiber.Ctx) error {
-	// * login state
-	user := c.Locals("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	userId := claims["userId"].(float64)
+	// Extract userId from JWT claims
+	user := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
+	userId := user["userId"].(float64)
 
-	// * get user profile
+	// Fetch user profile info
 	userProfile, err := r.profileSvc.GetUserInfo(utils.Ptr(strconv.Itoa(int(userId))))
 	if err != nil {
 		return &response.GenericError{
@@ -44,6 +43,7 @@ func (r *ProfileController) ProfileUserInfo(c *fiber.Ctx) error {
 		}
 	}
 
+	// Return success response
 	return response.Ok(c, userProfile)
 }
 
@@ -61,7 +61,7 @@ func (r *ProfileController) GetUserGems(c *fiber.Ctx) error {
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	userId := claims["userId"].(float64)
-	
+
 	// * get total gems for user
 	totalGems, err := r.profileSvc.GetTotalGems(uint(userId))
 	if err != nil {
