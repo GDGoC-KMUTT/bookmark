@@ -1,14 +1,14 @@
+import { PayloadUserEvalResult } from "@/api/api"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useCheckStepEvalStatus } from "@/hooks/useCheckStepEvalStatus"
+import { useSubmitStepEval } from "@/hooks/useSubmitStepEval"
+import { useSubmitStepEvalTypeCheck } from "@/hooks/useSubmitStepEvalTypeCheck"
 import { FilePen, Loader2 } from "lucide-react"
 import React, { FC, useEffect, useState } from "react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import ResultCard from "./result-card"
-import { PayloadUserEvalResult } from "@/api/api"
-import { useSubmitStepEval } from "@/hooks/useSubmitStepEval"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { useSubmitStepEvalTypeCheck } from "@/hooks/useSubmitStepEvalTypeCheck"
-import { useCheckStepEvalStatus } from "@/hooks/useCheckStepEvalStatus"
 
 type EvalTypeCardProps = {
     stepId: number | undefined
@@ -24,11 +24,12 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
     const [file, setFile] = useState<File | null>(null)
     const [isChecked, setIsChecked] = useState<boolean>(false)
     const [isSubmit, setIsSubmit] = useState<boolean>(false)
-
+    const [userEvalId, setUserEvalId] = useState<number | undefined>(0)
+    const [userSubmission, setUserSubmission] = useState<string | undefined>("")
+    const [commentStatus, setCommentStatus] = useState<string | undefined>("")
     const { createUserEvalRes, isLoading: isLoadingSubmitEval, error: errorSubmitEval, submitStepEval } = useSubmitStepEval()
     const { createUserEvalIdResCheck, error: errorSubmitTypeCheck, submitStepEvalTypeCheck } = useSubmitStepEvalTypeCheck()
     const { userEvalStatus, fetchStepEvalStatus } = useCheckStepEvalStatus()
-
     // Handle file input change
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -44,7 +45,7 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
     // Submit the file to the API
     const handleSubmit = async () => {
         if (type && stepId && stepEvalId) {
-            if (answer !== "") {
+            if (answer !== "" && type != "image") {
                 await submitStepEval(stepId, stepEvalId, type, undefined, answer)
                 setIsSubmit(true)
             } else if (file) {
@@ -54,19 +55,27 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
         }
     }
 
-    const userEvalId = createUserEvalRes?.userEvalId || createUserEvalIdResCheck?.userEvalId || userEval?.userEvalId
-    const userSubmission = createUserEvalRes?.userSubmission || userEval?.content
     const stepEvalPassed = isSubmit || userEval?.pass === null
     const passStatus = userEvalStatus?.pass ?? userEval?.pass
-    const commentStatus = userEvalStatus?.comment ?? userEval?.comment
-    const checkPassAndCommentStatus = passStatus !== null && passStatus !== undefined && commentStatus !== null && commentStatus !== undefined
+    const checkPassAndCommentStatus =
+        passStatus !== null && passStatus !== undefined && commentStatus !== null && commentStatus !== undefined && !isLoadingSubmitEval
 
     useEffect(() => {
         setFile(null)
         setAnswer("")
         setIsChecked(false)
         setIsSubmit(false)
+        setUserEvalId(createUserEvalRes?.userEvalId || createUserEvalIdResCheck?.userEvalId || userEval?.userEvalId)
+        setUserSubmission(createUserEvalRes?.userSubmission || userEval?.content)
+        setCommentStatus(userEvalStatus?.comment ?? userEval?.comment)
     }, [])
+
+    useEffect(() => {
+        if (createUserEvalRes?.userEvalId) {
+            setUserEvalId(createUserEvalRes.userEvalId)
+            fetchStepEvalStatus(createUserEvalRes.userEvalId)
+        }
+    }, [createUserEvalRes])
 
     useEffect(() => {
         if (userEval?.userEvalId != null && userEval.content != null) {
@@ -84,12 +93,14 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
             if (userEvalStatus?.pass !== null && userEvalStatus?.pass !== undefined) {
                 refetchGetGem()
                 clearInterval(intervalId)
+                setUserSubmission(createUserEvalRes?.userSubmission || userEval?.content)
+                setCommentStatus(userEvalStatus?.comment)
                 setIsSubmit(false) // Reset submission state
             }
 
             return () => clearInterval(intervalId) // Cleanup on unmount
         }
-    }, [isSubmit, userEvalStatus, stepEvalPassed, userEvalId, fetchStepEvalStatus, refetchGetGem])
+    }, [isSubmit, userEvalId, userEvalStatus, stepEvalPassed, fetchStepEvalStatus, refetchGetGem])
 
     return (
         <>
@@ -122,23 +133,28 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
 
             {type === "image" && (
                 <div className="ps-9">
-                    {!userEvalId && (
-                        <div className="flex pe-7 py-3 items-end space-x-2">
-                            <div className=" w-[25rem]">
-                                <Label htmlFor="picture">Please upload image</Label>
-                                <Input id="picture" type="file" className="rounded-sm" onChange={handleFileChange} />
-                            </div>
-                            <Button
-                                type="submit"
-                                className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800 rounded-sm"
-                                disabled={!file || isLoadingSubmitEval}
-                                onClick={handleSubmit}
-                            >
-                                {isLoadingSubmitEval ? <Loader2 className="animate-spin" /> : <></>}
-                                {isLoadingSubmitEval ? "Submitting..." : "Submit"}
-                            </Button>
+                    <div className="flex pe-7 py-3 items-end space-x-2">
+                        <div className=" w-[25rem]">
+                            <Label htmlFor="picture">Please upload image</Label>
+                            <Input
+                                id="picture"
+                                type="file"
+                                className="rounded-sm"
+                                disabled={passStatus || isLoadingSubmitEval}
+                                onChange={handleFileChange}
+                            />
                         </div>
-                    )}
+                        <Button
+                            type="submit"
+                            className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800 rounded-sm"
+                            disabled={!file || isLoadingSubmitEval || passStatus}
+                            onClick={handleSubmit}
+                        >
+                            {isLoadingSubmitEval ? <Loader2 className="animate-spin" /> : <></>}
+                            {isLoadingSubmitEval ? "Submitting..." : "Submit"}
+                        </Button>
+                    </div>
+
                     {userEvalId && userSubmission && (
                         <Dialog>
                             <DialogTrigger asChild>
@@ -156,14 +172,12 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                     ) : (
                         <>{userEvalId && <p className="text-xs pt-2">submission Id: {userEvalId}</p>}</>
                     )}
-                    {stepEvalPassed &&
-                        (passStatus === null || passStatus === undefined) &&
-                        (commentStatus === null || commentStatus === undefined) && (
-                            <div className="flex space-x-2 pt-3">
-                                <Loader2 className="animate-spin" />
-                                <p>Please wait, this may take a few minutes as we check your answer</p>
-                            </div>
-                        )}
+                    {stepEvalPassed && (
+                        <div className="flex space-x-2 pt-3">
+                            <Loader2 className="animate-spin" />
+                            <p>Please wait, this may take a few minutes as we check your answer</p>
+                        </div>
+                    )}
                 </div>
             )}
             {type === "text" && (
@@ -174,34 +188,31 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                             placeholder="write your answer..."
                             className="rounded-sm"
                             value={answer}
-                            disabled={!!userEvalId}
+                            disabled={passStatus || isLoadingSubmitEval}
                             onChange={(e) => setAnswer(e.target.value)}
                         />
-                        {!userEvalId && (
-                            <Button
-                                type="submit"
-                                className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800 rounded-sm"
-                                disabled={answer === "" || !!userEvalId || isLoadingSubmitEval}
-                                onClick={handleSubmit}
-                            >
-                                {isLoadingSubmitEval ? <Loader2 className="animate-spin" /> : <></>}
-                                {isLoadingSubmitEval ? "Submitting..." : "Submit"}
-                            </Button>
-                        )}
+
+                        <Button
+                            type="submit"
+                            className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800 rounded-sm"
+                            disabled={answer === "" || passStatus || isLoadingSubmitEval}
+                            onClick={handleSubmit}
+                        >
+                            {isLoadingSubmitEval ? <Loader2 className="animate-spin" /> : <></>}
+                            {isLoadingSubmitEval ? "Submitting..." : "Submit"}
+                        </Button>
                     </div>
                     {errorSubmitEval !== null ? (
                         <Label className="text-red-500">{errorSubmitEval}</Label>
                     ) : (
                         <>{userEvalId && <p className="text-xs pt-2">submission Id: {userEvalId}</p>}</>
                     )}
-                    {stepEvalPassed &&
-                        (passStatus === null || passStatus === undefined) &&
-                        (commentStatus === null || commentStatus === undefined) && (
-                            <div className="flex space-x-2 pt-3">
-                                <Loader2 className="animate-spin" />
-                                <p>Please wait, this may take a few minutes as we check your answer</p>
-                            </div>
-                        )}
+                    {stepEvalPassed && (
+                        <div className="flex space-x-2 pt-3">
+                            <Loader2 className="animate-spin" />
+                            <p>Please wait, this may take a few minutes as we check your answer</p>
+                        </div>
+                    )}
                 </div>
             )}
 
