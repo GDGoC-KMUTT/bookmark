@@ -31,19 +31,13 @@ func NewProfileController(profileSvc services.ProfileService) ProfileController 
 // @Router /profile/info [get]
 func (r *ProfileController) ProfileUserInfo(c *fiber.Ctx) error {
 	// Extract userId from JWT claims
-	user := c.Locals("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	userId, ok := claims["userId"].(float64)
-	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(response.GenericError{
-			Message: "Invalid user ID",
-		})
-	}
+	user := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
+	userId := user["userId"].(int64)
 
 	// Fetch user profile info
 	userProfile, err := r.profileSvc.GetUserInfo(utils.Ptr(strconv.Itoa(int(userId))))
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(response.GenericError{
+		return c.JSON(response.GenericError{
 			Err:     err,
 			Message: "failed to get user profile",
 		})

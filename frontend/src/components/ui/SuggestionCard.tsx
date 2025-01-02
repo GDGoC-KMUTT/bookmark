@@ -19,7 +19,7 @@ export const SuggestionCard = ({ name, field }: SuggestionCardProps) => (
                     </span>
                 </div>
 
-                <div className="text-gray-900 font-medium text-base mb-4" style={{ minHeight: "3rem" }}>
+                <div className="text-gray-900 font-medium text-base mb-4 min-h-[3rem]">
                     {name}
                 </div>
 
