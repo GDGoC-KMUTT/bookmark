@@ -338,61 +338,6 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
 							</div>
 						);
 					}
-
-					// if (className === "warning") {
-					// 	return (
-					// 		<div
-					// 			style={{
-					// 				border: "1px solid #ffc107", // Orange border
-					// 				backgroundColor: "#fff3cd", // Light yellow background
-					// 				padding: "1em",
-					// 				borderRadius: "8px",
-					// 				display: "flex",
-					// 				alignItems: "flex-start",
-					// 				gap: "0.5em",
-					// 			}}
-					// 			{...props}
-					// 		>
-					// 			<span
-					// 				style={{
-					// 					fontSize: "1.5em",
-					// 					color: "#ffc107", // Orange icon color
-					// 					display: "inline-block",
-					// 				}}
-					// 			>
-					// 				⚠️
-					// 			</span>
-					// 			<div>{props.children}</div>
-					// 		</div>
-					// 	);
-					// }
-					// if (className === "tip") {
-					// 	return (
-					// 		<div
-					// 			style={{
-					// 				border: "1px solid #ff9800", // Yellow-Orange border
-					// 				backgroundColor: "#fffaf0", // Light cream background
-					// 				padding: "1em",
-					// 				borderRadius: "8px",
-					// 				display: "flex",
-					// 				alignItems: "flex-start",
-					// 				gap: "0.5em",
-					// 			}}
-					// 			{...props}
-					// 		>
-					// 			<span
-					// 				style={{
-					// 					fontSize: "1.5em",
-					// 					color: "#ff9800", // Yellow-Orange icon color
-					// 					display: "inline-block",
-					// 				}}
-					// 			>
-					// 				⭐
-					// 			</span>
-					// 			<div>{props.children}</div>
-					// 		</div>
-					// 	);
-					// }
 					return <div {...props} />;
 				},
 
