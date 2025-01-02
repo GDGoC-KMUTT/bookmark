@@ -2,9 +2,10 @@ package repositories
 
 import (
 	"backend/internals/db/models"
+	"backend/internals/utils"
+	"log"
 	"errors"
 	"gorm.io/gorm"
-	"time"
 )
 
 type userActivityRepository struct {
@@ -29,8 +30,8 @@ func (repo *userActivityRepository) UpdateUserActivity(userId uint64, stepId uin
             newActivity := models.UserActivity{
                 UserId:    &userId,
                 StepId:    &stepId,
-                CreatedAt: timePtr(time.Now()),
-                UpdatedAt: timePtr(time.Now()),
+                CreatedAt: utils.TimeNowPtr(),
+                UpdatedAt: utils.TimeNowPtr(),
             }
             if err := repo.db.Create(&newActivity).Error; err != nil {
                 return err
@@ -41,12 +42,30 @@ func (repo *userActivityRepository) UpdateUserActivity(userId uint64, stepId uin
         }
     } else {
         // If record exists, explicitly update the UpdatedAt field
-        err := repo.db.Model(&existingActivity).Where("user_id = ? AND step_id = ?", userId, stepId).
-            Update("updated_at", timePtr(time.Now())).Error
+        err := repo.db.Model(&existingActivity).
+            Where("user_id = ? AND step_id = ?", userId, stepId).
+            Update("updated_at", utils.TimeNowPtr()).Error
         if err != nil {
             return err
         }
     }
 
     return nil
+}
+
+func (r *userActivityRepository) GetRecentActivitiesByUserID(userId *string) ([]models.UserActivity, error) {
+	var activities []models.UserActivity
+	err := r.db.
+		Preload("Step.Module").
+		Where("user_id = ?", userId).
+		Order("created_at DESC").
+		Limit(10).
+		Find(&activities).Error
+
+	if err != nil {
+		log.Printf("Error fetching recent activities for user %s: %v", *userId, err)
+		return nil, err
+	}
+
+	return activities, nil
 }

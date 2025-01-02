@@ -34,7 +34,7 @@ const Module: React.FC<ModuleProps> = ({ moduleId, moduleTitle, moduleDescriptio
 	const handleStepClick = useCallback(
 		async (stepId: number) => {
 			try {
-				const response = await server.userActivity.userActivityCreate(stepId);
+				const response = await server.userActivity.activityCreate(stepId);
 				if (response) {
 					console.log("Step activity updated successfully!");
 				} else {

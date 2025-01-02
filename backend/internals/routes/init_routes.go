@@ -30,7 +30,6 @@ func SetupRoutes() {
 	var articleRepo = repositories.NewArticleRepository(db.Gorm)
 	var moduleRepo = repositories.NewModuleRepository(db.Gorm)
 	var enrollRepo = repositories.NewEnrollRepository(db.Gorm)
-	var userActivityRepo = repositories.NewUserActivityRepository(db.Gorm)
 	var stepEvalRepo = repositories.NewStepEvaluateRepository(db.Gorm)
 	var userEvalRepo = repositories.NewUserEvaluateRepo(db.Gorm)
 	var stepRepo = repositories.NewStepRepository(db.Gorm)
@@ -63,7 +62,6 @@ func SetupRoutes() {
 		courseContentRepo,
 		moduleRepo)
 	var articleService = services.NewArticleService(articleRepo)
-	var enrollService = services.NewEnrollService(enrollRepo)
 	var moduleService = services.NewModuleService(moduleRepo)
 	var moduleStepService = services.NewModuleStepService(stepRepo, userEvalRepo)
 	var enrollService = services.NewEnrollService(enrollRepo)
@@ -80,7 +78,6 @@ func SetupRoutes() {
 	var moduleController = controllers.NewModuleController(moduleService)
 	var moduleStepController = controllers.NewModuleStepController(moduleStepService)
 	var enrollController = controllers.NewEnrollController(enrollService)
-	var userActivityController = controllers.NewUserActivityController(userActivityService)
 	var stepController = controllers.NewStepController(stepService, config.Env, minioService)
 	var userActivityController = controllers.NewUserActivityController(userActivityService)
 	var userStrengthController = controllers.NewUserStrengthController(userStrengthService) // Add UserStrengthController
@@ -148,10 +145,6 @@ func SetupRoutes() {
 	enroll := api.Group("/enroll", middleware.Jwt())
 	enroll.Post("/:courseId", enrollController.EnrollInCourse)
 
-	// * UserActivity routes
-	userActivity := api.Group("/userActivity", middleware.Jwt())
-	userActivity.Post("/:stepId", userActivityController.UpdateUserActivity)
-
 	stepEval := step.Group("/stepEval")
 	stepEval.Post("/submit", stepController.SubmitStepEval)
 	stepEval.Get("/status", stepController.CheckStepEvalStatus)
@@ -168,6 +161,7 @@ func SetupRoutes() {
 
 	userActivity := api.Group("/user", middleware.Jwt())
 	userActivity.Get("/recent-activities", userActivityController.GetRecentActivity)
+	userActivity.Post("/activity/:stepId", userActivityController.CreateOrUpdateActivity)
 
 	userStrength := api.Group("/strength", middleware.Jwt())
 	userStrength.Get("/strength-info", userStrengthController.GetStrengthDataByUserID)

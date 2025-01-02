@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"backend/internals/entities/response"
+	"backend/internals/entities/payload"
 	"backend/internals/services"
 	"backend/internals/utils"
 	"github.com/gofiber/fiber/v2"
@@ -42,4 +43,40 @@ func (r *UserActivityController) GetRecentActivity(c *fiber.Ctx) error {
 	}
 
 	return response.Ok(c, recentActivities)
+}
+
+// CreateOrUpdateActivity
+// @Summary Create or update a user activity
+// @Description Create or update a user activity record based on stepId. User ID is extracted from the JWT.
+// @Tags UserActivity
+// @Accept json
+// @Produce json
+// @Param stepId path uint64 true "Step ID" example(123)
+// @Success 200 {object} response.InfoResponse[string]
+// @Failure 400 {object} response.GenericError
+// @Failure 500 {object} response.GenericError
+// @Router /user/activity/{stepId} [post]
+func (c *UserActivityController) CreateOrUpdateActivity(ctx *fiber.Ctx) error {
+	param := new(payload.UserActivityParam)
+
+	if err := ctx.ParamsParser(param); err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "invalid stepId parameter",
+		}
+	}
+
+	user := ctx.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["userId"].(float64)
+
+	err := c.userActivitySvc.UpdateUserActivity(uint64(userId), param.StepId)
+	if err != nil {
+		return &response.GenericError{
+			Err:     err,
+			Message: "failed to update user activity",
+		}
+	}
+
+	return response.Ok(ctx, "user activity updated successfully")
 }
