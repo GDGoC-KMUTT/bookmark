@@ -57,7 +57,7 @@ const Module: React.FC<ModuleProps> = ({ moduleId, moduleTitle, moduleDescriptio
 				{/* Image content */}
 				{moduleImageUrl && (
 					<div className="w-full sm:w-1/3 sm:flex sm:justify-center">
-						<img src={moduleImageUrl} alt="module image" className="w-[200px] h-[120px] rounded-sm object-cover" />
+						<img src={moduleImageUrl} alt={moduleTitle} className="w-[200px] h-[120px] rounded-sm object-cover" />
 					</div>
 				)}
 			</div>

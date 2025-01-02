@@ -30,6 +30,7 @@ func SetupRoutes() {
 	var articleRepo = repositories.NewArticleRepository(db.Gorm)
 	var moduleRepo = repositories.NewModuleRepository(db.Gorm)
 	var enrollRepo = repositories.NewEnrollRepository(db.Gorm)
+	var userActivityRepo = repositories.NewUserActivityRepository(db.Gorm)
 	var stepEvalRepo = repositories.NewStepEvaluateRepository(db.Gorm)
 	var userEvalRepo = repositories.NewUserEvaluateRepo(db.Gorm)
 	var stepRepo = repositories.NewStepRepository(db.Gorm)
@@ -63,6 +64,7 @@ func SetupRoutes() {
 	var moduleService = services.NewModuleService(moduleRepo)
 	var moduleStepService = services.NewModuleStepService(stepRepo, userEvalRepo)
 	var enrollService = services.NewEnrollService(enrollRepo)
+	var userActivityService = services.NewUserActivityService(userActivityRepo)
 
 	// * Controller
 	var loginController = controllers.NewLoginController(config.Env, loginService)
@@ -74,6 +76,7 @@ func SetupRoutes() {
 	var moduleController = controllers.NewModuleController(moduleService)
 	var moduleStepController = controllers.NewModuleStepController(moduleStepService)
 	var enrollController = controllers.NewEnrollController(enrollService)
+	var userActivityController = controllers.NewUserActivityController(userActivityService)
 	var stepController = controllers.NewStepController(stepService, config.Env, minioService)
 
 	serverAddr := fmt.Sprintf("%s:%d", *config.Env.ServerHost, *config.Env.ServerPort)
@@ -137,6 +140,10 @@ func SetupRoutes() {
 	// * Enroll routes
 	enroll := api.Group("/enroll", middleware.Jwt())
 	enroll.Post("/:courseId", enrollController.EnrollInCourse)
+
+	// * UserActivity routes
+	userActivity := api.Group("/userActivity", middleware.Jwt())
+	userActivity.Post("/:stepId", userActivityController.UpdateUserActivity)
 
 	stepEval := step.Group("/stepEval")
 	stepEval.Post("/submit", stepController.SubmitStepEval)
