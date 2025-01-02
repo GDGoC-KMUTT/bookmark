@@ -37,10 +37,10 @@ func (r *ProfileController) ProfileUserInfo(c *fiber.Ctx) error {
 	// Fetch user profile info
 	userProfile, err := r.profileSvc.GetUserInfo(utils.Ptr(strconv.Itoa(int(userId))))
 	if err != nil {
-		return c.JSON(response.GenericError{
+		return &response.GenericError{
 			Err:     err,
 			Message: "failed to get user profile",
-		})
+		}
 	}
 
 	// Return success response

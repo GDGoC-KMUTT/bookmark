@@ -37,8 +37,8 @@ func (s *userActivityService) GetRecentActivitiesByUserID(userId *string) (*payl
 			StepID:      *activity.StepId,
 			StepTitle:   stepTitle,
 			ModuleTitle: moduleTitle,
-			CreatedAt:   activity.CreatedAt.Format("2006-01-02T15:04:05Z"),
-			UpdatedAt:   activity.UpdatedAt.Format("2006-01-02T15:04:05Z"),
+			CreatedAt:   activity.CreatedAt,
+			UpdatedAt:   activity.UpdatedAt,
 		})
 	}
 
