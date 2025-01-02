@@ -37,7 +37,6 @@ func SetupRoutes() {
 	var stepCommentUpVoteRepo = repositories.NewStepCommentUpVote(db.Gorm)
 	var stepAuthorRepo = repositories.NewStepAuthorRepository(db.Gorm)
 	var courseContentRepo = repositories.NewCourseContentRepository(db.Gorm)
-	var enrollRepo = repositories.NewEnrollRepository(db.Gorm)
 	var userActivityRepo = repositories.NewUserActivityRepository(db.Gorm)
 	var userStrengthRepo = repositories.NewUserStrengthRepository(db.Gorm) // Add UserStrengthRepo
 

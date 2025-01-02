@@ -3,15 +3,17 @@ package repositories
 import (
 	"backend/internals/db/models"
 	"errors"
+	"github.com/bsthun/gut"
 	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 type enrollRepository struct {
 	db *gorm.DB
 }
 
-func NewEnrollRepository(db *gorm.DB) enrollRepository {
+func NewEnrollRepository(db *gorm.DB) EnrollRepository {
 	return &enrollRepository{
 		db: db,
 	}
@@ -30,10 +32,10 @@ func (repo *enrollRepository) EnrollUser(userId uint, courseId uint64) error {
 	// If no enrollment found, create a new enrollment record
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		enrollment := models.Enroll{
-			UserId:    uint64Ptr(uint64(userId)),
+			UserId:    gut.Ptr(uint64(userId)),
 			CourseId:  &courseId,
-			CreatedAt: timePtr(time.Now()),
-			UpdatedAt: timePtr(time.Now()),
+			CreatedAt: gut.Ptr(time.Now()),
+			UpdatedAt: gut.Ptr(time.Now()),
 		}
 
 		if err := repo.db.Create(&enrollment).Error; err != nil {
@@ -45,15 +47,6 @@ func (repo *enrollRepository) EnrollUser(userId uint, courseId uint64) error {
 
 	// If the user is already enrolled, return an error
 	return errors.New("user is already enrolled in this course")
-}
-
-func (r *enrollRepository) FindEnrollmentsByUserID(userId *string) ([]models.Enroll, error) {
-	var enrollments []models.Enroll
-	err := r.db.
-		Preload("Course").
-		Where("user_id = ?", userId).
-		Find(&enrollments).Error
-	return enrollments, err
 }
 
 func (r *enrollRepository) GetTotalStepsByCourseID(courseId uint64) (int64, error) {
