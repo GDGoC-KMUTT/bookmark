@@ -24,7 +24,7 @@ type EnrollControllerTestSuite struct {
 	suite.Suite
 }
 
-func setupTestEnrollController(mockEnrollService *mockServices.EnrollServices) *fiber.App {
+func setupTestEnrollController(mockEnrollService *mockServices.EnrollService) *fiber.App {
 	fiberConfig := fiber.Config{
 		ErrorHandler: handler.ErrorHandler,
 	}
@@ -54,7 +54,7 @@ func TestEnrollController(t *testing.T) {
 func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenSuccess() {
 	is := assert.New(suite.T())
 
-	mockEnrollService := new(mockServices.EnrollServices)
+	mockEnrollService := new(mockServices.EnrollService)
 
 	app := setupTestEnrollController(mockEnrollService)
 
@@ -77,7 +77,7 @@ func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenSuccess() {
 func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenInvalidParam() {
 	is := assert.New(suite.T())
 
-	mockEnrollService := new(mockServices.EnrollServices)
+	mockEnrollService := new(mockServices.EnrollService)
 
 	app := setupTestEnrollController(mockEnrollService)
 
@@ -98,7 +98,7 @@ func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenInvalidParam() {
 func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenInternalError() {
 	is := assert.New(suite.T())
 
-	mockEnrollService := new(mockServices.EnrollServices)
+	mockEnrollService := new(mockServices.EnrollService)
 
 	app := setupTestEnrollController(mockEnrollService)
 
@@ -122,7 +122,7 @@ func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenInternalError() {
 func (suite *EnrollControllerTestSuite) TestEnrollInCourseWhenAlreadyEnroll() {
 	is := assert.New(suite.T())
 
-	mockEnrollService := new(mockServices.EnrollServices)
+	mockEnrollService := new(mockServices.EnrollService)
 
 	app := setupTestEnrollController(mockEnrollService)
 
