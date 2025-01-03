@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getFallbackName } from "@/utils/getFallbackName"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 
 const Navbar = () => {
     const [userProfile, setUserProfile] = useState<PayloadProfile | undefined>(undefined)
@@ -73,7 +74,16 @@ const Navbar = () => {
                         <BookMarked className="text-foreground" size={20} />
                     </div>
                     <div className="items-center justify-center space-y-1">
-                        <div className="font text-sm">{course.length > 11 ? `${course.slice(0, 11)}...` : course}</div>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <div className="font text-sm">{course.length > 11 ? `${course.slice(0, 11)}...` : course}</div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{course}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                         <div className="relative w-24 h-1 bg-border rounded-full">
                             <div className="absolute h-1 bg-progressBar rounded-full" style={{ width: `${progress}%` }}></div>
                         </div>
