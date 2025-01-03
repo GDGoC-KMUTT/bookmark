@@ -284,6 +284,7 @@ func (r *stepService) GetStepEvalInfo(stepId *uint64, userId *float64) ([]*paylo
 
 		if userEval != nil {
 			evalResult := &payload.UserEvalResult{
+				Type:       eval.Type,
 				UserEvalId: userEval.Id,
 				Content:    userEval.Content,
 				Pass:       userEval.Pass,
@@ -328,18 +329,35 @@ func (r *stepService) CreateFileFormat(stepId *uint64, stepEvalId *uint64, userI
 }
 
 func (r *stepService) CreateUserEval(payload *payload.CreateUserEvalReq) (*uint64, error) {
-	userEval := &models.UserEvaluate{
-		UserId:         utils.Ptr(uint64(*payload.UserId)),
-		Content:        payload.Content,
-		StepEvaluateId: payload.StepEvalId,
-	}
-
-	result, err := r.userEvalRepo.CreateUserEval(userEval)
+	userEval, err := r.userEvalRepo.GetUserEvalByStepEvalIdUserId(payload.StepEvalId, payload.UserId)
 	if err != nil {
 		return nil, err
 	}
 
-	return result.Id, nil
+	if userEval == nil {
+		NewUserEval := &models.UserEvaluate{
+			UserId:         utils.Ptr(uint64(*payload.UserId)),
+			Content:        payload.Content,
+			StepEvaluateId: payload.StepEvalId,
+		}
+
+		result, err := r.userEvalRepo.CreateUserEval(NewUserEval)
+		if err != nil {
+			return nil, err
+		}
+
+		return result.Id, nil
+	}
+
+	userEval.Content = payload.Content
+	userEval.Pass = nil
+	userEval.Comment = nil
+	if err := r.userEvalRepo.Update(userEval); err != nil {
+		return nil, err
+	}
+
+	return userEval.Id, err
+
 }
 
 func (r *stepService) CheckStepEvalStatus(userEvalId *uint64, userId *uint64) (*payload.UserEvalResult, error) {

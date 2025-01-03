@@ -2,8 +2,8 @@ package repositories
 
 import (
 	"backend/internals/db/models"
-	"gorm.io/gorm"
 	"fmt"
+	"gorm.io/gorm"
 )
 
 type userEvaluateRepo struct {
@@ -113,3 +113,6 @@ func (r *userEvaluateRepo) FindUserPassedEvaluateIDs(userID uint, stepID uint64)
 	return userPassedIDs, nil
 }
 
+func (r *userEvaluateRepo) Update(userEval *models.UserEvaluate) error {
+	return r.db.Save(userEval).Error
+}

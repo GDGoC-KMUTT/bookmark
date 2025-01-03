@@ -23,7 +23,7 @@ export const useStepEval = (stepId: number) => {
 
     useEffect(() => {
         fetchStepEval()
-    }, [fetchStepEval])
+    }, [])
 
     return { stepEval, isLoading, error, fetchStepEval }
 }

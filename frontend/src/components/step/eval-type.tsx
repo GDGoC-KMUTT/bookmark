@@ -16,10 +16,11 @@ type EvalTypeCardProps = {
     type: string | undefined
     question: string | undefined
     userEval: PayloadUserEvalResult | undefined
+    refetchStepEval: () => Promise<void>
     refetchGetGem: () => Promise<void>
 }
 
-const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, question, userEval, refetchGetGem }) => {
+const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, question, userEval, refetchGetGem, refetchStepEval }) => {
     const [answer, setAnswer] = useState<string>("")
     const [file, setFile] = useState<File | null>(null)
     const [isChecked, setIsChecked] = useState<boolean>(false)
@@ -32,7 +33,8 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
     // Handle file input change
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]) // Store the selected file
+            setFile(e.target.files[0])
+            console.log("File selected in handleFileChange:", e.target.files[0])
         }
     }
 
@@ -46,11 +48,13 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
         if (type && stepId && stepEvalId) {
             if (answer !== "") {
                 await submitStepEval(stepId, stepEvalId, type, undefined, answer)
-                setIsSubmit(true)
             } else if (file) {
                 await submitStepEval(stepId, stepEvalId, type, file)
-                setIsSubmit(true)
             }
+            await refetchStepEval()
+            setIsSubmit(true)
+            setFile(null)
+            setAnswer("")
         }
     }
 
@@ -69,10 +73,10 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
     }, [])
 
     useEffect(() => {
-        if (userEval?.userEvalId != null && userEval.content != null) {
+        if (userEval?.userEvalId != null && userEval.content != null && userEval.type !== "image") {
             setAnswer(userEval.content)
         }
-    }, [userEval?.content, userEval?.userEvalId])
+    }, [userEval])
 
     useEffect(() => {
         if (stepEvalPassed && userEvalId) {
@@ -89,7 +93,8 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
 
             return () => clearInterval(intervalId) // Cleanup on unmount
         }
-    }, [isSubmit, userEvalStatus, stepEvalPassed, userEvalId, fetchStepEvalStatus, refetchGetGem])
+    }, [isSubmit, userEvalStatus, stepEvalPassed, userEvalId])
+    console.log(!passStatus)
 
     return (
         <>
@@ -122,16 +127,16 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
 
             {type === "image" && (
                 <div className="ps-9">
-                    {!userEvalId && (
+                    {(!userEvalId || !passStatus) && (
                         <div className="flex pe-7 py-3 items-end space-x-2">
                             <div className=" w-[25rem]">
                                 <Label htmlFor="picture">Please upload image</Label>
-                                <Input id="picture" type="file" className="rounded-sm" onChange={handleFileChange} />
+                                <Input id="picture" type="file" className="rounded-sm" onChange={handleFileChange} disabled={isLoadingSubmitEval} />
                             </div>
                             <Button
                                 type="submit"
                                 className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800 rounded-sm"
-                                disabled={!file || isLoadingSubmitEval}
+                                disabled={isLoadingSubmitEval || passStatus}
                                 onClick={handleSubmit}
                             >
                                 {isLoadingSubmitEval ? <Loader2 className="animate-spin" /> : <></>}
@@ -174,14 +179,14 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
                             placeholder="write your answer..."
                             className="rounded-sm"
                             value={answer}
-                            disabled={!!userEvalId}
+                            disabled={isLoadingSubmitEval || passStatus}
                             onChange={(e) => setAnswer(e.target.value)}
                         />
-                        {!userEvalId && (
+                        {(!userEvalId || !passStatus) && (
                             <Button
                                 type="submit"
                                 className="bg-neutral-950 text-white hover:bg-neutral-800 hover:border-neutral-800 rounded-sm"
-                                disabled={answer === "" || !!userEvalId || isLoadingSubmitEval}
+                                disabled={answer === "" || passStatus || isLoadingSubmitEval}
                                 onClick={handleSubmit}
                             >
                                 {isLoadingSubmitEval ? <Loader2 className="animate-spin" /> : <></>}

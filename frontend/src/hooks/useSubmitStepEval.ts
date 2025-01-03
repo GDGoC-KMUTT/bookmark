@@ -24,7 +24,9 @@ export const useSubmitStepEval = () => {
                 const response = await server.step.submitStepEval({ data: JSON.stringify(body), file: file })
                 setCreateUserEvalRes(response.data)
                 console.log("File uploaded successfully:", response)
+                setIsLoading(false)
             } catch (error) {
+                setIsLoading(false)
                 setError(`failed to submit step evaluation: ${error}`)
                 console.error("Error submitting step evaluation:", error)
             }
@@ -35,7 +37,9 @@ export const useSubmitStepEval = () => {
                     data: JSON.stringify(body),
                 })
                 setCreateUserEvalRes(response.data)
+                setIsLoading(false)
             } catch (error) {
+                setIsLoading(false)
                 setError(`failed to submit step evaluation: ${error}`)
                 console.error("Error submitting step evaluation:", error)
             }

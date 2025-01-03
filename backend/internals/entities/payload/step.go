@@ -79,6 +79,7 @@ type StepEvalInfo struct {
 
 type UserEvalResult struct {
 	UserEvalId *uint64 `json:"userEvalId"`
+	Type       *string `json:"type"`
 	Content    *string `json:"content"`
 	Pass       *bool   `json:"pass"`
 	Comment    *string `json:"comment"`

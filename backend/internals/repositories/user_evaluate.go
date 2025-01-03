@@ -10,4 +10,5 @@ type UserEvaluateRepository interface {
 	GetUserEvalByIdAndUserId(userEvalId *uint64, userId *uint64) (*models.UserEvaluate, error)
 	FindStepEvaluateIDsByStepID(stepID uint64) ([]uint64, error)
 	FindUserPassedEvaluateIDs(userID uint, stepID uint64) ([]uint64, error)
+	Update(userEval *models.UserEvaluate) error
 }
