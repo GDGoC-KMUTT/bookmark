@@ -167,16 +167,12 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check, onSheetClose }) =
 									<SheetHeader>
 										<div className="relative h-60 overflow-hidden">
 											<AspectRatio>
-												<img
-													src={stepInfo?.step?.banner}
-													alt={stepInfo?.step?.title}
-													className="absolute inset-0 w-full h-full object-cover"
-												/>
+												<div style={{background: 'linear-gradient(90deg, #FFC593 0%, #BC7198 100%)'}} className="absolute inset-0" />
 											</AspectRatio>
 										</div>
 									</SheetHeader>
 									{stepInfo && (
-										<div className="p-20">
+										<div className="p-16">
 											<div className="flex justify-between">
 												<div className="flex items-center gap-2">
 													<Blocks color="grey" size={"1rem"} />
