@@ -108,30 +108,28 @@ const Course = () => {
     return (
         <div className="absolute top-0 w-full flex flex-col overflow-x-hidden mb-20">
             <Hero key={courseId} courseName={courseInfo?.name ?? ""} courseField={courseInfo?.field ?? ""} courseId={courseInfo?.id ?? 0} />
-            <div className={isEnrolled ? "" : "blur-sm"}>
-                <div className="w-full flex flex-col items-center justify-center space-y-10 mt-20">
-                    {courseContent &&
-                        courseContent.map((item, index) => {
-                            if (item.type === "text") {
-                                return <Text key={index} content={item.text || ""} backgroundIndex={index} />
-                            } else if (item.type === "module") {
-                                const moduleData = modules.find((mod) => mod.id === item.moduleId)
+            <div className="w-full flex flex-col items-center justify-center space-y-10 mt-20">
+                {courseContent &&
+                    courseContent.map((item, index) => {
+                        if (item.type === "text") {
+                            return <Text key={index} content={item.text || ""} backgroundIndex={index} />
+                        } else if (item.type === "module") {
+                            const moduleData = modules.find((mod) => mod.id === item.moduleId)
 
-                                if (moduleData) {
-                                    return (
-                                        <Module
-                                            key={index}
-                                            moduleId={item.moduleId || 0}
-                                            moduleTitle={moduleData.title || "Untitled Module"}
-                                            moduleDescription={moduleData.description || "No description available."}
-                                            moduleImageUrl={moduleData.imageUrl || "/default-image.png"}
-                                        />
-                                    )
-                                }
+                            if (moduleData) {
+                                return (
+                                    <Module
+                                        key={index}
+                                        moduleId={item.moduleId || 0}
+                                        moduleTitle={moduleData.title || "Untitled Module"}
+                                        moduleDescription={moduleData.description || "No description available."}
+                                        moduleImageUrl={moduleData.imageUrl || "/default-image.png"}
+                                    />
+                                )
                             }
-                            return null
-                        })}
-                </div>
+                        }
+                        return null
+                    })}
             </div>
 
             {Array.isArray(suggestCourses) && suggestCourses.length > 0 && (

@@ -133,11 +133,7 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check, onSheetClose }) =
         <Sheet
             open={openStepSheet}
             onOpenChange={(isOpen) => {
-                if (isEnrolled) {
-                    setOpenStepSheet(true)
-                } else {
-                    setOpenStepSheet(false)
-                }
+                setOpenStepSheet(!openStepSheet)
                 if (!isOpen) {
                     setOpenStepSheet(!openStepSheet)
                     onSheetClose?.()
@@ -146,7 +142,7 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check, onSheetClose }) =
         >
             <SheetTrigger asChild>
                 {/* TODO put component that will use to navigate to 'step' here */}
-                <li className={`flex items-center space-x-2 ${isEnrolled ? "cursor-pointer" : "cursor-not-allowed"}`}>
+                <li className={`flex items-center space-x-2 cursor-pointer`}>
                     <div className={`flex items-center justify-center w-6 h-6 rounded-full ${check === true ? "bg-green-500" : "bg-gray-500"}`}>
                         {check === true ? <Check className="text-white w-4 h-4" /> : <Loader className="text-white w-4 h-4" />}
                     </div>
@@ -435,7 +431,7 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check, onSheetClose }) =
                     ) : (
                         <div className="text-2xl w-full h-screen flex justify-center items-center">
                             <div className="flex flex-col items-center">
-                                <TriangleAlert />
+                                <TriangleAlert size={50} />
                                 <p>Enroll Today to Get Started!</p>
                             </div>
                         </div>
