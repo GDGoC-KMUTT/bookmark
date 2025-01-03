@@ -20,6 +20,7 @@ const Portal = () => {
         suggestions: [] as PayloadCourseResponse[],
         strengthData: null as RadarData | null,
     })
+    const [gem, setGems] = useState<number[]>([])
 
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<Record<string, string | null>>({
@@ -56,11 +57,13 @@ const Portal = () => {
                 fetchData(
                     server.userStrength.getStrengthDataByUserId,
                     (data) => {
+                        setGems((prev) => [...prev, ...data.data.map((item: any) => item.totalGems || 0)])
+
                         const radarData: RadarData = {
                             labels: data.data.map((item: any) => item.fieldName || "Unknown"),
                             datasets: [
                                 {
-                                    label: "User Strength",
+                                    label: data.username,
                                     data: data.data.map((item: any) => item.totalGems || 0),
                                     backgroundColor: "rgba(54, 162, 235, 0.2)",
                                     borderColor: "rgba(54, 162, 235, 1)",
@@ -129,7 +132,7 @@ const Portal = () => {
     )
 
     const strengthContent = data.strengthData ? (
-        <StrengthAnalysis data={data.strengthData} options={radarOptions(100)} />
+        <StrengthAnalysis data={data.strengthData} options={radarOptions(gem)} />
     ) : (
         <div className="text-gray-500">No strength data</div>
     )
