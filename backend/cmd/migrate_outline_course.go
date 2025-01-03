@@ -46,10 +46,15 @@ func main() {
 	}
 
 	parentDocumentId := flag.String("parentDocumentId", "", "Outline document ID")
+	documentId := flag.String("documentId", "", "Outline document ID")
 	flag.Parse()
 
 	if *parentDocumentId == "" {
 		gut.Fatal("missing required flag: parentDocumentId", nil)
+	}
+
+	if *documentId != "" {
+		processDocument(db, documentId)
 	}
 
 	client := resty.New()

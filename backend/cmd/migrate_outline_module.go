@@ -51,8 +51,14 @@ func main() {
 	}
 
 	// parse flags
-	parentDocumentId := flag.String("parentDocumentId", "", "Outline document ID")
+	parentDocumentId := flag.String("parentDocumentId", "", "Outline parent document ID")
+	documentId := flag.String("documentId", "", "Outline document ID")
 	flag.Parse()
+
+	if *documentId != "" {
+		documentProcess(db, documentId)
+		return
+	}
 
 	// validate flags
 	if *parentDocumentId == "" {
@@ -221,7 +227,7 @@ func documentProcess(db *gorm.DB, documentId *string) {
 
 		// verify required sections
 		if description == "" || content == "" || outcome == "" || check == "" || errorable == "" {
-			gut.Fatal("malformed markdown: missing required sections, documentTitle: "+stepTitle, nil)
+			gut.Fatal("malformed markdown: missing required sections, stepTitle: "+stepTitle, nil)
 		}
 
 		// update step
