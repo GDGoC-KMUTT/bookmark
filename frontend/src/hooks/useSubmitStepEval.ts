@@ -18,7 +18,6 @@ export const useSubmitStepEval = () => {
         if (type === "text") {
             body.content = content
         }
-
         if (type === "image" && file) {
             try {
                 const response = await server.step.submitStepEval({ data: JSON.stringify(body), file: file })
@@ -44,6 +43,7 @@ export const useSubmitStepEval = () => {
                 console.error("Error submitting step evaluation:", error)
             }
         }
+        setIsLoading(false)
     }, [])
 
     return { createUserEvalRes, isLoading, error, submitStepEval }

@@ -3,6 +3,7 @@ package repositories
 import (
 	"backend/internals/db/models"
 	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -19,7 +20,7 @@ func NewUserEvaluateRepo(db *gorm.DB) UserEvaluateRepository {
 func (r *userEvaluateRepo) GetUserEvalByStepEvalIdUserId(stepEvalId *uint64, userId *float64) (*models.UserEvaluate, error) {
 	userEval := new(models.UserEvaluate)
 
-	result := r.db.Find(&userEval, "step_evaluate_id = ? AND user_id = ?", stepEvalId, userId)
+	result := r.db.Where("step_evaluate_id = ? AND user_id = ?", stepEvalId, userId).Order("created_at DESC").Find(&userEval)
 	if result.Error != nil {
 		return nil, result.Error
 	}

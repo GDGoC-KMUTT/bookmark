@@ -46,7 +46,13 @@ func main() {
 	}
 
 	parentDocumentId := flag.String("parentDocumentId", "", "Outline document ID")
+	documentId := flag.String("documentId", "", "Outline document ID")
 	flag.Parse()
+
+	if *documentId != "" {
+		processDocument(db, documentId)
+		return
+	}
 
 	if *parentDocumentId == "" {
 		gut.Fatal("missing required flag: parentDocumentId", nil)
@@ -229,16 +235,28 @@ func saveContent(db *gorm.DB, course *models.Course, order *int64, contentType, 
 		textPtr = gut.Ptr(content)
 	}
 
-	courseContent := &models.CourseContent{
-		CourseId: course.Id,
-		Order:    order,
-		Type:     &contentTypeStr,
-		Text:     textPtr,
-		ModuleId: moduleId,
-	}
-
-	if err := db.Create(&courseContent).Error; err != nil {
-		gut.Fatal("failed to create course content", err)
+	var courseContent models.CourseContent
+	tx := db.Where("course_id = ? AND \"order\" = ?", course.Id, *order).First(&courseContent)
+	if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+		// Create new record
+		courseContent = models.CourseContent{
+			CourseId: course.Id,
+			Order:    order,
+			Type:     &contentTypeStr,
+			Text:     textPtr,
+			ModuleId: moduleId,
+		}
+		if err := db.Create(&courseContent).Error; err != nil {
+			gut.Fatal("failed to create course content", err)
+		}
+	} else {
+		// Update existing record
+		courseContent.Type = &contentTypeStr
+		courseContent.Text = textPtr
+		courseContent.ModuleId = moduleId
+		if err := db.Save(&courseContent).Error; err != nil {
+			gut.Fatal("failed to update course content", err)
+		}
 	}
 
 	*order++
