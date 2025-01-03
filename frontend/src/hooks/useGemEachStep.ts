@@ -23,7 +23,7 @@ export const useGemEachStep = (stepId: number) => {
 
     useEffect(() => {
         fetchGemEachStep()
-    }, [fetchGemEachStep])
+    }, [])
 
     return { gemEachStep, isLoading, error, fetchGemEachStep }
 }

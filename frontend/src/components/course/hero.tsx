@@ -1,58 +1,59 @@
-import courseBg from '../../assets/course_bg.png';
-import { Bookmark } from 'lucide-react';
-import { useCallback } from 'react';
-import { server } from '@/configs/server';
+import courseBg from "../../assets/course_bg.png"
+import { Bookmark } from "lucide-react"
+import { useCallback } from "react"
+import { server } from "@/configs/server"
 import { toast } from "sonner"
 import { PayloadEnrollwithCourse } from "../../api/api"
-import { useState, useEffect } from "react";
+import { useEffect } from "react"
+import { useAtom } from "jotai"
+import { isEnrolledCourse } from "@/stores/course"
 
 type HeroProps = {
-    courseName: string;
-    courseField: string;
-    courseId: number;
+    courseName: string
+    courseField: string
+    courseId: number
 }
 
 const Hero: React.FC<HeroProps> = ({ courseName, courseField, courseId }) => {
-    const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
+    const [isEnrolled, setIsEnrolled] = useAtom(isEnrolledCourse)
 
     const fetchEnrolledCourses = useCallback(async () => {
         try {
-            const coursesResponse = await server.courses.getEnrollCourseByUserId();
+            const coursesResponse = await server.courses.getEnrollCourseByUserId()
             if (coursesResponse.code === 200 && coursesResponse.data) {
-                const enrolled = coursesResponse.data.some((course: PayloadEnrollwithCourse) => course.courseId === courseId);
-                setIsEnrolled(enrolled);
+                const enrolled = coursesResponse.data.some((course: PayloadEnrollwithCourse) => course.courseId === courseId)
+                setIsEnrolled(enrolled)
             }
         } catch (error) {
-            console.error("Error during data fetching: ", error);
+            console.error("Error during data fetching: ", error)
         }
-    }, [courseId]);
+    }, [courseId])
 
     useEffect(() => {
-        fetchEnrolledCourses();
-    }, [fetchEnrolledCourses]);
+        fetchEnrolledCourses()
+    }, [fetchEnrolledCourses])
 
     const handleEnroll = useCallback(async () => {
         try {
-            const response = await server.enroll.enrollCreate(courseId);
-            console.log('Enrollment response:', response);
+            const response = await server.enroll.enrollCreate(courseId)
+            console.log("Enrollment response:", response)
             if (response) {
-                toast.success('Enrolled successfully!');
-                fetchEnrolledCourses();
+                toast.success("Enrolled successfully!")
+                fetchEnrolledCourses()
             } else {
-                toast.error('Enrollment failed. Please try again.');
+                toast.error("Enrollment failed. Please try again.")
             }
         } catch (error: any) {
-            console.error('Enrollment error:', error);
+            console.error("Enrollment error:", error)
 
             if (error.response?.status === 409) {
-                toast.error('User already enrolled.');
+                toast.error("User already enrolled.")
             } else {
-                const errorMessage =
-                    error.response?.data?.message || 'An unexpected error occurred. Please try again.';
-                toast.error(errorMessage);
+                const errorMessage = error.response?.data?.message || "An unexpected error occurred. Please try again."
+                toast.error(errorMessage)
             }
         }
-    }, [courseId, fetchEnrolledCourses]);
+    }, [courseId, fetchEnrolledCourses])
 
     return (
         <div className="relative w-screen h-[480px] bg-cover bg-center" style={{ backgroundImage: `url(${courseBg})` }}>
@@ -64,16 +65,14 @@ const Hero: React.FC<HeroProps> = ({ courseName, courseField, courseId }) => {
                         <h1 className="pl-2 text-xl text-white font-light">{courseField}</h1>
                     </div>
                     <h1 className="text-4xl text-white font-bold">{courseName}</h1>
-                    <button
-                        className={`w-36 h-15 bg-primary text-fieldType-foreground rounded-lg text-xl`}
-                        onClick={handleEnroll}
-                    >
+                    <button className={`w-36 h-15 bg-primary text-fieldType-foreground rounded-lg text-xl`} onClick={handleEnroll}>
                         {isEnrolled ? "Enrolled" : "Enroll"}
                     </button>
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Hero;
+export default Hero
+
