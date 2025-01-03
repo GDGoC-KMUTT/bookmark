@@ -65,7 +65,7 @@ func SetupRoutes() {
 	var moduleService = services.NewModuleService(moduleRepo)
 	var moduleStepService = services.NewModuleStepService(stepRepo, userEvalRepo)
 	var enrollService = services.NewEnrollService(enrollRepo)
-	var userActivityService = services.NewUserActivityService(userActivityRepo)
+	var userActivityService = services.NewUserActivityService(userActivityRepo, stepRepo, courseContentRepo)
 	var userStrengthService = services.NewUserStrengthService(userStrengthRepo) // Add UserStrengthService
 
 	// * Controller
