@@ -2,11 +2,11 @@ import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler,
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend)
 
-export const radarOptions = {
+export const radarOptions = (max: number) => ({
     scales: {
         r: {
             min: 0,
-            max: 100,
+            max: max,
             beginAtZero: true,
             angleLines: {
                 display: true,
@@ -22,7 +22,7 @@ export const radarOptions = {
             },
             pointLabels: {
                 font: {
-                    size: 12,
+                    size: 18,
                 },
                 color: "rgba(0, 0, 0, 0.7)",
             },
@@ -34,5 +34,5 @@ export const radarOptions = {
         },
     },
     maintainAspectRatio: false,
-}
+})
 
