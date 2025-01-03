@@ -4,7 +4,7 @@ import { useCallback } from "react"
 import { server } from "@/configs/server"
 import { toast } from "sonner"
 import { PayloadEnrollwithCourse } from "../../api/api"
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useAtom } from "jotai"
 import { isEnrolledCourse } from "@/stores/course"
 

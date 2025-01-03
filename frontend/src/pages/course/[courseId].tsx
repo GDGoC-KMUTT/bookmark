@@ -8,8 +8,6 @@ import AppLoading from "@/components/ui/app-loading"
 import { PayloadModuleResponse, PayloadCoursePage, PayloadCoursePageContent, PayloadSuggestCourse } from "../../api/api"
 import { useParams } from "react-router-dom"
 import { toast } from "sonner"
-import { useAtomValue } from "jotai"
-import { isEnrolledCourse } from "@/stores/course"
 
 const Course = () => {
     const { courseId } = useParams()
@@ -17,8 +15,6 @@ const Course = () => {
     const [courseContent, setCourseContent] = useState<PayloadCoursePageContent[] | null>(null)
     const [modules, setModules] = useState<PayloadModuleResponse[]>([])
     const [suggestCourses, setSuggestCourses] = useState<PayloadSuggestCourse[] | undefined>(undefined)
-
-    const isEnrolled = useAtomValue(isEnrolledCourse)
 
     useEffect(() => {
         const fetchData = async () => {
