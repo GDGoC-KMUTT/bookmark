@@ -1,4 +1,4 @@
-import FieldButton from "@/components/buttons/FieldButton"
+import FieldButton from "@/components/home/FieldButton"
 import ArticleCard from "@/components/card/ArticleCard"
 import CourseCard from "@/components/card/CourseCard"
 import AppLoading from "@/components/ui/app-loading"

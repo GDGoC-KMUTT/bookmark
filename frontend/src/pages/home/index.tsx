@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
-import { EnrollmentCard } from "@/components/ui/EnrollmentCard"
-import { RecentCard } from "@/components/ui/RecentCard"
-import { SuggestionCard } from "@/components/ui/SuggestionCard"
-import { StrengthAnalysis } from "@/components/ui/StrengthAnalysis"
+import { EnrollmentCard } from "@/components/home/EnrollmentCard"
+import { RecentCard } from "@/components/home/RecentCard"
+import { SuggestionCard } from "@/components/home/SuggestionCard"
+import { StrengthAnalysis } from "@/components/home/StrengthAnalysis"
 import { radarOptions } from "@/configs/chart"
 import { server } from "@/configs/server"
 import { PayloadEnrollmentListDTO, PayloadUserActivityResponse, PayloadCourseResponse } from "@/api/api"
@@ -28,6 +28,7 @@ const Portal = () => {
         strength: null,
         suggestion: null,
     })
+    console.log(data.strengthData)
 
     // Fetch Functions
     const fetchData = async (fetchFn: () => Promise<any>, onSuccess: (data: any) => void, errorMessage: string) => {
@@ -56,11 +57,11 @@ const Portal = () => {
                     server.userStrength.getStrengthDataByUserId,
                     (data) => {
                         const radarData: RadarData = {
-                            labels: data.map((item: any) => item.fieldName || "Unknown"),
+                            labels: data.data.map((item: any) => item.fieldName || "Unknown"),
                             datasets: [
                                 {
                                     label: "User Strength",
-                                    data: data.map((item: any) => item.total_gems || 0),
+                                    data: data.data.map((item: any) => item.totalGems || 0),
                                     backgroundColor: "rgba(54, 162, 235, 0.2)",
                                     borderColor: "rgba(54, 162, 235, 1)",
                                     borderWidth: 1,
@@ -128,7 +129,7 @@ const Portal = () => {
     )
 
     const strengthContent = data.strengthData ? (
-        <StrengthAnalysis data={data.strengthData} options={radarOptions} />
+        <StrengthAnalysis data={data.strengthData} options={radarOptions(100)} />
     ) : (
         <div className="text-gray-500">No strength data</div>
     )
