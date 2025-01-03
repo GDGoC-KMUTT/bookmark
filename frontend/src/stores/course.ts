@@ -1,3 +1,5 @@
-import { atom } from "jotai";
+import { atom } from "jotai"
 
-export const courseName = atom("");
+export const courseName = atom("")
+export const isEnrolledCourse = atom(false)
+
