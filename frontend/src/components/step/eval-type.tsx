@@ -94,7 +94,6 @@ const EvalTypeCard: FC<EvalTypeCardProps> = ({ stepId, stepEvalId, type, questio
             return () => clearInterval(intervalId) // Cleanup on unmount
         }
     }, [isSubmit, userEvalStatus, stepEvalPassed, userEvalId])
-    console.log(!passStatus)
 
     return (
         <>

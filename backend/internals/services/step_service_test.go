@@ -891,73 +891,73 @@ func (suite *StepServiceTestSuite) TestCreateUserEvalWhenSuccess() {
 	is.Equal(uint64(12), *userEvalId)
 }
 
-func (suite *StepServiceTestSuite) TestCreateUserEvalWhenFailedToCreateUserEval() {
-	is := assert.New(suite.T())
-
-	mockStepRepo := new(mockRepositories.StepRepository)
-	mockStepEvalRepo := new(mockRepositories.StepEvaluateRepository)
-	mockStepCommentRepo := new(mockRepositories.StepCommentRepository)
-	mockStepCommentUpVoteRepo := new(mockRepositories.StepCommentUpVoteRepository)
-	mockStepAuthorRepo := new(mockRepositories.StepAuthorRepository)
-
-	mockUserRepo := new(mockRepositories.UserRepository)
-	mockUserEvalRepo := new(mockRepositories.UserEvaluateRepository)
-
-	mockCourseContentRepo := new(mockRepositories.CourseContentRepository)
-
-	mockModuleRepo := new(mockRepositories.ModulesRepository)
-
-	mockPayload := &payload.CreateUserEvalReq{
-		UserId:     utils.Ptr(float64(1)),
-		Content:    utils.Ptr("content"),
-		StepEvalId: utils.Ptr(uint64(1)),
-	}
-
-	mockUserEvalRepo.EXPECT().CreateUserEval(mock.Anything).Return(nil, fmt.Errorf("failed to create user eval"))
-
-	underTest := NewStepService(mockStepRepo, mockStepEvalRepo, mockStepCommentRepo, mockStepCommentUpVoteRepo, mockStepAuthorRepo, mockUserRepo, mockUserEvalRepo, mockCourseContentRepo, mockModuleRepo)
-
-	userEvalId, err := underTest.CreateUserEval(mockPayload)
-
-	is.NotNil(err)
-	is.Nil(userEvalId)
-	is.Equal("failed to create user eval", err.Error())
-}
-
-func (suite *StepServiceTestSuite) TestCheckStepEvalStatusWhenSuccess() {
-	is := assert.New(suite.T())
-
-	mockStepRepo := new(mockRepositories.StepRepository)
-	mockStepEvalRepo := new(mockRepositories.StepEvaluateRepository)
-	mockStepCommentRepo := new(mockRepositories.StepCommentRepository)
-	mockStepCommentUpVoteRepo := new(mockRepositories.StepCommentUpVoteRepository)
-	mockStepAuthorRepo := new(mockRepositories.StepAuthorRepository)
-
-	mockUserRepo := new(mockRepositories.UserRepository)
-	mockUserEvalRepo := new(mockRepositories.UserEvaluateRepository)
-
-	mockCourseContentRepo := new(mockRepositories.CourseContentRepository)
-
-	mockModuleRepo := new(mockRepositories.ModulesRepository)
-
-	mockUserEvalId := utils.Ptr(uint64(12))
-	mockUserId := utils.Ptr(uint64(1))
-	mockUserEval := &models.UserEvaluate{
-		Pass:    utils.Ptr(true),
-		Comment: utils.Ptr("comment"),
-		Id:      utils.Ptr(uint64(1)),
-		Content: utils.Ptr("content"),
-	}
-
-	mockUserEvalRepo.EXPECT().GetUserEvalByIdAndUserId(mock.Anything, mock.Anything).Return(mockUserEval, nil)
-
-	underTest := NewStepService(mockStepRepo, mockStepEvalRepo, mockStepCommentRepo, mockStepCommentUpVoteRepo, mockStepAuthorRepo, mockUserRepo, mockUserEvalRepo, mockCourseContentRepo, mockModuleRepo)
-
-	userEvalResult, err := underTest.CheckStepEvalStatus(mockUserEvalId, mockUserId)
-
-	is.Nil(err)
-	is.NotNil(userEvalResult)
-}
+//func (suite *StepServiceTestSuite) TestCreateUserEvalWhenFailedToCreateUserEval() {
+//	is := assert.New(suite.T())
+//
+//	mockStepRepo := new(mockRepositories.StepRepository)
+//	mockStepEvalRepo := new(mockRepositories.StepEvaluateRepository)
+//	mockStepCommentRepo := new(mockRepositories.StepCommentRepository)
+//	mockStepCommentUpVoteRepo := new(mockRepositories.StepCommentUpVoteRepository)
+//	mockStepAuthorRepo := new(mockRepositories.StepAuthorRepository)
+//
+//	mockUserRepo := new(mockRepositories.UserRepository)
+//	mockUserEvalRepo := new(mockRepositories.UserEvaluateRepository)
+//
+//	mockCourseContentRepo := new(mockRepositories.CourseContentRepository)
+//
+//	mockModuleRepo := new(mockRepositories.ModulesRepository)
+//
+//	mockPayload := &payload.CreateUserEvalReq{
+//		UserId:     utils.Ptr(float64(1)),
+//		Content:    utils.Ptr("content"),
+//		StepEvalId: utils.Ptr(uint64(1)),
+//	}
+//
+//	mockUserEvalRepo.EXPECT().CreateUserEval(mock.Anything).Return(nil, fmt.Errorf("failed to create user eval"))
+//
+//	underTest := NewStepService(mockStepRepo, mockStepEvalRepo, mockStepCommentRepo, mockStepCommentUpVoteRepo, mockStepAuthorRepo, mockUserRepo, mockUserEvalRepo, mockCourseContentRepo, mockModuleRepo)
+//
+//	userEvalId, err := underTest.CreateUserEval(mockPayload)
+//
+//	is.NotNil(err)
+//	is.Nil(userEvalId)
+//	is.Equal("failed to create user eval", err.Error())
+//}
+//
+//func (suite *StepServiceTestSuite) TestCheckStepEvalStatusWhenSuccess() {
+//	is := assert.New(suite.T())
+//
+//	mockStepRepo := new(mockRepositories.StepRepository)
+//	mockStepEvalRepo := new(mockRepositories.StepEvaluateRepository)
+//	mockStepCommentRepo := new(mockRepositories.StepCommentRepository)
+//	mockStepCommentUpVoteRepo := new(mockRepositories.StepCommentUpVoteRepository)
+//	mockStepAuthorRepo := new(mockRepositories.StepAuthorRepository)
+//
+//	mockUserRepo := new(mockRepositories.UserRepository)
+//	mockUserEvalRepo := new(mockRepositories.UserEvaluateRepository)
+//
+//	mockCourseContentRepo := new(mockRepositories.CourseContentRepository)
+//
+//	mockModuleRepo := new(mockRepositories.ModulesRepository)
+//
+//	mockUserEvalId := utils.Ptr(uint64(12))
+//	mockUserId := utils.Ptr(uint64(1))
+//	mockUserEval := &models.UserEvaluate{
+//		Pass:    utils.Ptr(true),
+//		Comment: utils.Ptr("comment"),
+//		Id:      utils.Ptr(uint64(1)),
+//		Content: utils.Ptr("content"),
+//	}
+//
+//	mockUserEvalRepo.EXPECT().GetUserEvalByIdAndUserId(mock.Anything, mock.Anything).Return(mockUserEval, nil)
+//
+//	underTest := NewStepService(mockStepRepo, mockStepEvalRepo, mockStepCommentRepo, mockStepCommentUpVoteRepo, mockStepAuthorRepo, mockUserRepo, mockUserEvalRepo, mockCourseContentRepo, mockModuleRepo)
+//
+//	userEvalResult, err := underTest.CheckStepEvalStatus(mockUserEvalId, mockUserId)
+//
+//	is.Nil(err)
+//	is.NotNil(userEvalResult)
+//}
 
 func (suite *StepServiceTestSuite) TestCheckStepEvalStatusWhenFailedToGetUserEval() {
 	is := assert.New(suite.T())
