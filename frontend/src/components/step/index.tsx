@@ -208,7 +208,7 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check, onSheetClose }) =
                                                         {stepInfo?.authors?.map((author) => {
                                                             return (
                                                                 <div className="flex flex-row items-center gap-4" key={author.userId}>
-                                                                    <Avatar>
+                                                                    <Avatar className="bg-slate-200">
                                                                         <AvatarImage
                                                                             src={author.photoUrl}
                                                                             alt={`${author.firstName} ${author.lastName}`}
