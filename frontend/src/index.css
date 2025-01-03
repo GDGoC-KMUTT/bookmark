@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -43,10 +44,60 @@ a {
 a:hover {
     color: #535bf2;
 }
+
+/** markdown */
+.markdown {
+	font-family: 'Inter';
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 2;
+	color: #000000;
+	padding: 2rem 1.5em 2em 1.5rem;
+}
+.markdown h1 {
+    font-size: 28px;
+	font-weight: 700;
+	margin: 0em 0em 0.8em 0em;
+}
+.markdown h2 {
+    font-size: 22px;
+	font-weight: 600;
+	margin: 0em 0em 0.8em 0em;
+}
+.markdown h3 {
+    font-size: 18px;
+	font-weight: 600;
+	margin: 0em 0em 0.8em 0em;
+}
+.markdown h4 {
+    font-size: 16px;
+	font-weight: 600;
+	margin: 0em 0em 0.8em 0em;
+}
+.markdown p {
+    font-size: 16px;
+	font-weight: 400;
+	margin: 0em 0em 0.8em 0em;
+}
+.markdown img {
+	max-height: 500px;
+	border-radius: 1.5em;
+	margin: 1.5em auto 2em auto;
+	display: block;
+}
 .markdown ul {
-    list-style-type: unset;
+	list-style-type: disc;
     padding: 1rem 2rem;
 }
+.markdown ul ul {
+	list-style-type: circle;
+    padding: 1rem 2rem;
+}
+.markdown ul ul ul {
+	list-style-type: square;
+    padding: 1rem 2rem;
+}
+
 
 body {
     margin: 0;
