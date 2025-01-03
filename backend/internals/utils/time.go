@@ -30,3 +30,8 @@ func TimeToday() time.Time {
 	now := TimeNow()
 	return time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, BangkokTime)
 }
+
+func TimeNowPtr() *time.Time {
+	now := TimeNow()
+	return &now
+}

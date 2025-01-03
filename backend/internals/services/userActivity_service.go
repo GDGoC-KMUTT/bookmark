@@ -46,3 +46,12 @@ func (s *userActivityService) GetRecentActivitiesByUserID(userId *string) (*payl
 		Activities: activityResponses,
 	}, nil
 }
+
+func (s *userActivityService) UpdateUserActivity(userId uint64, stepId uint64) error {
+	err := s.userActivityRepo.UpdateUserActivity(userId, stepId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

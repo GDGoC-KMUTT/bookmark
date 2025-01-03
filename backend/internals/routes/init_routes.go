@@ -62,9 +62,9 @@ func SetupRoutes() {
 		courseContentRepo,
 		moduleRepo)
 	var articleService = services.NewArticleService(articleRepo)
-	var enrollService = services.NewEnrollService(enrollRepo)
 	var moduleService = services.NewModuleService(moduleRepo)
 	var moduleStepService = services.NewModuleStepService(stepRepo, userEvalRepo)
+	var enrollService = services.NewEnrollService(enrollRepo)
 	var userActivityService = services.NewUserActivityService(userActivityRepo)
 	var userStrengthService = services.NewUserStrengthService(userStrengthRepo) // Add UserStrengthService
 
@@ -161,6 +161,7 @@ func SetupRoutes() {
 
 	userActivity := api.Group("/user", middleware.Jwt())
 	userActivity.Get("/recent-activities", userActivityController.GetRecentActivity)
+	userActivity.Post("/activity/:stepId", userActivityController.CreateOrUpdateActivity)
 
 	userStrength := api.Group("/strength", middleware.Jwt())
 	userStrength.Get("/strength-info", userStrengthController.GetStrengthDataByUserID)
