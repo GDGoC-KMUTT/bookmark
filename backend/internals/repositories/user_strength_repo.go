@@ -18,8 +18,8 @@ func NewUserStrengthRepository(db *gorm.DB) UserStrengthRepository {
 }
 
 // GetStrengthDataByUserID ดึงคะแนน strength ตามแต่ละ field type ที่ผู้ใช้ตอบถูก
-func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]payload.StrengthDataResponse, error) {
-	var strengthData []payload.StrengthDataResponse
+func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]payload.StrengthFieldData, error) {
+	var strengthData []payload.StrengthFieldData
 
 	var evaluations []struct {
 		FieldName string
@@ -53,9 +53,9 @@ func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]paylo
 			return nil, err
 		}
 
-		strengthData = make([]payload.StrengthDataResponse, len(fieldTypes))
+		strengthData = make([]payload.StrengthFieldData, len(fieldTypes))
 		for i, fieldType := range fieldTypes {
-			strengthData[i] = payload.StrengthDataResponse{
+			strengthData[i] = payload.StrengthFieldData{
 				FieldName: *fieldType.Name,
 				TotalGems: 0,
 			}
@@ -66,9 +66,9 @@ func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]paylo
 	}
 
 	// Convert evaluations to response format
-	strengthData = make([]payload.StrengthDataResponse, 0, len(evaluations))
+	strengthData = make([]payload.StrengthFieldData, 0, len(evaluations))
 	for _, evaluation := range evaluations {
-		strengthData = append(strengthData, payload.StrengthDataResponse{
+		strengthData = append(strengthData, payload.StrengthFieldData{
 			FieldName: evaluation.FieldName,
 			TotalGems: evaluation.TotalGems,
 		})

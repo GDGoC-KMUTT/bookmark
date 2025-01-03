@@ -6,12 +6,16 @@ import (
 )
 
 type userActivityService struct {
-	userActivityRepo repositories.UserActivityRepository
+	userActivityRepo  repositories.UserActivityRepository
+	stepRepo          repositories.StepRepository
+	courseContentRepo repositories.CourseContentRepository
 }
 
-func NewUserActivityService(userActivityRepo repositories.UserActivityRepository) UserActivityService {
+func NewUserActivityService(userActivityRepo repositories.UserActivityRepository, stepRepo repositories.StepRepository, courseContentRepo repositories.CourseContentRepository) UserActivityService {
 	return &userActivityService{
-		userActivityRepo: userActivityRepo,
+		userActivityRepo:  userActivityRepo,
+		stepRepo:          stepRepo,
+		courseContentRepo: courseContentRepo,
 	}
 }
 
@@ -33,7 +37,19 @@ func (s *userActivityService) GetRecentActivitiesByUserID(userId *string) (*payl
 			}
 		}
 
+		moduleId, err := s.stepRepo.GetModuleIdByStepId(activity.StepId)
+		if err != nil {
+			return nil, err
+		}
+
+		courseId, err := s.courseContentRepo.GetCourseIdByModuleId(moduleId)
+		if err != nil {
+			return nil, err
+		}
+
 		activityResponses = append(activityResponses, payload.UserActivityResponse{
+			CourseId:    *courseId,
+			ModuleId:    *moduleId,
 			StepID:      *activity.StepId,
 			StepTitle:   stepTitle,
 			ModuleTitle: moduleTitle,

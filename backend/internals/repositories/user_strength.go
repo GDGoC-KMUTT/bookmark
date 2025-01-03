@@ -6,6 +6,6 @@ import (
 )
 
 type UserStrengthRepository interface {
-	GetStrengthDataByUserID(userId uint64) ([]payload.StrengthDataResponse, error)
+	GetStrengthDataByUserID(userId uint64) ([]payload.StrengthFieldData, error)
 	GetSuggestionCourse(userId uint64) ([]models.Course, error)
 }

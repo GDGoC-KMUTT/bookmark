@@ -1,22 +1,26 @@
 import { useState, useEffect } from "react"
-import { EnrollmentCard } from "@/components/ui/EnrollmentCard"
-import { RecentCard } from "@/components/ui/RecentCard"
-import { SuggestionCard } from "@/components/ui/SuggestionCard"
-import { StrengthAnalysis } from "@/components/ui/StrengthAnalysis"
+import { EnrollmentCard } from "@/components/home/EnrollmentCard"
+import { RecentCard } from "@/components/home/RecentCard"
+import { SuggestionCard } from "@/components/home/SuggestionCard"
+import { StrengthAnalysis } from "@/components/home/StrengthAnalysis"
 import { radarOptions } from "@/configs/chart"
 import { server } from "@/configs/server"
 import { PayloadEnrollmentListDTO, PayloadUserActivityResponse, PayloadCourseResponse } from "@/api/api"
 import { RadarData } from "@/types/chart"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { useNavigate } from "react-router-dom"
+import { Loader2 } from "lucide-react"
 
 const Portal = () => {
     // State
+    const navigate = useNavigate()
     const [data, setData] = useState({
         enrollments: [] as PayloadEnrollmentListDTO[],
         recentActivity: [] as PayloadUserActivityResponse[],
         suggestions: [] as PayloadCourseResponse[],
         strengthData: null as RadarData | null,
     })
+    const [gem, setGems] = useState<number[]>([])
 
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<Record<string, string | null>>({
@@ -25,6 +29,7 @@ const Portal = () => {
         strength: null,
         suggestion: null,
     })
+    console.log(data.strengthData)
 
     // Fetch Functions
     const fetchData = async (fetchFn: () => Promise<any>, onSuccess: (data: any) => void, errorMessage: string) => {
@@ -52,12 +57,14 @@ const Portal = () => {
                 fetchData(
                     server.userStrength.getStrengthDataByUserId,
                     (data) => {
+                        setGems((prev) => [...prev, ...data.data.map((item: any) => item.totalGems || 0)])
+
                         const radarData: RadarData = {
-                            labels: data.map((item: any) => item.fieldName || "Unknown"),
+                            labels: data.data.map((item: any) => item.fieldName || "Unknown"),
                             datasets: [
                                 {
-                                    label: "User Strength",
-                                    data: data.map((item: any) => item.total_gems || 0),
+                                    label: data.username,
+                                    data: data.data.map((item: any) => item.totalGems || 0),
                                     backgroundColor: "rgba(54, 162, 235, 0.2)",
                                     borderColor: "rgba(54, 162, 235, 1)",
                                     borderWidth: 1,
@@ -107,18 +114,25 @@ const Portal = () => {
     const enrollmentContent = (
         <div className="flex w-max space-x-4">
             {data.enrollments?.map((enrollment, index) => (
-                <EnrollmentCard
-                    key={enrollment.id || index}
-                    course_name={enrollment.courseName || "Untitled Course"}
-                    progress={enrollment.progress ?? 0}
-                    id={enrollment.id}
-                />
+                <div
+                    className="cursor-pointer"
+                    onClick={() => {
+                        navigate(`/course/${enrollment.id}`)
+                    }}
+                >
+                    <EnrollmentCard
+                        key={enrollment.id || index}
+                        course_name={enrollment.courseName || "Untitled Course"}
+                        progress={enrollment.progress ?? 0}
+                        id={enrollment.id}
+                    />
+                </div>
             ))}
         </div>
     )
 
     const strengthContent = data.strengthData ? (
-        <StrengthAnalysis data={data.strengthData} options={radarOptions} />
+        <StrengthAnalysis data={data.strengthData} options={radarOptions(gem)} />
     ) : (
         <div className="text-gray-500">No strength data</div>
     )
@@ -128,7 +142,11 @@ const Portal = () => {
             <div className="flex space-x-4 pb-4">
                 {data.recentActivity ? (
                     data.recentActivity.map((activity, index) => (
-                        <div key={activity.stepId || index} className="w-80 flex-none">
+                        <div
+                            key={activity.stepId || index}
+                            className="w-80 flex-none cursor-pointer"
+                            onClick={() => navigate(`/course/${activity.courseId}`)}
+                        >
                             <RecentCard moduleTitle={activity.moduleTitle || "Untitled Module"} stepTitle={activity.stepTitle || "Untitled Step"} />
                         </div>
                     ))
@@ -144,7 +162,7 @@ const Portal = () => {
         <div className="flex w-full space-x-4 pb-4">
             {data.suggestions.length > 0 ? (
                 data.suggestions.map((item, index) => (
-                    <div className="flex-1" key={item.id || index}>
+                    <div className="flex-1 cursor-pointer" key={item.id || index} onClick={() => navigate(`/course/${item.id}`)}>
                         <SuggestionCard name={item.name || "Untitled Course"} field={item.field} />
                     </div>
                 ))
@@ -158,7 +176,10 @@ const Portal = () => {
         <div className="flex flex-col h-screen w-screen bg-gray-50 overflow-auto">
             <div className="flex flex-col flex-1 px-20 py-28 space-y-12">
                 {loading ? (
-                    <div className="text-gray-500">Loading...</div>
+                    <div className="flex flex-col items-center justify-center h-full">
+                        <Loader2 className="animate-spin" size={50} />
+                        <p className="text-xl">Loading Home page</p>
+                    </div>
                 ) : (
                     <>
                         {renderSection("Enrollment", enrollmentContent, error.enrollment)}

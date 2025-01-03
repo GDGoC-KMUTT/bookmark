@@ -24,7 +24,7 @@ func NewUserStrengthController(userStrengthSvc services.UserStrengthService) *Us
 // @Summary Get user strength data by user ID
 // @Accept json
 // @Produce json
-// @Success 200 {object} response.InfoResponse[[]payload.StrengthDataResponse]
+// @Success 200 {object} response.InfoResponse[payload.StrengthDataResponse]
 // @Failure 400 {object} response.GenericError
 // @Router /strength/strength-info [get]
 func (c *UserStrengthController) GetStrengthDataByUserID(ctx *fiber.Ctx) error {
