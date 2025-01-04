@@ -103,9 +103,7 @@ const Navbar = () => {
                             alt="User Profile"
                             className="w-full h-full object-cover rounded-full"
                         />
-                        {!userProfile?.photoUrl && userProfile && (
-                            <AvatarFallback>{getFallbackName(`${userProfile.firstname} ${userProfile.lastname}`)}</AvatarFallback>
-                        )}
+                        <AvatarFallback>{getFallbackName(`${userProfile?.firstname} ${userProfile?.lastname}`)}</AvatarFallback>
                     </Avatar>
                 </div>
             </div>

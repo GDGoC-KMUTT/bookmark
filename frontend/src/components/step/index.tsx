@@ -243,7 +243,7 @@ const StepCard: React.FC<StepProps> = ({ stepId, title, check, onSheetClose }) =
                                                                                     <TooltipProvider>
                                                                                         <Tooltip>
                                                                                             <TooltipTrigger asChild>
-                                                                                                <Avatar>
+                                                                                                <Avatar className="bg-slate-200">
                                                                                                     <AvatarImage
                                                                                                         src={person.photoUrl}
                                                                                                         alt={`${person.firstName} ${person.lastName}`}
