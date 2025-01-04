@@ -117,7 +117,7 @@ const Portal = () => {
                 <div
                     className="cursor-pointer"
                     onClick={() => {
-                        navigate(`/course/${enrollment.id}`)
+                        navigate(`/course/${enrollment.courseId}`)
                     }}
                 >
                     <EnrollmentCard
