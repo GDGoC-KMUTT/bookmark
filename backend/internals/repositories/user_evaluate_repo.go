@@ -18,7 +18,7 @@ func NewUserEvaluateRepo(db *gorm.DB) UserEvaluateRepository {
 }
 
 func (r *userEvaluateRepo) GetUserEvalByStepEvalIdUserId(stepEvalId *uint64, userId *float64) (*models.UserEvaluate, error) {
-	userEval := new(models.UserEvaluate)
+	userEval := make([]*models.UserEvaluate, 0)
 
 	result := r.db.Where("step_evaluate_id = ? AND user_id = ?", stepEvalId, userId).Order("created_at DESC").Find(&userEval)
 	if result.Error != nil {
@@ -29,7 +29,7 @@ func (r *userEvaluateRepo) GetUserEvalByStepEvalIdUserId(stepEvalId *uint64, use
 		return nil, nil
 	}
 
-	return userEval, nil
+	return userEval[0], nil
 }
 
 func (r *userEvaluateRepo) CreateUserEval(userEval *models.UserEvaluate) (*models.UserEvaluate, error) {

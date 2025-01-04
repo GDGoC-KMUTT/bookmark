@@ -329,34 +329,18 @@ func (r *stepService) CreateFileFormat(stepId *uint64, stepEvalId *uint64, userI
 }
 
 func (r *stepService) CreateUserEval(payload *payload.CreateUserEvalReq) (*uint64, error) {
-	userEval, err := r.userEvalRepo.GetUserEvalByStepEvalIdUserId(payload.StepEvalId, payload.UserId)
+	NewUserEval := &models.UserEvaluate{
+		UserId:         utils.Ptr(uint64(*payload.UserId)),
+		Content:        payload.Content,
+		StepEvaluateId: payload.StepEvalId,
+	}
+
+	result, err := r.userEvalRepo.CreateUserEval(NewUserEval)
 	if err != nil {
 		return nil, err
 	}
 
-	if userEval == nil {
-		NewUserEval := &models.UserEvaluate{
-			UserId:         utils.Ptr(uint64(*payload.UserId)),
-			Content:        payload.Content,
-			StepEvaluateId: payload.StepEvalId,
-		}
-
-		result, err := r.userEvalRepo.CreateUserEval(NewUserEval)
-		if err != nil {
-			return nil, err
-		}
-
-		return result.Id, nil
-	}
-
-	userEval.Content = payload.Content
-	userEval.Pass = nil
-	userEval.Comment = nil
-	if err := r.userEvalRepo.Update(userEval); err != nil {
-		return nil, err
-	}
-
-	return userEval.Id, err
+	return result.Id, nil
 
 }
 
