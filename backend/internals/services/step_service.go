@@ -372,8 +372,6 @@ func (r *stepService) SubmitStepEvalTypeCheck(stepEvalId *uint64, userId *uint64
 	userEval := &models.UserEvaluate{
 		UserId:         userId,
 		StepEvaluateId: stepEvalId,
-		Pass:           utils.Ptr(true),
-		Comment:        utils.Ptr(""),
 		Content:        utils.Ptr("mark as complete"),
 	}
 
