@@ -14,7 +14,7 @@ const Navbar = () => {
     const [course, setCurrentCourse] = useState<string>("")
     const [progress, setProgress] = useState<number | null>(null)
     const navigate = useNavigate()
-
+    // hot fix
     const handleClick = () => {
         navigate("/profile")
     }
