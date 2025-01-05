@@ -62,11 +62,11 @@ func (r *userRepository) GetUserCompletedSteps(userID uint) ([]models.UserActivi
 	return userActivities, nil
 }
 
-func (r *userRepository) GetUserPassByUserID(userID uint) (int64, error) {
+func (r *userRepository) GetUserPassByUserID(userID uint, stepId uint) (int64, error) {
 	var count int64
 	err := r.db.Table("user_passes").
 		Joins("INNER JOIN step_evaluates ON user_passes.step_id = step_evaluates.step_id").
-		Where("user_passes.user_id = ?", userID).Count(&count).Error
+		Where("user_passes.user_id = ? and user_passes.step_id = ?", userID, stepId).Count(&count).Error
 	if err != nil {
 		return 0, err
 	}

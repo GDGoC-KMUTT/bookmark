@@ -10,5 +10,5 @@ type UserRepository interface {
 	DeleteUser(id uint) error
 	GetTotalGemsByUserID(userID uint) (uint64, error)
 	GetUserCompletedSteps(userID uint) ([]models.UserActivity, error)
-	GetUserPassByUserID(userID uint) (int64, error)
+	GetUserPassByUserID(userID uint, stepId uint) (int64, error)
 }

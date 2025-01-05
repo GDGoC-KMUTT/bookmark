@@ -39,11 +39,11 @@ func (s *moduleStepService) GetModuleSteps(userID uint, moduleID string) ([]payl
 			return nil, fmt.Errorf("invalid step data: missing ID or Title")
 		}
 
-		userPass, err := s.userRepo.GetUserPassByUserID(userID)
+		userPass, err := s.userRepo.GetUserPassByUserID(userID, uint(*step.Id))
 		if err != nil {
 			return nil, err
 		}
-		
+
 		// Determine the 'Check' status
 		check := userPass > 0
 
