@@ -26,16 +26,15 @@ func (r *userStrengthRepository) GetStrengthDataByUserID(userId uint64) ([]paylo
 		TotalGems int64
 	}
 
-	err := r.db.
-		Table("user_evaluates").
-		Joins("JOIN step_evaluates ON step_evaluates.id = user_evaluates.step_evaluate_id").
-		Joins("JOIN steps ON steps.id = step_evaluates.step_id").
-		Joins("JOIN modules ON modules.id = steps.module_id").
-		Joins("JOIN course_contents ON course_contents.module_id = modules.id").
-		Joins("JOIN courses ON courses.id = course_contents.course_id").
-		Joins("JOIN field_types ON field_types.id = courses.field_id").
-		Where("user_evaluates.user_id = ? AND user_evaluates.pass = ?", userId, true).
-		Select("field_types.name AS field_name, SUM(step_evaluates.gem) AS total_gems").
+	err := r.db.Table("user_passes").
+		Joins("INNER JOIN step_evaluates ON user_passes.step_id = step_evaluates.step_id").
+		Joins("INNER JOIN steps ON user_passes.step_id = steps.id").
+		Joins("INNER JOIN modules ON steps.module_id = modules.id").
+		Joins("INNER JOIN course_contents ON course_contents.module_id = modules.id").
+		Joins("INNER JOIN courses ON courses.id = course_contents.course_id").
+		Joins("INNER JOIN field_types ON field_types.id = courses.field_id").
+		Where("user_passes.user_id = ?", userId).
+		Select("field_types.name, COALESCE(SUM(step_evaluates.gem), 0) AS total_gems").
 		Group("field_types.name").
 		Find(&evaluations).Error
 
@@ -83,9 +82,9 @@ func (r *userStrengthRepository) GetSuggestionCourse(userId uint64) ([]models.Co
 
 	var courses []models.Course
 	err := r.db.
-		Preload("Field").  // Preload the field relationship
+		Preload("Field"). // Preload the field relationship
 		Order("RANDOM()"). // Random order
-		Limit(5).          // Limit to 5 courses
+		Limit(5). // Limit to 5 courses
 		Find(&courses).Error
 
 	if err != nil {

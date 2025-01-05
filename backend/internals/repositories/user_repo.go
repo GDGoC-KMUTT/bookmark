@@ -53,11 +53,22 @@ func (r *userRepository) GetTotalGemsByUserID(userID uint) (uint64, error) {
 }
 
 func (r *userRepository) GetUserCompletedSteps(userID uint) ([]models.UserActivity, error) {
-    var userActivities []models.UserActivity
-    result := r.db.Where("user_id = ?", userID).Find(&userActivities)
-    if result.Error != nil {
-        return nil, result.Error
-    }
+	var userActivities []models.UserActivity
+	result := r.db.Where("user_id = ?", userID).Find(&userActivities)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 
-    return userActivities, nil
+	return userActivities, nil
+}
+
+func (r *userRepository) GetUserPassByUserID(userID uint, stepId uint) (int64, error) {
+	var count int64
+	err := r.db.Table("user_passes").
+		Joins("INNER JOIN step_evaluates ON user_passes.step_id = step_evaluates.step_id").
+		Where("user_passes.user_id = ? and user_passes.step_id = ?", userID, stepId).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }

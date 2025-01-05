@@ -7,14 +7,16 @@ import (
 )
 
 type moduleStepService struct {
-	stepRepo       repositories.StepRepository
+	stepRepo         repositories.StepRepository
 	userEvaluateRepo repositories.UserEvaluateRepository
+	userRepo         repositories.UserRepository
 }
 
-func NewModuleStepService(stepRepo repositories.StepRepository, userEvaluateRepo repositories.UserEvaluateRepository) ModuleStepServices {
+func NewModuleStepService(stepRepo repositories.StepRepository, userEvaluateRepo repositories.UserEvaluateRepository, userRepo repositories.UserRepository) ModuleStepServices {
 	return &moduleStepService{
-		stepRepo:       stepRepo,
+		stepRepo:         stepRepo,
 		userEvaluateRepo: userEvaluateRepo,
+		userRepo:         userRepo,
 	}
 }
 
@@ -37,20 +39,13 @@ func (s *moduleStepService) GetModuleSteps(userID uint, moduleID string) ([]payl
 			return nil, fmt.Errorf("invalid step data: missing ID or Title")
 		}
 
-		// Get all step_evaluate IDs for the current step
-		stepEvaluateIDs, err := s.userEvaluateRepo.FindStepEvaluateIDsByStepID(*step.Id)
+		userPass, err := s.userRepo.GetUserPassByUserID(userID, uint(*step.Id))
 		if err != nil {
-			return nil, fmt.Errorf("failed to fetch step evaluate IDs for step ID %d: %w", *step.Id, err)
-		}
-
-		// Get all step_evaluate IDs where user has passed
-		userPassedIDs, err := s.userEvaluateRepo.FindUserPassedEvaluateIDs(userID, *step.Id)
-		if err != nil {
-			return nil, fmt.Errorf("failed to fetch user evaluations for step ID %d: %w", *step.Id, err)
+			return nil, err
 		}
 
 		// Determine the 'Check' status
-		check := len(stepEvaluateIDs) > 0 && len(stepEvaluateIDs) == len(userPassedIDs)
+		check := userPass > 0
 
 		// Append the step response
 		stepResponses = append(stepResponses, payload.ModuleStep{
